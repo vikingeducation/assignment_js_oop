@@ -6,57 +6,94 @@ var view = {
   bgReady: false,
   bgImage: new Image(),
 
-  createAsteroid: function(){
-    var radius = Math.floor(Math.random() * 30 + 20);
-    var startX = Math.floor(Math.random() * view.height); 
-    //(startX >= view.height/ 2) ? startX += view.height : startX -= view.height;
-    var startY = Math.floor(Math.random() * view.width);
-    //(startY >= view.width/ 2) ? startY += view.width : startY -= view.width;
-
-
-      console.log(startX);
-      console.log(startY);
-
-    view.ctx.beginPath();
-    view.ctx.arc(startX , startY ,radius,0,2*Math.PI);
-    view.ctx.stroke();
+  init: function(){
+    window.onload = view.runbgImage();
+    view.render();
   },
 
-  render: function () {
+  runbgImage: function () {
+      view.bgReady = true;
+      view.bgImage.src = "images/background.png";
+  },
+
+  renderBackground: function () {
     if (view.bgReady) {
      view.ctx.drawImage(view.bgImage, 0, 0);
     }
+  },
+
+  renderAsteroids: function(asteroids) {
+    for(var i = 0; i < model.numOfAsteroids; i++){
+      model.ctx.beginPath();
+      model.ctx.arc(asteroid[0], asteroid[1], asteroid[2], 0, 2*Math.PI);
+      model.ctx.stroke();
+    }
+  },
+
+  moveAsteroid: function(asteroid){
+    var velocityX = Math.floor(Math.random() * 5);
+    var velocityY = Math.floor(Math.random() * 5);
+    this.move = function(asteroid){
+    asteroid.coordinateX += velocityX;
+    asteroid.coordinateY += velocityY;
+    // console.log(this.coordinateY, this.coordinateX);
+    };
+  },
+
+  gameLoop: function(){
+
   }
+
 };
 
 // ================= Model ===========
 var model = {
-  Asteroid: function(){
 
-  this.velocityX = 1;
-  this.velocityY = 2;
+  asteroidState: [],
+  numOfAsteroids: 20,
 
-  this.move = function(){
-    this.coordinateX += this.velocityX;
-    this.coordinateY += this.velocityY;
-    // console.log(this.coordinateY, this.coordinateX);
-    };
-  }
+  init: function(){
+    model.createMultipleAsteroids();
+  },
+
+  createAsteroid: function(){
+    position = [];
+    var radius = Math.floor(Math.random() * 30 + 20);
+    var startX = Math.floor(Math.random() * view.height);
+    var startY = Math.floor(Math.random() * view.width);
+    position.push(startX).push(startY).push(radius);
+    return position;
+  },
+
+  createMultipleAsteroids: function(){
+    for(var i=0; i < model.numOfAsteroids; i++){
+      model.addAsteroids();
+    }
+  },
+
+  addAsteroids: function(){
+    model.asteroidState.push(model.createAsteroid());
+  },
 
 };
 
 //===================== Controller ================
 var controller = {
 
+  init: function(){
+    model.init();
+    view.init(asteroidState);
+    controller.gameLoop();
+  },
+
+  gameLoop: function(){
+    window.gameLoop = window.setInterval(view.gameLoop, 500);
+  },
+
+  endGame: function(){
+    window.clearInterval(window.gameLoop);
+  }
+
 };
 
-view.createAsteroid();
-
-view.bgImage.onload = function () {
-  view.bgReady = true;
-
-  };
-
-view.bgImage.src = "images/background.png";
-
-
+$(document).ready(function(){ controller.init(); });

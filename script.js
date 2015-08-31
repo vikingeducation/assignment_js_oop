@@ -41,20 +41,18 @@ Asteroid2 = function(){
 };
 
 var astr = new Asteroid();
-var startTime = new Date().getTime();
+console.time('prototype');
 for(var i = 0; i < 1000; i++){
-  startTime = new Date().getTime();
   astr.tic();
 }
-var endTime = new Date().getTime();
-console.log('Time taken for prototype: ' + (endTime-startTime));
+console.timeEnd('prototype');
 
 var astr2 = new Asteroid2();
-var startTime = new Date().getTime();
+console.time('predefined');
 for(var i = 0; i < 1000; i++){
   astr2.tic();
 }
 var endTime = new Date().getTime();
-console.log('Time taken for predefined: ' + (endTime-startTime));
+console.timeEnd('predefined');
 
 // setInterval(function(){astr.tic();}, 500);

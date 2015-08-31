@@ -1,3 +1,55 @@
+var asteroidsModel = {
+
+  asteroids: [],
+
+  init: function () {
+    this.generateAsteroid();
+  },
+
+  generateAsteroid: function () {
+    v1 = Math.floor(Math.random() * 10)
+    v2 = Math.floor(Math.random() * 10)
+    c1 = Math.floor(Math.random() * view.canvasWidth)
+    c2 = Math.floor(Math.random() * view.canvasHeight)
+    this.asteroids.push(new Asteroid([v1, v2], [c1, c2]))
+  }
+
+}
+
+var view = {
+
+  canvasHeight: 500,
+  canvasWidth: 700,
+
+  init: function () {
+    this.placeAsteroids();
+  },
+
+  placeAsteroids: function () {
+    // var canvasContext = document.getElementById('asteroid-canvas').getContext("2d");
+    // document.getElementById('asteroid-canvas').fillRect(50, 25, 150, 100);
+  }
+
+}
+
+var controller = {
+  init: function() {
+    asteroidsModel.init();
+    view.init();
+  }
+}
+
+$(document).ready(function() {
+  $canvas = $("#asteroid-canvas");
+  controller.init();
+})
+
+
+
+
+
+
+
 function Asteroid(velocity, coordinates){
 
   this.velocity = velocity
@@ -37,3 +89,4 @@ var asteroidSim = function(){
   console.log(Date.now() - start)
 
 }
+

@@ -35,19 +35,18 @@ var view = {
   moveAsteroid: function(asteroid){
     var velocityX = Math.floor(Math.random() * 30);
     var velocityY = Math.floor(Math.random() * 30);
-  
-        asteroid[0] += velocityX;
-        asteroid[1] += velocityY;
+    (asteroid[3] === 1) ? asteroid[0] += velocityX : asteroid[0] -= velocityX;
+    (asteroid[4] === 1) ? asteroid[1] += velocityY : asteroid[1] -= velocityY;
     // console.log(this.coordinateY, this.coordinateX);
-    
   },
 
   gameLoop: function(asteroids){
     for (var i = asteroids.length - 1; i >= 0; i--) {
-           view.moveAsteroid(asteroids[i]);
-      };
-
-    view.renderAsteroids(asteroids);      
+      view.moveAsteroid(asteroids[i]);
+    }
+    view.ctx.clearRect(0,0,view.width,view.height);
+    view.renderAsteroids(asteroids);
+    model.asteroidState = asteroids;
   }
 
 };
@@ -56,7 +55,7 @@ var view = {
 var model = {
 
   asteroidState: [],
-  numOfAsteroids: 20,
+  numOfAsteroids: 10,
 
   init: function(){
     model.createMultipleAsteroids();
@@ -67,19 +66,31 @@ var model = {
     var radius = Math.floor(Math.random() * 30 + 20);
     var startX = Math.floor(Math.random() * view.height);
     var startY = Math.floor(Math.random() * view.width);
-    position.push(startX,startY,radius);
+    var directionX = Math.floor(Math.random() * 2);
+    var directionY = Math.floor(Math.random() * 2);
+    position.push(startX, startY, radius, directionX, directionY);
     return position;
   },
 
   createMultipleAsteroids: function(){
     for(var i=0; i < model.numOfAsteroids; i++){
-      model.addAsteroids();
+      model.addAsteroid();
     }
   },
 
-  addAsteroids: function(){
+  addAsteroid: function(){
     model.asteroidState.push(model.createAsteroid());
   },
+
+  asteroidsEscape: function(){
+    for(var i = 0; i < model.numOfAsteroids; i++){
+      if ((model.asteroidState[i][0] > view.height || model.asteroidState[i][1] < 0) ||
+          (model.asteroidState[i][1] > view.height || model.asteroidState[i][0] < 0)){
+        model.asteroidState.splice(i, 1);
+        model.addAsteroid();
+      }
+    }
+  }
 
 };
 
@@ -95,7 +106,8 @@ var controller = {
   gameLoop: function(){
     window.gameLoop = window.setInterval(function(){
         view.gameLoop(model.asteroidState);
-    }, 50);
+        model.asteroidsEscape();
+    }, 100);
 
   },
 

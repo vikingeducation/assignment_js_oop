@@ -119,11 +119,23 @@ var view = {
   // }
 
   drawSpaceShip: function(){
-    var path=new Path2D();
-    path.moveTo(spaceShip.x, spaceShip.y);
-    path.lineTo(spaceShip.x - 25,spaceShip.y - 25);
-    path.lineTo(spaceShip.x + 25,spaceShip.y - 25);
-    this.context.fill(path);
+    this.context.save();
+    this.context.fillStyle = "rgba(0, 0, 0, 0.2)";
+    this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+    this.context.restore();
+    this.context.save();
+    this.context.translate(spaceShip.x,spaceShip.y);
+    this.context.rotate(angle);
+    this.context.fillStyle = "rgba(150, 255, 0, 0.3)";
+    this.context.strokeStyle = "#96FF00";
+    this.context.beginPath();
+    this.context.moveTo(v[0][0],v[0][1]);
+    this.context.lineTo(v[1][0],v[1][1]);
+    this.context.lineTo(v[2][0],v[2][1]);
+    this.context.closePath();
+    this.context.stroke();
+    this.context.fill();
+    this.context.restore();
   },
 
   drawAsteroids: function(){

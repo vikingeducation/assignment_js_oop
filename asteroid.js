@@ -83,3 +83,6 @@ var renderer = new Renderer($("canvas"));
 model.createAsteroid();
 
 controller.play()
+
+
+

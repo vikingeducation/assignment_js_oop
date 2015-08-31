@@ -11,6 +11,19 @@ var Asteroid = function(pos, vel, size) {
 
   this.size = size;
 
+  this.outOfBounds = function(){
+    return (this.position.x <= -30 ||
+            this.position.x >= renderer.canvas.width() + 30 ||
+            this.position.y <= -30 ||
+            this.position.y >= renderer.canvas.height() + 30);
+  }
+
+  this.colliding = function(self, target){
+    var distance = Math.sqrt( Math.pow(self.position.x - target.position.x, 2) + Math.pow(self.position.y - target.position.y, 2) )
+
+    return distance > (self.size + target.size);
+  }
+
 };
 
 Asteroid.prototype.tic = function(){
@@ -67,54 +80,63 @@ var controller = {
 var model = {
 
   asteroids : [],
+  width: undefined,
+  height: undefined,
+
+  initialize: function(width, height){
+    model.width = width/10;
+    model.height = height/10;
+  },
 
   createAsteroid : function(){
-  var x, y 
+    if (model.asteroids.length > 30) return;
+    var x, y;
+    switch (Math.ceil(Math.random()*4)){
+      case 1 :
+        x = Math.ceil(Math.random() * model.width);
+        y = - 10;
+        break;
+      case 2 :
+        x = -10;
+        y = Math.ceil(Math.random() * model.height);
+        break;
+      case 3 :
+        x = model.width+10;
+        y = Math.ceil(Math.random() * model.height);
+        break;
+      case 4 :
+        x = Math.ceil(Math.random() * model.width);
+        y = model.height+10;
+        break;
+    }
 
+    var velx =  (model.width/(Math.random() * 5)-x)/ 50,
+        vely =  (model.height/(Math.random() * 5)-y)/ 50,
+        size = (Math.random() * 10);
 
-      
-
-      switch (Math.ceil(Math.random()*4)){
-        case 1 :
-          x = Math.ceil(Math.random() * renderer.canvas.width()/10);
-          y = - 10;
-          break;
-        case 2 :
-          x = -10;
-          y = Math.ceil(Math.random() * renderer.canvas.height()/10);
-          break;
-        case 3 :
-          x = renderer.canvas.width()+10;
-          y = Math.ceil(Math.random() * renderer.canvas.height()/10);
-          break;
-        case 4 :
-          x = Math.ceil(Math.random() * renderer.canvas.width()/10);
-          y = renderer.canvas.height()+10;
-          break;
-      }
-
-
-      var velx =  (renderer.canvas.width()/10-x)/ 500,
-          vely =  (renderer.canvas.height()/10-y)/ 500,
-          size = (Math.random() * 10);
-
+    // Add +/- 20 degree variance to the velocity
     model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
 
   },
 
   updateAsteroids : function(){
-    model.asteroids.forEach(function(element){
+    console.log(model.asteroids.length);
+    model.asteroids.forEach(function(element, index, arr){
       element.tic();
+      if (element.outOfBounds()){
+        arr.splice(index, 1);
+      }
     });
   },
 
   initializeGame : function(){
-    setInterval(this.createAsteroid, 1000);
+    setInterval(this.createAsteroid, 100);
   }
 
 }
 
 var renderer = new Renderer($("canvas"));
+model.initialize($("canvas").width(), $("canvas").height());
 model.initializeGame();
 
 setTimeout(controller.play, 1000);

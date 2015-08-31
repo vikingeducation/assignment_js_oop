@@ -27,8 +27,8 @@ var Renderer = function(canvas){
       fillStyle: "black",
       x:0,
       y:0,
-      width: 400,
-      height:400,
+      width: this.canvas.width(),
+      height:this.canvas.height(),
       fromCenter: false,
     })
   };
@@ -56,30 +56,48 @@ var controller = {
   play: function(){
     loopMove : setInterval(function(){
       model.updateAsteroids();
-      renderer.redraw(model.asteroids);
-    }, 100);
+    requestAnimationFrame(function(){
+      renderer.redraw(model.asteroids)
+    });
+    }, 30);
   }
 
 }
 
 var model = {
-  
+
   asteroids : [],
-  
+
   createAsteroid : function(){
-    this.asteroids.push(new Asteroid({x: 5, y:5}, {x: 1, y: 1} , 5));
+  var x = Math.ceil(Math.random() * 50) + 1.5,
+      y = Math.ceil(Math.random() * 50) + 1.5,
+      velx =  -x / 100,
+      vely =  (50-y) / 100,
+      size = (Math.random() * 10);
+    model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
 
   },
 
   updateAsteroids : function(){
-    this.asteroids.forEach(function(element){
+    model.asteroids.forEach(function(element){
       element.tic();
     });
+  },
+
+  initializeGame : function(){
+    setInterval(this.createAsteroid, 1000);
   }
 
 }
 
 var renderer = new Renderer($("canvas"));
-model.createAsteroid();
+model.initializeGame();
 
-controller.play()
+setTimeout(controller.play, 1000);
+
+// Asteroid plan
+// When an astroid is created, create it so it's not visible on the screen.
+// Using trigonometric functions, calculate a starting velocity angle
+// Add +/- 10 degrees to this angle.
+// Asteroids should always have a velocity angle that moves them towards the screen
+// and then back off of it.

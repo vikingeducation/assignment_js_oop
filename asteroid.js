@@ -22,7 +22,7 @@ var Renderer = function(canvas){
   // Cache DOM element
   this.canvas = $(canvas);
 
-  this.initCanvas = function(){
+  this.drawBg = function(){
     this.canvas.drawRect({
       fillStyle: "black",
       x:0,
@@ -31,8 +31,55 @@ var Renderer = function(canvas){
       height:400,
       fromCenter: false,
     })
+  };
+
+  this.redraw = function(asteroids){
+    this.canvas.clearCanvas();
+    this.drawBg();
+    asteroids.forEach(function(element){
+      renderer.drawAsteroid(element);
+    });
+  };
+
+  this.drawAsteroid = function(asteroid){
+    this.canvas.drawEllipse({
+      strokeStyle: "white",
+      x: asteroid.position.x*10,
+      y: asteroid.position.y*10,
+      width: asteroid.size*10,
+      height: asteroid.size*10
+    })
   }
 }
 
+var controller = {
+  play: function(){
+    loopMove : setInterval(function(){
+      model.updateAsteroids();
+      renderer.redraw(model.asteroids);
+    }, 100);
+  }
+
+}
+
+var model = {
+  
+  asteroids : [],
+  
+  createAsteroid : function(){
+    this.asteroids.push(new Asteroid({x: 5, y:5}, {x: 1, y: 1} , 5));
+
+  },
+
+  updateAsteroids : function(){
+    this.asteroids.forEach(function(element){
+      element.tic();
+    });
+  }
+
+}
+
 var renderer = new Renderer($("canvas"));
-renderer.initCanvas();
+model.createAsteroid();
+
+controller.play()

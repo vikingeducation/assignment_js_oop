@@ -18,10 +18,15 @@ var Asteroid = function(pos, vel, size) {
             this.position.y >= renderer.canvas.height() + 30);
   }
 
-  this.colliding = function(self, target){
-    var distance = Math.sqrt( Math.pow(self.position.x - target.position.x, 2) + Math.pow(self.position.y - target.position.y, 2) )
+  this.colliding = function(target){
+    var distance = Math.sqrt( Math.pow(this.position.x - target.position.x, 2) + Math.pow(this.position.y - target.position.y, 2) )
+    console.log(distance)
+    return distance < (this.size + target.size);
+  }
 
-    return distance > (self.size + target.size);
+  this.bounce = function(){
+    this.velocity.x *= -1;
+    this.velocity.y *= -1;
   }
 
 };
@@ -60,7 +65,8 @@ var Renderer = function(canvas){
       x: asteroid.position.x*10,
       y: asteroid.position.y*10,
       width: asteroid.size*10,
-      height: asteroid.size*10
+      height: asteroid.size*10,
+      fromCenter: true
     })
   }
 }
@@ -89,7 +95,7 @@ var model = {
   },
 
   createAsteroid : function(){
-    if (model.asteroids.length > 30) return;
+    if (model.asteroids.length > 10) return;
     var x, y;
     switch (Math.ceil(Math.random()*4)){
       case 1 :
@@ -123,10 +129,21 @@ var model = {
     console.log(model.asteroids.length);
     model.asteroids.forEach(function(element, index, arr){
       element.tic();
+      //Check if out of canvas
       if (element.outOfBounds()){
         arr.splice(index, 1);
       }
+      //Check if collided
     });
+    for(var i=0; i < model.asteroids.length; i++){
+      for(var j=i+1; j < model.asteroids.length-1; j++){
+
+        if(model.asteroids[j].colliding(model.asteroids[j+1])){
+          model.asteroids[j].bounce();
+          model.asteroids[j+1].bounce();
+        }
+      }
+    }
   },
 
   initializeGame : function(){

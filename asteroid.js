@@ -21,7 +21,7 @@ var Asteroid = function(pos, vel, size) {
   this.colliding = function(target){
     console.log(this.position.x, this.position.y, target.position.x, target.position.y);
     var distance = Math.sqrt( Math.pow(this.position.x - target.position.x, 2) + Math.pow(this.position.y - target.position.y, 2) )
-    return distance < (this.size + target.size)/2;
+    return distance <= (this.size + target.size)/2;
   }
 
   this.bounce = function(){
@@ -125,8 +125,18 @@ var model = {
 
   },
 
+  childAsteroid : function(parent, times){
+        if (parent.size/times<10) return ;
+        var x = parent.position.x, 
+            y = parent.position.y,
+            velx =  parent.velocity.x/times,
+            vely =  parent.velocity.y/times,
+            size = parent.size/times;
+        model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
+  },
+
   updateAsteroids : function(){
-    console.log(model.asteroids.length);
+  
     model.asteroids.forEach(function(element, index, arr){
       element.tic();
       //Check if out of canvas
@@ -135,34 +145,8 @@ var model = {
       }
       //Check if collided
     });
-    //[0, 1]
+    
 
-    // i 0
-    //   j 1
-    //   0 and 1 collide
-
-    // i 1
-    //   j 2
-    //   nothing
-
-    // [0,1,2]
-
-    // i 0
-    //   j 1
-    //   0 and 1 collide
-    //   0 and 2 collide
-
-    // i 1
-    //   j 2
-    //   1 and 2
-
-    // 1 checks 2
-
-    // 2 checks 1
-
-    // i 2
-    //   j 3
-    //   nothing
 
     // // Iterate through list of asteroids except last one
     // for(var i = 0; i < model.asteroids.length-1; i++)
@@ -172,20 +156,30 @@ var model = {
 
     console.log(model.asteroids.length);
     var destroyed = [];
-    var created =  [];
+
     for(var i = 0; i < model.asteroids.length-1; i++){
-      for(var j = i; j < model.asteroids.length; j++){
-        //console.log(i, j);
+      for(var j = i+1; j < model.asteroids.length; j++){
 
         if(model.asteroids[i].colliding(model.asteroids[j])){
           model.asteroids[i].bounce();
           model.asteroids[j].bounce();
+          destroyed.push(model.asteroids[i]);
+          destroyed.push(model.asteroids[j]);
+         
           model.asteroids[i].tic();
           model.asteroids[j].tic();
         }
       }
     }
-
+    
+    destroyed.forEach(function(element){
+      var times = Math.ceil(Math.random()*3);
+      for(var i=0; i<times; i++){
+        model.childAsteroid(element);
+      };
+      model.asteroids.splice(model.asteroids.indexOf(element),1)
+    })
+    destroyed = [];
 
   },
 
@@ -202,7 +196,7 @@ model.initializeGame();
 setTimeout(controller.play, 1000);
 
 
-controller.play()
+//controller.play()
 
 
 

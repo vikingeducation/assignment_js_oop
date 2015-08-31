@@ -19,9 +19,9 @@ var Asteroid = function(pos, vel, size) {
   }
 
   this.colliding = function(target){
+    console.log(this.position.x, this.position.y, target.position.x, target.position.y);
     var distance = Math.sqrt( Math.pow(this.position.x - target.position.x, 2) + Math.pow(this.position.y - target.position.y, 2) )
-    console.log(distance)
-    return distance < (this.size + target.size);
+    return distance < (this.size + target.size)/2;
   }
 
   this.bounce = function(){
@@ -62,10 +62,10 @@ var Renderer = function(canvas){
   this.drawAsteroid = function(asteroid){
     this.canvas.drawEllipse({
       strokeStyle: "white",
-      x: asteroid.position.x*10,
-      y: asteroid.position.y*10,
-      width: asteroid.size*10,
-      height: asteroid.size*10,
+      x: asteroid.position.x,
+      y: asteroid.position.y,
+      width: asteroid.size,
+      height: asteroid.size,
       fromCenter: true
     })
   }
@@ -90,8 +90,8 @@ var model = {
   height: undefined,
 
   initialize: function(width, height){
-    model.width = width/10;
-    model.height = height/10;
+    model.width = width;
+    model.height = height;
   },
 
   createAsteroid : function(){
@@ -116,9 +116,9 @@ var model = {
         break;
     }
 
-    var velx =  (model.width/(Math.random() * 5)-x)/ 50,
-        vely =  (model.height/(Math.random() * 5)-y)/ 50,
-        size = (Math.random() * 10);
+    var velx =  (model.width/(Math.random() * 5)-x)/ 150,
+        vely =  (model.height/(Math.random() * 5)-y)/ 150,
+        size = (Math.random() * 100);
 
     // Add +/- 20 degree variance to the velocity
     model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
@@ -135,15 +135,58 @@ var model = {
       }
       //Check if collided
     });
-    for(var i=0; i < model.asteroids.length; i++){
-      for(var j=i+1; j < model.asteroids.length-1; j++){
+    //[0, 1]
 
-        if(model.asteroids[j].colliding(model.asteroids[j+1])){
+    // i 0
+    //   j 1
+    //   0 and 1 collide
+
+    // i 1
+    //   j 2
+    //   nothing
+
+    // [0,1,2]
+
+    // i 0
+    //   j 1
+    //   0 and 1 collide
+    //   0 and 2 collide
+
+    // i 1
+    //   j 2
+    //   1 and 2
+
+    // 1 checks 2
+
+    // 2 checks 1
+
+    // i 2
+    //   j 3
+    //   nothing
+
+    // // Iterate through list of asteroids except last one
+    // for(var i = 0; i < model.asteroids.length-1; i++)
+    //   // For each asteroid, check collisions of all following asteroids
+    //   for(var j = i; j < model.asteroids.length-1; j++)
+
+
+    console.log(model.asteroids.length);
+    var destroyed = [];
+    var created =  [];
+    for(var i = 0; i < model.asteroids.length-1; i++){
+      for(var j = i; j < model.asteroids.length; j++){
+        //console.log(i, j);
+
+        if(model.asteroids[i].colliding(model.asteroids[j])){
+          model.asteroids[i].bounce();
           model.asteroids[j].bounce();
-          model.asteroids[j+1].bounce();
+          model.asteroids[i].tic();
+          model.asteroids[j].tic();
         }
       }
     }
+
+
   },
 
   initializeGame : function(){

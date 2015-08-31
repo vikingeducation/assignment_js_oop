@@ -69,11 +69,35 @@ var model = {
   asteroids : [],
 
   createAsteroid : function(){
-  var x = Math.ceil(Math.random() * 50) + 1.5,
-      y = Math.ceil(Math.random() * 50) + 1.5,
-      velx =  -x / 100,
-      vely =  (50-y) / 100,
-      size = (Math.random() * 10);
+  var x, y 
+
+
+      
+
+      switch (Math.ceil(Math.random()*4)){
+        case 1 :
+          x = Math.ceil(Math.random() * renderer.canvas.width()/10);
+          y = - 10;
+          break;
+        case 2 :
+          x = -10;
+          y = Math.ceil(Math.random() * renderer.canvas.height()/10);
+          break;
+        case 3 :
+          x = renderer.canvas.width()+10;
+          y = Math.ceil(Math.random() * renderer.canvas.height()/10);
+          break;
+        case 4 :
+          x = Math.ceil(Math.random() * renderer.canvas.width()/10);
+          y = renderer.canvas.height()+10;
+          break;
+      }
+
+
+      var velx =  (renderer.canvas.width()/10-x)/ 500,
+          vely =  (renderer.canvas.height()/10-y)/ 500,
+          size = (Math.random() * 10);
+
     model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
 
   },

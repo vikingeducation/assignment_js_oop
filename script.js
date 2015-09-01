@@ -7,12 +7,10 @@ var asteroidsModel = {
   },
 
   generateAsteroid: function (x, y, radius) {
-
     vel1 = this.sample(2)
     var v1 = Math.floor(Math.random() * vel1 + Math.ceil(vel1 / 10))
     vel2 = this.sample(2)
     var v2 = Math.floor(Math.random() * vel2 + Math.ceil(vel2 / 10))
-
     var c1 = x || Math.floor(Math.random() * view.canvasWidth)
     var c2 = y || Math.floor(Math.random() * view.canvasHeight)
     var r = radius || Math.floor(Math.random() * 40 + 25)
@@ -34,6 +32,7 @@ var asteroidsModel = {
   updateAsteroids: function(){
     for (var i = 0; i < this.asteroids.length; i++){
       this.asteroids[i].tic();
+      this.asteroids[i].checkOffBoundaries();
     }
     this.checkCollision();
   },
@@ -207,6 +206,22 @@ Asteroid.prototype.tic = function(){
 
   this.coordinates[0] += this.velocity[0]
   this.coordinates[1] += this.velocity[1]
+
+}
+
+Asteroid.prototype.checkOffBoundaries = function(){
+
+  if (this.coordinates[0] < 0) {
+    this.coordinates[0] += view.canvasWidth;
+  } else if (this.coordinates[0] > view.canvasWidth) {
+    this.coordinates[0] -= view.canvasWidth
+  };
+
+  if (this.coordinates[1] < 0) {
+    this.coordinates[1] += view.canvasHeight;
+  } else if (this.coordinates[1] > view.canvasHeight) {
+    this.coordinates[1] -= view.canvasHeight
+  };
 
 }
 

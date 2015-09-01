@@ -27,7 +27,7 @@ var view = {
     for(var i = 0; i < model.numOfAsteroids; i++){
       view.ctx.beginPath();
       view.ctx.arc(asteroids[i][0], asteroids[i][1], asteroids[i][2], 0, 2*Math.PI);
-      console.log(asteroids[i][0],asteroids[i][1],asteroids[i][2] );
+      // console.log(asteroids[i][0],asteroids[i][1],asteroids[i][2] );
       view.ctx.stroke();
     }
   },
@@ -41,7 +41,7 @@ var view = {
   },
 
   gameLoop: function(asteroids){
-    for (var i = asteroids.length - 1; i >= 0; i--) {
+    for (var i = model.numOfAsteroids - 1 ; i >= 0; i--) {
       view.moveAsteroid(asteroids[i]);
     }
     view.ctx.clearRect(0,0,view.width,view.height);
@@ -55,7 +55,8 @@ var view = {
 var model = {
 
   asteroidState: [],
-  numOfAsteroids: 10,
+  asteroidsAtStart: 10,
+  numOfAsteroids: 0,
 
   init: function(){
     model.createMultipleAsteroids();
@@ -63,31 +64,42 @@ var model = {
 
   createAsteroid: function(){
     var position = [];
-    var radius = Math.floor(Math.random() * 30 + 20);
-    var startX = Math.floor(Math.random() * view.height);
-    var startY = Math.floor(Math.random() * view.width);
-    var directionX = Math.floor(Math.random() * 2);
-    var directionY = Math.floor(Math.random() * 2);
-    position.push(startX, startY, radius, directionX, directionY);
-    return position;
+    this.radius = Math.floor(Math.random() * 30 + 20);
+    this.positionX = Math.floor(Math.random() * view.height);
+    this.positionY = Math.floor(Math.random() * view.width);
+    this.directionX = Math.floor(Math.random() * 2);
+    this.directionY = Math.floor(Math.random() * 2);
+    // position.push(startX, startY, radius, directionX, directionY);
+    // return position;
   },
 
   createMultipleAsteroids: function(){
-    for(var i=0; i < model.numOfAsteroids; i++){
-      model.addAsteroid();
+    for(var i=0; i < model.asteroidsAtStart; i++){
+      model.addAsteroid(i);
     }
   },
 
-  addAsteroid: function(){
-    model.asteroidState.push(model.createAsteroid());
+  addAsteroid: function(num){
+    var newAsteroid = new model.createAsteroid();
+    model.asteroidState.push(newAsteroid);
+    model.numOfAsteroids++;
   },
 
   asteroidsEscape: function(){
     for(var i = 0; i < model.numOfAsteroids; i++){
       if ((model.asteroidState[i][0] > view.height || model.asteroidState[i][1] < 0) ||
           (model.asteroidState[i][1] > view.height || model.asteroidState[i][0] < 0)){
-        model.asteroidState.splice(i, 1);
-        model.addAsteroid();
+        delete model.asteroidState[i];
+        model.addAsteroid(model.numOfAsteroids);
+      }
+    }
+  },
+
+  collisionCheck: function(){
+    for (var i = 0; i <  model.asteroidState.length; i++) {
+      for (var j = i + 1; j < model.asteroidState.length; j++) {
+        var xDist = model.asteroidState[i][0]+model.asteroidState[j][0];
+        var yDist = model.asteroidState[i][1]+model.asteroidState[j][1];
       }
     }
   }

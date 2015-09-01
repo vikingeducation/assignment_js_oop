@@ -15,7 +15,7 @@ var asteroidsModel = {
 
     var c1 = x || Math.floor(Math.random() * view.canvasWidth)
     var c2 = y || Math.floor(Math.random() * view.canvasHeight)
-    var r = radius || Math.floor(Math.random() * 50 + 50)
+    var r = radius || Math.floor(Math.random() * 40 + 25)
     this.asteroids.push(new Asteroid([v1, v2], [c1, c2], r))
   },
 
@@ -74,8 +74,8 @@ var asteroidsModel = {
 
 var view = {
 
-  canvasHeight: 500,
-  canvasWidth: 700,
+  canvasHeight: 600,
+  canvasWidth: 800,
   canvas: null,
   context: null,
 
@@ -119,31 +119,27 @@ var view = {
     },
 
   drawUFO: function(){
-  ctx.beginPath();
-  ctx.moveTo(28.4, 16.9);
-  ctx.bezierCurveTo(28.4, 19.7, 22.9, 22.0, 16.0, 22.0);
-  ctx.bezierCurveTo(9.1, 22.0, 3.6, 19.7, 3.6, 16.9);
-  ctx.bezierCurveTo(3.6, 14.1, 9.1, 11.8, 16.0, 11.8);
-  ctx.bezierCurveTo(22.9, 11.8, 28.4, 14.1, 28.4, 16.9);
-  ctx.closePath();
-  ctx.fillStyle = "rgb(0, 0, 255)";
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(22.3, 12.0);
-  ctx.bezierCurveTo(22.3, 13.3, 19.4, 14.3, 15.9, 14.3);
-  ctx.bezierCurveTo(12.4, 14.3, 9.6, 13.3, 9.6, 12.0);
-  ctx.bezierCurveTo(9.6, 10.8, 12.4, 9.7, 15.9, 9.7);
-  ctx.bezierCurveTo(19.4, 9.7, 22.3, 10.8, 22.3, 12.0);
-  ctx.closePath();
-  ctx.fillStyle = "rgb(255, 0, 0)";
-  ctx.fill();
+  this.context.beginPath();
+  this.context.moveTo(28.4, 16.9);
+  this.context.bezierCurveTo(28.4, 19.7, 22.9, 22.0, 16.0, 22.0);
+  this.context.bezierCurveTo(9.1, 22.0, 3.6, 19.7, 3.6, 16.9);
+  this.context.bezierCurveTo(3.6, 14.1, 9.1, 11.8, 16.0, 11.8);
+  this.context.bezierCurveTo(22.9, 11.8, 28.4, 14.1, 28.4, 16.9);
+  this.context.closePath();
+  this.context.fillStyle = "#765bae";
+  this.context.fill();
+  this.context.beginPath();
+  this.context.moveTo(22.3, 12.0);
+  this.context.bezierCurveTo(22.3, 13.3, 19.4, 14.3, 15.9, 14.3);
+  this.context.bezierCurveTo(12.4, 14.3, 9.6, 13.3, 9.6, 12.0);
+  this.context.bezierCurveTo(9.6, 10.8, 12.4, 9.7, 15.9, 9.7);
+  this.context.bezierCurveTo(19.4, 9.7, 22.3, 10.8, 22.3, 12.0);
+  this.context.closePath();
+  this.context.fillStyle = "#e10d49";
+  this.context.fill();
   },
 
   drawSpaceShip: function(){
-    this.context.save();
-    this.context.fillStyle = "rgba(0, 0, 0, 0.2)";
-    this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.context.restore();
     this.context.save();
     this.context.translate(player.x, player.y);
     this.context.rotate(player.angle);
@@ -164,15 +160,22 @@ var view = {
       this.context.beginPath();
       this.context.arc(asteroidsModel.asteroids[i].coordinates[0], asteroidsModel.asteroids[i].coordinates[1],
                        (asteroidsModel.asteroids[i].radius), 0, Math.PI * 2, false);
-      this.context.strokeStyle = "#000";
+      this.context.strokeStyle = "#111";
       this.context.stroke();
     }
   },
 
+  drawBackground: function() {
+    this.context.save();
+    this.context.fillStyle = "#505c87";
+    this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+    this.context.restore();
+  },
+
   draw: function(){
-    var canvas = this.canvas;
-    var context = this.context
-    canvas.height = canvas.height;
+    this.canvas.height = this.canvas.height;
+    this.drawBackground();
+    this.drawUFO();
     this.drawSpaceShip();
     this.drawAsteroids();
 

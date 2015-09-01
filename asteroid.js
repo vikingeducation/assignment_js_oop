@@ -13,16 +13,30 @@ var Ship = function(){
   },
 
   this.rotateLeft = function(){
-    rotation++;
+    this.rotation-=10;
   },
 
   this.rotateRight = function(){
-    rotation--;
-  }
+    this.rotation+=10;
+  },
 
   this.thrust = function(){
-    this.velocity.y += Math.cos(this.rotation);
-    this.velocity.x += Math.sin(this.rotation);
+    this.velocity.y += Math.cos(-this.rotation/180*Math.PI);
+    this.velocity.x += Math.sin(-this.rotation/180*Math.PI);
+  },
+
+  this.tic = function(){
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+  }
+
+  this.shoot = function(){
+    var bullet = new Asteroid({x: ship.position.x, 
+                               y: ship.position.y}, 
+                              {x: Math.cos(ship.rotation/180*Math.PI), 
+                                y: -Math.sin(ship.rotation/180*Math.PI)}, 
+                                10)
+    model.asteroids.push(bullet);
   }
 
 
@@ -120,12 +134,12 @@ var controller = {
       37: this.rotateLeft,
       38: this.thrust,
       39: this.rotateRight,
-      // 32: shoot,
+      32: ship.shoot,
     }
 
     $(document).keydown(function(e){
       if (keys[e.keyCode]){
-        controller.keys[e.keyCode]();
+        keys[e.keyCode]();
       }
     })
   },
@@ -145,6 +159,7 @@ var controller = {
   play: function(){
     loopMove : setInterval(function(){
       model.updateAsteroids();
+      ship.tic();
     requestAnimationFrame(function(){
       renderer.redraw(model.asteroids)
     });
@@ -196,7 +211,7 @@ var model = {
   },
 
   childAsteroid : function(parent, times){
-    console.log(parent);
+    //console.log(parent);
     if (!parent) return;
     if (parent.size/times< 15) return ;
     var x = parent.position.x + (Math.ceil(Math.random() * 100)) - 50,
@@ -204,7 +219,7 @@ var model = {
         velx = -parent.velocity.x,
         vely = -parent.velocity.y,
         size = parent.size/times;
-    console.log(x, y, velx, vely, size);
+    //console.log(x, y, velx, vely, size);
     model.asteroids.push(new Asteroid({x: x, y: y}, {x: velx, y: vely} , size));
   },
 
@@ -252,7 +267,7 @@ var model = {
   },
 
   initializeGame : function(){
-    setInterval(this.createAsteroid, 100);
+    //setInterval(this.createAsteroid, 100);
   }
 
 }

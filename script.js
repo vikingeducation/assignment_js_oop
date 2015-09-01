@@ -172,7 +172,7 @@ var view = {
   },
 
   draw: function(){
-    this.canvas.height = this.canvas.height;
+    this.context.clearRect(0, 0, view.canvasWidth, view.canvasHeight);
     this.drawBackground();
     this.drawUFO();
     this.drawSpaceShip();

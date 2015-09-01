@@ -1,6 +1,6 @@
 var Ship = function(){
   this.rotation = 0;
-  this.boundingBoxSize = 5,
+  this.size = 3,
 
   this.position = {
     x: 350,
@@ -21,21 +21,36 @@ var Ship = function(){
   },
 
   this.thrust = function(){
-    this.velocity.y += Math.cos(-this.rotation/180*Math.PI);
+    this.velocity.y += Math.cos(this.rotation/180*Math.PI);
     this.velocity.x += Math.sin(-this.rotation/180*Math.PI);
   },
 
   this.tic = function(){
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
+    if (this.velocity.x > 0.1) this.velocity.x -= .1
+    if (this.velocity.y > 0.1) this.velocity.y -= .1
+    if (this.velocity.x < -0.1) this.velocity.x += .1
+    if (this.velocity.y < -0.1) this.velocity.y += .1
+
+    this.loopAround();
+  }
+
+  this.loopAround = function(){
+    if (this.position.x < -5) this.position.x = renderer.canvas.width() + 4;
+    if (this.position.y < -5) this.position.y = renderer.canvas.height() + 4;
+
+    if (this.position.y > renderer.canvas.height() + 5) this.position.y = -4;
+    if (this.position.x > renderer.canvas.width() + 5) this.position.x = -4;
   }
 
   this.shoot = function(){
-    var bullet = new Asteroid({x: ship.position.x, 
-                               y: ship.position.y}, 
-                              {x: Math.cos(ship.rotation/180*Math.PI), 
-                                y: -Math.sin(ship.rotation/180*Math.PI)}, 
-                                10)
+    var bullet = new Asteroid({x: ship.position.x - (Math.sin(ship.rotation/180*Math.PI) * 10) ,
+                               y: ship.position.y + (Math.cos(ship.rotation/180*Math.PI) * 10)},
+                              {x: -Math.sin(ship.rotation/180*Math.PI) * 10,
+                                y: Math.cos(ship.rotation/180*Math.PI) * 10},
+                                3)
     model.asteroids.push(bullet);
   }
 
@@ -105,13 +120,23 @@ var Renderer = function(canvas){
   };
 
   this.drawShip = function(ship){
-    this.canvas.drawRect({
-      fillStyle: "white",
+    this.canvas.drawPolygon({
+      strokeStyle: "white",
+      fillStyle: "black",
       x: ship.position.x,
       y: ship.position.y,
-      width: 50,
-      height: 100,
-      rotate: ship.rotation,
+      sides: 3,
+      radius: 20,
+      rotate: ship.rotation + 180,
+    })
+
+    this.canvas.drawPolygon({
+      fillStyle: "white",
+      x: ship.position.x + -Math.sin(ship.rotation/180*Math.PI) * 10,
+      y: ship.position.y + Math.cos(ship.rotation/180*Math.PI) * 10,
+      sides: 3,
+      radius: 4,
+      rotate: ship.rotation + 180,
     })
   }
 
@@ -158,13 +183,28 @@ var controller = {
 
   play: function(){
     loopMove : setInterval(function(){
-      model.updateAsteroids();
       ship.tic();
+      model.updateAsteroids();
+      controller.checkIfDead();
     requestAnimationFrame(function(){
       renderer.redraw(model.asteroids)
     });
     }, 30);
   },
+
+  checkIfDead: function(){
+    model.asteroids.forEach(function(element, index){
+      if (element.colliding(ship)){
+        var times = Math.ceil(Math.random()*3);
+        for(var i=0; i<times; i++){
+          model.childAsteroid(element, times);
+        };
+        model.asteroids.splice(index, 1);
+        console.log("You got hit!");
+      }
+    })
+  }
+
 
 }
 
@@ -267,7 +307,7 @@ var model = {
   },
 
   initializeGame : function(){
-    //setInterval(this.createAsteroid, 100);
+    setInterval(this.createAsteroid, 1000);
   }
 
 }

@@ -153,6 +153,7 @@ var Renderer = function(canvas){
 }
 
 var controller = {
+  score: 0,
 
   initControls: function(){
     var keys = {
@@ -289,8 +290,15 @@ var model = {
       for(var j = i+1; j < model.asteroids.length; j++){
 
         if(model.asteroids[i].colliding(model.asteroids[j])){
+          console.log(model.asteroids[i].size)
+          console.log(model.asteroids[j].size)
+          if (model.asteroids[i].size === 3 || model.asteroids[j].size === 3){
+            controller.score+=1;
+            console.log(controller.score);
+          }
           destroyed.push(model.asteroids[i]);
           destroyed.push(model.asteroids[j]);
+
         }
       }
     }

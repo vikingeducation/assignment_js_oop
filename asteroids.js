@@ -30,8 +30,8 @@ var model = {
     var attributes = {
       x: model.randInt(0, 640),
       y: model.randInt(0, 480),
-      velocityX: model.randInt(-25,25),
-      velocityY: model.randInt(-25,25),
+      velocityX: model.randInt(-7,7),
+      velocityY: model.randInt(-7,7),
       radius: model.randInt(10,30)
     };
     return attributes;
@@ -62,22 +62,25 @@ var model = {
 var view = {
 
   init: function(asteroids) {
-    view.renderTic(asteroids)
+    view.canvas = $('#playarea')[0].getContext('2d');
+    view.renderTic(asteroids);
   },
 
 
   renderTic: function(asteroids) {
+    var width = $('canvas').width();
+    var height = $('canvas').height();
+    view.canvas.clearRect(0, 0, width, height);
     $.each(asteroids, view.renderAsteroid);
   },
 
 
   renderAsteroid: function(index, asteroid) {
-    var canvas = $('#playarea')[0].getContext('2d');
-    canvas.beginPath();
-    canvas.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2, false);
-    canvas.closePath();
-    canvas.strokeStyle = "#000";
-    canvas.stroke();
+    view.canvas.beginPath();
+    view.canvas.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2, false);
+    view.canvas.closePath();
+    view.canvas.strokeStyle = "#000";
+    view.canvas.stroke();
   },
 
 
@@ -90,12 +93,12 @@ var controller = {
   init: function(asteroidCount) {
     model.init(asteroidCount);
     view.init(model.getAsteroids());
-    setTimeout(controller.tic, 2000);
+    setInterval(controller.tic, 35);
   },
 
   tic: function() {
     model.tic();
-    view.init(model.getAsteroids());
+    view.renderTic(model.getAsteroids());
   }
 
 }

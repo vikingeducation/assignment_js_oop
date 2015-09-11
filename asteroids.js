@@ -12,6 +12,7 @@ var model = {
 
 
   asteroids: [],
+  nextAsteroidID: 0,
 
 
   setCanvasDimensions: function(width, height) {
@@ -21,7 +22,9 @@ var model = {
 
 
   Asteroid: function(startingAttributes) {
-    this.id = startingAttributes.id;
+    this.id = model.nextAsteroidID;
+    model.nextAsteroidID++;
+
     this.x = startingAttributes.x;
     this.y = startingAttributes.y;
     this.velocityX = startingAttributes.velocityX;
@@ -121,23 +124,34 @@ var model = {
 
 
     model.Asteroid.prototype.destroy = function() {
-      if (this.radius > 15) {
-        // make little asteroids
-      };
       var index = model.asteroids.indexOf(this);
       delete model.asteroids[index];
+
+      // spawn little guys
+      if (this.radius > 10) {
+        var spawns = 1 + Math.floor(this.radius / 14);
+        var spawnSize = Math.floor(this.radius / spawns);
+        var offsets = [[-1,-1], [1,1], [-1,1], [1,-1]];
+        for (var i = 0; i <= spawns; i++) {
+          var newX = this.x + spawnSize * offsets[i][0];
+          var newY = this.y + spawnSize * offsets[i][1];
+          var newVelX = offsets[i][0] * model.randInt(0, 2);
+          var newVelY = offsets[i][1] * model.randInt(0, 2);
+          new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, spawnSize));
+        };
+      };
     };
   },
 
 
-  startingAttributes: function() {
+  startingAttributes: function(x, y, velX, velY, radius) {
     var attributes = {
       id: model.asteroids.length,
-      x: model.randInt(0, model.width),
-      y: model.randInt(0, model.height),
-      velocityX: model.randInt(-7,7),
-      velocityY: model.randInt(-7,7),
-      radius: model.randInt(10,30)
+      x: (x) ? x : model.randInt(0, model.width),
+      y: (y) ? y : model.randInt(0, model.height),
+      velocityX: (velX) ? velX : model.randInt(-2,2),
+      velocityY: (velY) ? velY : model.randInt(-2,2),
+      radius: (radius) ? radius : model.randInt(10,30)
     };
     return attributes;
   },
@@ -146,6 +160,7 @@ var model = {
   getAsteroids: function() {
     return model.asteroids;
   },
+
 
 
   tic: function() {

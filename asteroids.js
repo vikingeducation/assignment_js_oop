@@ -129,17 +129,23 @@ var model = {
 
       // spawn little guys
       if (this.radius > 12) {
-        var spawns = 1 + Math.floor(this.radius / 10);
-        var spawnSize = Math.floor(this.radius / spawns);
-        var offsets = [[-1,-1], [1,1], [-1,1], [1,-1]];
-        for (var i = 0; i <= spawns; i++) {
-          var newRadius = spawnSize + model.randInt(-2, 2);
-          var newX = this.x + newRadius * offsets[i][0];
-          var newY = this.y + newRadius * offsets[i][1];
-          var newVelX = offsets[i][0] * model.randInt(0, 2);
-          var newVelY = offsets[i][1] * model.randInt(0, 2);
-          new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, newRadius));
-        };
+        this.spawnChildren();
+      };
+    };
+
+
+    model.Asteroid.prototype.spawnChildren = function() {
+      var spawns = 1 + Math.floor(this.radius / 10);
+      var spawnSize = Math.floor(this.radius / spawns);
+      var offsets = [[-1,-1], [1,1], [-1,1], [1,-1]];
+      for (var i = 0; i < spawns; i++) {
+        console.log(offsets[i]);
+        var newRadius = spawnSize + model.randInt(-2, 2);
+        var newX = this.x + newRadius * offsets[i][0];
+        var newY = this.y + newRadius * offsets[i][1];
+        var newVelX = offsets[i][0] * model.randInt(0, 2);
+        var newVelY = offsets[i][1] * model.randInt(0, 2);
+        new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, newRadius));
       };
     };
   },
@@ -156,12 +162,6 @@ var model = {
     };
     return attributes;
   },
-
-
-  getAsteroids: function() {
-    return model.asteroids;
-  },
-
 
 
   tic: function() {
@@ -188,6 +188,11 @@ var model = {
     $.each(model.asteroids, function(i, asteroid) {
       asteroid.asteroidCollisions();
     });
+  },
+
+
+  getAsteroids: function() {
+    return model.asteroids;
   },
 
 

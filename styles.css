@@ -1,3 +1,17 @@
+header {
+  margin: 20px auto;
+  text-align: center;
+}
+
+.play-button {
+  font-size: 24px;
+}
+
+.canvas-container {
+  margin: 10px auto;
+  text-align: center;
+}
+
 #playarea {
   border: 1px solid #999;
 }

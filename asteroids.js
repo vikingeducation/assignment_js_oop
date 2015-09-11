@@ -118,6 +118,7 @@ var view = {
     view.$canvas = $('#playarea');
     view.context = view.$canvas[0].getContext('2d');
     view.renderTic(asteroids);
+    $('.play-button').on('click', controller.start)
   },
 
 
@@ -145,6 +146,10 @@ var controller = {
   init: function(asteroidCount) {
     model.init(asteroidCount);
     view.init(model.getAsteroids());
+  },
+
+  start: function() {
+    $('button').attr('disabled', true).off('click');
     setInterval(controller.tic, 35);
   },
 

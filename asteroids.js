@@ -128,16 +128,17 @@ var model = {
       delete model.asteroids[index];
 
       // spawn little guys
-      if (this.radius > 10) {
-        var spawns = 1 + Math.floor(this.radius / 14);
+      if (this.radius > 12) {
+        var spawns = 1 + Math.floor(this.radius / 10);
         var spawnSize = Math.floor(this.radius / spawns);
         var offsets = [[-1,-1], [1,1], [-1,1], [1,-1]];
         for (var i = 0; i <= spawns; i++) {
-          var newX = this.x + spawnSize * offsets[i][0];
-          var newY = this.y + spawnSize * offsets[i][1];
+          var newRadius = spawnSize + model.randInt(-2, 2);
+          var newX = this.x + newRadius * offsets[i][0];
+          var newY = this.y + newRadius * offsets[i][1];
           var newVelX = offsets[i][0] * model.randInt(0, 2);
           var newVelY = offsets[i][1] * model.randInt(0, 2);
-          new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, spawnSize));
+          new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, newRadius));
         };
       };
     };

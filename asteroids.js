@@ -5,7 +5,7 @@ var model = {
   init: function(width, height, asteroidCount) {
     model.setCanvasDimensions(width, height);
     for (var i = 0; i < asteroidCount; i++) {
-      var asteroid = new model.Asteroid(model.randomAttributes());
+      var asteroid = new model.Asteroid(model.startingAttributes());
     };
     model.setAsteroidMethods();
   },
@@ -21,11 +21,13 @@ var model = {
 
 
   Asteroid: function(startingAttributes) {
+    this.id = startingAttributes.id;
     this.x = startingAttributes.x;
     this.y = startingAttributes.y;
     this.velocityX = startingAttributes.velocityX;
     this.velocityY = startingAttributes.velocityY;
     this.radius = startingAttributes.radius;
+    this.destroyFlag = false;
     model.asteroids.push(this);
   },
 
@@ -38,6 +40,7 @@ var model = {
       this.wrapX();
       this.wrapY();
     };
+
 
     model.Asteroid.prototype.wrapX = function() {
       var offscreenRight = (this.x > model.width + (2 * this.radius));
@@ -83,11 +86,49 @@ var model = {
       this.y = model.height + (2 * this.radius);
     };
 
+
+    model.Asteroid.prototype.asteroidCollisions = function() {
+      var thisAsteroid = this;
+      var laterAsteroids = $(model.asteroids).map(function(index, asteroid) {
+        if (asteroid.id > thisAsteroid.id) {
+          return asteroid;
+        };
+      });
+
+      $.each(laterAsteroids, function(index, laterAsteroid) {
+        if (thisAsteroid.isCollidingWith(laterAsteroid)) {
+          thisAsteroid.destroyFlag = true;
+          laterAsteroid.destroyFlag = true;
+        };
+      });
+    };
+
+
+    model.Asteroid.prototype.isCollidingWith = function(other) {
+      var dx = this.x - other.x;
+      var dy = this.y - other.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this.radius + other.radius) {
+        return true;
+      };
+    };
+
+    model.Asteroid.prototype.destroy = function() {
+      if (this.radius > 15) {
+        // make little asteroids
+      };
+      var index = model.asteroids.indexOf(this);
+      model.asteroids.splice(index, 1);
+      console.log('deleted ' + this.id);
+      console.log(model.asteroids);
+    };
   },
 
 
-  randomAttributes: function() {
+  startingAttributes: function() {
     var attributes = {
+      id: model.asteroids.length,
       x: model.randInt(0, model.width),
       y: model.randInt(0, model.height),
       velocityX: model.randInt(-7,7),
@@ -106,6 +147,18 @@ var model = {
   tic: function() {
     $.each(model.asteroids, function(i, asteroid) {
       asteroid.tic();
+    });
+    model.checkCollisions();
+    model.asteroids = $(model.asteroids).map(function(i, el) {
+      if (!el.destroyFlag) {
+        return el;
+      };
+    });
+  },
+
+  checkCollisions: function() {
+    $.each(model.asteroids, function(i, asteroid) {
+      asteroid.asteroidCollisions();
     });
   },
 
@@ -165,7 +218,7 @@ var controller = {
 
   start: function() {
     $('button').attr('disabled', true).off('click');
-    setInterval(controller.tic, 35);
+    controller.interval = setInterval(controller.tic, 35);
   },
 
 

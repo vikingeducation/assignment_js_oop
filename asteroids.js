@@ -35,10 +35,15 @@ var model = {
   setAsteroidMethods: function() {
 
     model.Asteroid.prototype.tic = function() {
-      this.x += this.velocityX;
-      this.y += this.velocityY;
-      this.wrapX();
-      this.wrapY();
+      if (this.destroyFlag) {
+        this.destroy()
+      }
+      else {
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+        this.wrapX();
+        this.wrapY();
+      };
     };
 
 
@@ -114,14 +119,13 @@ var model = {
       };
     };
 
+
     model.Asteroid.prototype.destroy = function() {
       if (this.radius > 15) {
         // make little asteroids
       };
       var index = model.asteroids.indexOf(this);
-      model.asteroids.splice(index, 1);
-      console.log('deleted ' + this.id);
-      console.log(model.asteroids);
+      delete model.asteroids[index];
     };
   },
 
@@ -145,16 +149,24 @@ var model = {
 
 
   tic: function() {
+    model.checkCollisions();
+
     $.each(model.asteroids, function(i, asteroid) {
       asteroid.tic();
     });
-    model.checkCollisions();
-    model.asteroids = $(model.asteroids).map(function(i, el) {
-      if (!el.destroyFlag) {
-        return el;
+
+    model.ticCleanUp();
+  },
+
+
+  ticCleanUp: function() {
+    model.asteroids = $.map(model.asteroids, function(asteroid) {
+      if (asteroid) {
+        return asteroid;
       };
     });
   },
+
 
   checkCollisions: function() {
     $.each(model.asteroids, function(i, asteroid) {

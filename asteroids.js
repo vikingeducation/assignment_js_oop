@@ -4,34 +4,55 @@ var model = {
 
   init: function(width, height, asteroidCount) {
     model.setCanvasDimensions(width, height);
+
+    model.player = new model.Player();
+    model.setPlayerMethods();
+
     for (var i = 0; i < asteroidCount; i++) {
-      var asteroid = new model.Asteroid(model.startingAttributes());
+      var asteroid = new model.Asteroid(model.asteroidAttributes());
     };
     model.setAsteroidMethods();
   },
 
-
+  player: null,
   asteroids: [],
   nextAsteroidID: 0,
 
 
   setCanvasDimensions: function(width, height) {
-    this.width = width;
-    this.height = height;
+    model.width = width;
+    model.height = height;
   },
 
 
-  Asteroid: function(startingAttributes) {
+  Player: function() {
+    this.x = Math.floor(model.width / 2);
+    this.y = Math.floor(model.height / 2);
+    this.velocityX = 0;
+    this.velocityY = 0;
+    this.heading = 0;
+  },
+
+
+  Asteroid: function(asteroidAttributes) {
     this.id = model.nextAsteroidID;
     model.nextAsteroidID++;
 
-    this.x = startingAttributes.x;
-    this.y = startingAttributes.y;
-    this.velocityX = startingAttributes.velocityX;
-    this.velocityY = startingAttributes.velocityY;
-    this.radius = startingAttributes.radius;
+    this.x = asteroidAttributes.x;
+    this.y = asteroidAttributes.y;
+    this.velocityX = asteroidAttributes.velocityX;
+    this.velocityY = asteroidAttributes.velocityY;
+    this.radius = asteroidAttributes.radius;
     this.destroyFlag = false;
     model.asteroids.push(this);
+  },
+
+
+  setPlayerMethods: function() {
+    model.Player.prototype.turnLeft = function() {
+      model.player.heading--;
+      console.log(model.player.heading);
+    };
   },
 
 
@@ -139,19 +160,18 @@ var model = {
       var spawnSize = Math.floor(this.radius / spawns);
       var offsets = [[-1,-1], [1,1], [-1,1], [1,-1]];
       for (var i = 0; i < spawns; i++) {
-        console.log(offsets[i]);
         var newRadius = spawnSize + model.randInt(-2, 2);
         var newX = this.x + newRadius * offsets[i][0];
         var newY = this.y + newRadius * offsets[i][1];
         var newVelX = offsets[i][0] * model.randInt(0, 2);
         var newVelY = offsets[i][1] * model.randInt(0, 2);
-        new model.Asteroid(model.startingAttributes(newX, newY, newVelX, newVelY, newRadius));
+        new model.Asteroid(model.asteroidAttributes(newX, newY, newVelX, newVelY, newRadius));
       };
     };
   },
 
 
-  startingAttributes: function(x, y, velX, velY, radius) {
+  asteroidAttributes: function(x, y, velX, velY, radius) {
     var attributes = {
       id: model.asteroids.length,
       x: (x) ? x : model.randInt(0, model.width),
@@ -191,6 +211,27 @@ var model = {
   },
 
 
+  userInput: function() {
+    switch(event.which) {
+      case 37:
+        model.player.turnLeft();
+        //turn left;
+        break;
+      case 39:
+        //turn right;
+        break;
+      case 38:
+        //accel;
+        break;
+    };
+  },
+
+
+  getPlayer: function() {
+    return model.player;
+  },
+
+
   getAsteroids: function() {
     return model.asteroids;
   },
@@ -207,11 +248,11 @@ var model = {
 
 var view = {
 
-  init: function(width, height, asteroids) {
+  init: function(width, height, player, asteroids) {
     view.$canvas = $('#playarea');
     view.context = view.$canvas[0].getContext('2d');
     view.setCanvasDimensions(width, height);
-    view.renderTic(asteroids);
+    view.renderTic(player, asteroids);
     $('.play-button').on('click', controller.start)
   },
 
@@ -222,9 +263,22 @@ var view = {
   },
 
 
-  renderTic: function(asteroids) {
-    view. context.clearRect(0, 0, view.$canvas.width(), view.$canvas.height());
+  renderTic: function(player, asteroids) {
+    view.context.clearRect(0, 0, view.$canvas.width(), view.$canvas.height());
+    view.renderPlayer(player);
     $.each(asteroids, view.renderAsteroid);
+  },
+
+
+  renderPlayer: function(player) {
+    view.context.beginPath();
+    view.context.moveTo(player.x, player.y - 15);
+    view.context.lineTo(player.x - 10, player.y + 15);
+    view.context.lineTo(player.x + 10, player.y + 15);
+    view.context.closePath();
+    view.context.rotate(player.heading * Math.PI / 180);
+    view.context.strokeStyle = "#000";
+    view.context.stroke();
   },
 
 
@@ -237,6 +291,11 @@ var view = {
   },
 
 
+  activateControls: function() {
+    $(window).on('keydown', model.userInput);
+  }
+
+
 }
 
 
@@ -245,19 +304,20 @@ var controller = {
 
   init: function(width, height, asteroidCount) {
     model.init(width, height, asteroidCount);
-    view.init(width, height, model.getAsteroids());
+    view.init(width, height, model.getPlayer(), model.getAsteroids());
   },
 
 
   start: function() {
     $('button').attr('disabled', true).off('click');
+    view.activateControls();
     controller.interval = setInterval(controller.tic, 35);
   },
 
 
   tic: function() {
     model.tic();
-    view.renderTic(model.getAsteroids());
+    view.renderTic(model.getPlayer(), model.getAsteroids());
   }
 
 }

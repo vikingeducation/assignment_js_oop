@@ -31,6 +31,7 @@ var model = {
     this.velocityX = 0;
     this.velocityY = 0;
     this.heading = 0;
+    this.destroyFlag = false;
   },
 
 
@@ -51,10 +52,16 @@ var model = {
   setPlayerMethods: function() {
 
     model.Player.prototype.tic = function() {
-      this.x += this.velocityX;
-      this.y += this.velocityY;
-      this.wrapX();
-      this.wrapY();
+      if (this.destroyFlag) {
+        this.velocityX = 0;
+        this.velocityY = 0;
+      }
+      else {
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+        this.wrapX();
+        this.wrapY();
+      };
     };
 
 
@@ -117,6 +124,31 @@ var model = {
 
     model.Player.prototype.wrapToBottom = function() {
       this.y = model.height + (2 * 10);
+    };
+
+
+    model.Player.prototype.asteroidCollisions = function() {
+      $.each(model.asteroids, function(index, asteroid) {
+        if (model.player.isCollidingWith(asteroid)) {
+          model.player.destroyFlag = true;
+        };
+      });
+    };
+
+
+    model.Player.prototype.isCollidingWith = function(asteroid) {
+      var dx = this.x - asteroid.x;
+      var dy = this.y - asteroid.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 10 + asteroid.radius) {
+        return true;
+      };
+    };
+
+
+    model.Player.prototype.destroy = function() {
+      model.player = null;
     };
 
   },
@@ -275,6 +307,8 @@ var model = {
     $.each(model.asteroids, function(i, asteroid) {
       asteroid.asteroidCollisions();
     });
+
+    model.player.asteroidCollisions();
   },
 
 
@@ -363,6 +397,16 @@ var view = {
 
   activateControls: function() {
     $(window).on('keydown', model.userInput);
+  },
+
+
+  deactivateControls: function() {
+    $(window).off('keydown');
+  },
+
+
+  renderEndGame: function() {
+    $('header').prepend("<h4 class='gameover'>Game over!</h4>");
   }
 
 
@@ -388,6 +432,19 @@ var controller = {
   tic: function() {
     model.tic();
     view.renderTic(model.getPlayer(), model.getAsteroids());
+    controller.checkGameOver();
+  },
+
+
+  checkGameOver: function() {
+    if (model.player.destroyFlag) {
+      clearInterval(controller.interval);
+      controller.endGame();
+    };
+  },
+
+  endGame: function() {
+    view.renderEndGame();
   }
 
 }

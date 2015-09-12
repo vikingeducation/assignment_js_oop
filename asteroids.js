@@ -53,6 +53,8 @@ var model = {
     model.Player.prototype.tic = function() {
       this.x += this.velocityX;
       this.y += this.velocityY;
+      this.wrapX();
+      this.wrapY();
     };
 
 
@@ -70,6 +72,51 @@ var model = {
       var angle = model.player.heading * Math.PI / 180;
       model.player.velocityX += 1 * Math.cos(angle);
       model.player.velocityY += 1 * Math.sin(angle);
+    };
+
+
+    model.Player.prototype.wrapX = function() {
+      var offscreenRight = (this.x > model.width + (2 * 10));
+      var movingRight = (this.velocityX > 0);
+      var offscreenLeft = (this.x < (-2 * 10) );
+      var movingLeft = (this.velocityX < 0);
+
+      if (offscreenRight && movingRight) {
+        this.wrapToLeft();
+      }
+      else if (offscreenLeft && movingLeft) {
+        this.wrapToRight();
+      };
+    };
+
+    model.Player.prototype.wrapY = function() {
+      var offscreenBottom = (this.y > model.height+ (2 * 10));
+      var movingDown = (this.velocityY > 0);
+      var offscreenTop = (this.y < (-2 * 10) );
+      var movingUp = (this.velocityY < 0);
+
+      if (offscreenBottom && movingDown) {
+        this.wrapToTop();
+      }
+      else if (offscreenTop && movingUp) {
+        this.wrapToBottom();
+      };
+    };
+
+    model.Player.prototype.wrapToLeft = function() {
+      this.x = -2 * 10;
+    };
+
+    model.Player.prototype.wrapToRight = function() {
+      this.x = model.width + (2 * 10);
+    };
+
+    model.Player.prototype.wrapToTop = function() {
+      this.y = -2 * 10;
+    };
+
+    model.Player.prototype.wrapToBottom = function() {
+      this.y = model.height + (2 * 10);
     };
 
   },

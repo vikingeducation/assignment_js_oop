@@ -363,13 +363,23 @@ var model = {
   asteroidAttributes: function(x, y, velX, velY, radius) {
     var attributes = {
       id: model.asteroids.length,
-      x: (x) ? x : model.randInt(0, model.width),
-      y: (y) ? y : model.randInt(0, model.height),
+      x: (x) ? x : model.startSpawnZone(model.width),
+      y: (y) ? y : model.startSpawnZone(model.height),
       velocityX: (velX) ? velX : model.randInt(-2,2),
       velocityY: (velY) ? velY : model.randInt(-2,2),
       radius: (radius) ? radius : model.randInt(10,30)
     };
     return attributes;
+  },
+
+
+  startSpawnZone: function(range) {
+    if (model.randInt(0,1) === 0) {
+      return model.randInt(0, range / 4)
+    }
+    else {
+      return model.randInt(3/4 * range, range)
+    };
   },
 
 
@@ -545,7 +555,7 @@ var view = {
 
   renderEndGame: function(player) {
     view.renderPlayer(player, true);
-    $('header').append("<p class='gameover'>Game over!</p>");
+    $('.canvas-container').prepend("<p class='gameover'>Game over!</p>");
     $('button').attr('disabled', false).text('Restart?');
     $('.play-button').on('click', controller.restart);
   },

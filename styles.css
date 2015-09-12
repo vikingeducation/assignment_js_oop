@@ -1,15 +1,25 @@
 header {
-  margin: 20px auto;
+  margin: 10px auto;
   text-align: center;
 }
 
 
+.instructions {
+  text-align: left;
+  width: 45%;
+  float: left;
+}
+
+
 .play-button {
-  font-size: 24px;
+  font-size: 20px;
+  width: 10%;
+  float: left;
 }
 
 
 .canvas-container {
+  clear: left;
   margin: 10px auto;
   text-align: center;
 }
@@ -25,6 +35,5 @@ header {
   font-size: 48px;
   color: #F00;
   position: relative;
-  bottom: 100%;
-  transform: translateY(200px);
+  top: 0;
 }

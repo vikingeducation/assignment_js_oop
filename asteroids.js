@@ -37,6 +37,7 @@ var model = {
     this.velocityX = 0;
     this.velocityY = 0;
     this.heading = 0;
+    this.cooldown = 0;
     this.destroyFlag = false;
   },
 
@@ -69,16 +70,36 @@ var model = {
 
   setPlayerMethods: function() {
 
-    model.Player.prototype.tic = function() {
+    model.Player.prototype.tic = function(inputs) {
       if (this.destroyFlag) {
         this.velocityX = 0;
         this.velocityY = 0;
       }
       else {
+        if (this.cooldown > 0) {
+          this.cooldown--;
+        };
+        this.processInputs(inputs);
         this.x += this.velocityX;
         this.y += this.velocityY;
         this.wrapX();
         this.wrapY();
+      };
+    };
+
+
+    model.Player.prototype.processInputs = function(inputs) {
+      if (inputs.turningLeft) {
+        this.turnLeft();
+      };
+      if (inputs.turningRight) {
+        this.turnRight();
+      };
+      if (inputs.accelerating) {
+        this.accelerate();
+      };
+      if (inputs.shooting) {
+        this.shoot();
       };
     };
 
@@ -95,8 +116,16 @@ var model = {
 
     model.Player.prototype.accelerate = function() {
       var angle = model.player.heading * Math.PI / 180;
-      model.player.velocityX += 1 * Math.cos(angle);
-      model.player.velocityY += 1 * Math.sin(angle);
+      model.player.velocityX += 0.5 * Math.cos(angle);
+      model.player.velocityY += 0.5 * Math.sin(angle);
+    };
+
+
+    model.Player.prototype.shoot = function() {
+      if (this.cooldown === 0) {
+        var laser = new model.Laser();
+        this.cooldown = 10;
+      };
     };
 
 
@@ -168,11 +197,6 @@ var model = {
 
     model.Player.prototype.destroy = function() {
       model.player = null;
-    };
-
-
-    model.Player.prototype.shoot = function() {
-      var laser = new model.Laser();
     };
 
   },
@@ -349,14 +373,14 @@ var model = {
   },
 
 
-  tic: function() {
+  tic: function(playerInputs) {
     model.checkCollisions();
 
     $.each(model.asteroids, function(i, asteroid) {
       asteroid.tic();
     });
 
-    model.player.tic();
+    model.player.tic(playerInputs);
 
     $.each(model.lasers, function(i, laser) {
       laser.tic();
@@ -509,7 +533,8 @@ var view = {
 
 
   activateControls: function() {
-    $(window).on('keydown', model.userInput);
+    $(window).on('keydown', controller.userInput);
+    $(window).on('keyup', controller.userInputStop);
   },
 
 
@@ -545,6 +570,13 @@ var controller = {
   height: 480,
   totalAsteroids: 10,
 
+  inputs: {
+    accelerating: false,
+    turningLeft: false,
+    turningRight: false,
+    shooting: false,
+  },
+
 
   start: function() {
     $('button').attr('disabled', true).off('click');
@@ -554,9 +586,45 @@ var controller = {
 
 
   tic: function() {
-    model.tic();
+    model.tic(controller.inputs);
     view.renderTic(model.getPlayer(), model.getAsteroids(), model.getLasers());
     controller.checkGameOver();
+  },
+
+
+  userInput: function() {
+    switch(event.which) {
+      case 37:
+        controller.inputs.turningLeft = true;
+        break;
+      case 39:
+        controller.inputs.turningRight = true;
+        break;
+      case 38:
+        controller.inputs.accelerating = true;
+        break;
+      case 32:
+        controller.inputs.shooting = true;
+        break;
+    };
+  },
+
+
+  userInputStop: function() {
+    switch(event.which) {
+      case 37:
+        controller.inputs.turningLeft = false;
+        break;
+      case 39:
+        controller.inputs.turningRight = false;
+        break;
+      case 38:
+        controller.inputs.accelerating = false;
+        break;
+      case 32:
+        controller.inputs.shooting = false;
+        break;
+    };
   },
 
 

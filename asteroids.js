@@ -13,12 +13,15 @@ var model = {
       var asteroid = new model.Asteroid(model.asteroidAttributes());
     };
     model.setAsteroidMethods();
+    model.setLaserMethods();
   },
+
 
   resetVariables: function() {
     model.player = null;
     model.asteroids = [];
     model.nextAsteroidID = 0;
+    model.lasers = [];
   },
 
 
@@ -49,6 +52,18 @@ var model = {
     this.radius = asteroidAttributes.radius;
     this.destroyFlag = false;
     model.asteroids.push(this);
+  },
+
+
+  Laser: function() {
+    var angle = model.player.heading * Math.PI / 180;
+    this.x = model.player.x;
+    this.y = model.player.y;
+    this.velocityX = 10 * Math.cos(angle);;
+    this.velocityY = 10 * Math.sin(angle);
+    this.radius = 2;
+    this.destroyFlag = false;
+    model.lasers.push(this);
   },
 
 
@@ -153,6 +168,11 @@ var model = {
 
     model.Player.prototype.destroy = function() {
       model.player = null;
+    };
+
+
+    model.Player.prototype.shoot = function() {
+      var laser = new model.Laser();
     };
 
   },
@@ -272,6 +292,50 @@ var model = {
   },
 
 
+  setLaserMethods: function() {
+
+    model.Laser.prototype.tic = function() {
+      if (this.destroyFlag) {
+        this.destroy();
+      }
+      else {
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+      };
+    };
+
+
+    model.Laser.prototype.destroy = function() {
+      var index = model.lasers.indexOf(this);
+      delete model.lasers[index];
+    };
+
+
+    model.Laser.prototype.asteroidCollisions = function() {
+      var thisLaser = this;
+
+      $.each(model.asteroids, function(index, asteroid) {
+        if (thisLaser.isCollidingWith(asteroid)) {
+          thisLaser.destroyFlag = true;
+          asteroid.destroyFlag = true;
+        };
+      });
+    };
+
+
+    model.Laser.prototype.isCollidingWith = function(asteroid) {
+      var dx = this.x - asteroid.x;
+      var dy = this.y - asteroid.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 10 + asteroid.radius) {
+        return true;
+      };
+    };
+
+  },
+
+
   asteroidAttributes: function(x, y, velX, velY, radius) {
     var attributes = {
       id: model.asteroids.length,
@@ -294,6 +358,10 @@ var model = {
 
     model.player.tic();
 
+    $.each(model.lasers, function(i, laser) {
+      laser.tic();
+    });
+
     model.ticCleanUp();
   },
 
@@ -302,6 +370,11 @@ var model = {
     model.asteroids = $.map(model.asteroids, function(asteroid) {
       if (asteroid) {
         return asteroid;
+      };
+    });
+    model.lasers = $.map(model.lasers, function(laser) {
+      if (laser) {
+        return laser;
       };
     });
   },
@@ -313,6 +386,10 @@ var model = {
     });
 
     model.player.asteroidCollisions();
+
+    $.each(model.lasers, function(i, laser) {
+      laser.asteroidCollisions();
+    });
   },
 
 
@@ -327,6 +404,9 @@ var model = {
       case 38:
         model.player.accelerate();
         break;
+      case 32:
+        model.player.shoot();
+        break;
     };
   },
 
@@ -338,6 +418,11 @@ var model = {
 
   getAsteroids: function() {
     return model.asteroids;
+  },
+
+
+  getLasers: function() {
+    return model.lasers;
   },
 
 
@@ -368,10 +453,17 @@ var view = {
   },
 
 
-  renderTic: function(player, asteroids) {
+  renderTic: function(player, asteroids, lasers) {
     view.context.clearRect(0, 0, view.$canvas.width(), view.$canvas.height());
     view.renderPlayer(player);
-    $.each(asteroids, view.renderAsteroid);
+
+    if (asteroids) {
+      $.each(asteroids, view.renderAsteroid);
+    };
+
+    if (lasers) {
+      $.each(lasers, view.renderLaser);
+    };
   },
 
 
@@ -403,6 +495,15 @@ var view = {
     view.context.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2, false);
     view.context.closePath();
     view.context.strokeStyle = "#000";
+    view.context.stroke();
+  },
+
+
+  renderLaser: function(index, laser) {
+    view.context.beginPath();
+    view.context.arc(laser.x, laser.y, laser.radius, 0, Math.PI * 2, false);
+    view.context.closePath();
+    view.context.strokeStyle = "#F00";
     view.context.stroke();
   },
 
@@ -454,7 +555,7 @@ var controller = {
 
   tic: function() {
     model.tic();
-    view.renderTic(model.getPlayer(), model.getAsteroids());
+    view.renderTic(model.getPlayer(), model.getAsteroids(), model.getLasers());
     controller.checkGameOver();
   },
 

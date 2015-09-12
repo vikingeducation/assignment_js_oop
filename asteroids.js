@@ -3,6 +3,7 @@
 var model = {
 
   init: function(width, height, asteroidCount) {
+    model.resetVariables();
     model.setCanvasDimensions(width, height);
 
     model.player = new model.Player();
@@ -14,9 +15,11 @@ var model = {
     model.setAsteroidMethods();
   },
 
-  player: null,
-  asteroids: [],
-  nextAsteroidID: 0,
+  resetVariables: function() {
+    model.player = null;
+    model.asteroids = [];
+    model.nextAsteroidID = 0;
+  },
 
 
   setCanvasDimensions: function(width, height) {
@@ -131,6 +134,7 @@ var model = {
       $.each(model.asteroids, function(index, asteroid) {
         if (model.player.isCollidingWith(asteroid)) {
           model.player.destroyFlag = true;
+          asteroid.destroyFlag = true;
         };
       });
     };
@@ -349,11 +353,12 @@ var model = {
 var view = {
 
   init: function(width, height, player, asteroids) {
+    $('.gameover').remove();
     view.$canvas = $('#playarea');
     view.context = view.$canvas[0].getContext('2d');
     view.setCanvasDimensions(width, height);
     view.renderTic(player, asteroids);
-    $('.play-button').on('click', controller.start)
+    $('.play-button').text('Play!').on('click', controller.start);
   },
 
 
@@ -415,6 +420,8 @@ var view = {
   renderEndGame: function(player) {
     view.renderPlayer(player, true);
     $('header').append("<p class='gameover'>Game over!</p>");
+    $('button').attr('disabled', false).text('Restart?');
+    $('.play-button').on('click', controller.restart);
   },
 
 
@@ -425,9 +432,17 @@ var view = {
 var controller = {
 
   init: function(width, height, asteroidCount) {
+    this.width = width;
+    this.height = height;
+    this.totalAsteroids = asteroidCount;
+
     model.init(width, height, asteroidCount);
     view.init(width, height, model.getPlayer(), model.getAsteroids());
   },
+
+  width: 640,
+  height: 480,
+  totalAsteroids: 10,
 
 
   start: function() {
@@ -451,8 +466,17 @@ var controller = {
     };
   },
 
+
   endGame: function() {
+    view.deactivateControls();
     view.renderEndGame(model.getPlayer());
+  },
+
+
+  restart: function() {
+    console.log( 'controller.init');
+    $('.play-button').off('click');
+    controller.init(controller.width, controller.height, controller.totalAsteroids);
   }
 
 }

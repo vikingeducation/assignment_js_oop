@@ -49,10 +49,29 @@ var model = {
 
 
   setPlayerMethods: function() {
-    model.Player.prototype.turnLeft = function() {
-      model.player.heading--;
-      console.log(model.player.heading);
+
+    model.Player.prototype.tic = function() {
+      this.x += this.velocityX;
+      this.y += this.velocityY;
     };
+
+
+    model.Player.prototype.turnLeft = function() {
+      model.player.heading -= 5;
+    };
+
+
+    model.Player.prototype.turnRight = function() {
+      model.player.heading += 5;
+    };
+
+
+    model.Player.prototype.accelerate = function() {
+      var angle = model.player.heading * Math.PI / 180;
+      model.player.velocityX += 1 * Math.cos(angle);
+      model.player.velocityY += 1 * Math.sin(angle);
+    };
+
   },
 
 
@@ -148,7 +167,6 @@ var model = {
       var index = model.asteroids.indexOf(this);
       delete model.asteroids[index];
 
-      // spawn little guys
       if (this.radius > 12) {
         this.spawnChildren();
       };
@@ -191,6 +209,8 @@ var model = {
       asteroid.tic();
     });
 
+    model.player.tic();
+
     model.ticCleanUp();
   },
 
@@ -215,13 +235,12 @@ var model = {
     switch(event.which) {
       case 37:
         model.player.turnLeft();
-        //turn left;
         break;
       case 39:
-        //turn right;
+        model.player.turnRight();
         break;
       case 38:
-        //accel;
+        model.player.accelerate();
         break;
     };
   },
@@ -271,14 +290,18 @@ var view = {
 
 
   renderPlayer: function(player) {
-    view.context.beginPath();
-    view.context.moveTo(player.x, player.y - 15);
-    view.context.lineTo(player.x - 10, player.y + 15);
-    view.context.lineTo(player.x + 10, player.y + 15);
-    view.context.closePath();
+    view.context.save();
+    view.context.translate(player.x, player.y);
     view.context.rotate(player.heading * Math.PI / 180);
+    view.context.beginPath();
+    // relative to player x,y
+    view.context.moveTo(15, 0);
+    view.context.lineTo(-15, +10);
+    view.context.lineTo(-15, -10);
+    view.context.closePath();
     view.context.strokeStyle = "#000";
     view.context.stroke();
+    view.context.restore();
   },
 
 

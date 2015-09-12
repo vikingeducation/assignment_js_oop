@@ -370,7 +370,7 @@ var view = {
   },
 
 
-  renderPlayer: function(player) {
+  renderPlayer: function(player, gameover) {
     view.context.save();
     view.context.translate(player.x, player.y);
     view.context.rotate(player.heading * Math.PI / 180);
@@ -380,7 +380,14 @@ var view = {
     view.context.lineTo(-15, +10);
     view.context.lineTo(-15, -10);
     view.context.closePath();
-    view.context.strokeStyle = "#000";
+
+    if (gameover) {
+      view.context.strokeStyle = "#F00";
+    }
+    else {
+      view.context.strokeStyle = "#000";
+    };
+
     view.context.stroke();
     view.context.restore();
   },
@@ -405,9 +412,10 @@ var view = {
   },
 
 
-  renderEndGame: function() {
-    $('header').prepend("<h4 class='gameover'>Game over!</h4>");
-  }
+  renderEndGame: function(player) {
+    view.renderPlayer(player, true);
+    $('header').append("<p class='gameover'>Game over!</p>");
+  },
 
 
 }
@@ -444,7 +452,7 @@ var controller = {
   },
 
   endGame: function() {
-    view.renderEndGame();
+    view.renderEndGame(model.getPlayer());
   }
 
 }

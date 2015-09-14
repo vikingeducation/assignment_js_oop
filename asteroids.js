@@ -1,6 +1,7 @@
 //var ASTEROIDS = ASTEROIDS || {};
 
 var model = {
+  // prototypes within prototypes - setting prototype with object you use create on, which you pass a prototype
 
   init: function(width, height, asteroidCount) {
     model.resetVariables();

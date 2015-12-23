@@ -6,7 +6,8 @@ ASTEROIDS.events = ASTEROIDS.events || {};
 ASTEROIDS.events.Event = function Event(options) {
   this.selector = document;
   this.loop = false;
-  this.speed = 1000;
+  this.speed = 0;
+  this.data = {};
   this.listeners = [];
 
   this._event = 'event';
@@ -20,9 +21,13 @@ ASTEROIDS.events.Event = function Event(options) {
   }
 };
 
+ASTEROIDS.events.Event.create = function(options) {
+  return new ASTEROIDS.events.Event(options);
+};
+
 ASTEROIDS.events.Event.prototype.fire = function() {
   $(this.selector)
-    .trigger(this._event);
+    .trigger(this._event, this.data);
 };
 
 ASTEROIDS.events.Event.prototype.start = function() {

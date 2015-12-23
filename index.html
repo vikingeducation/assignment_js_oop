@@ -23,47 +23,26 @@
     <div id="game"></div>
 
     <!-- Asteroids JavaScript -->
+    <script src="/assets/js/asteroids/asteroids.js"></script>
+    
+    <script src="/assets/js/asteroids/utils/math.js"></script>
+    
     <script src="/assets/js/asteroids/events/event.js"></script>
     <script src="/assets/js/asteroids/events/tick.js"></script>
+
+    <script src="/assets/js/asteroids/observers/observer.js"></script>
+    <script src="/assets/js/asteroids/observers/ai.js"></script>
+    <script src="/assets/js/asteroids/observers/collision.js"></script>
 
     <script src="/assets/js/asteroids/display/sprite.js"></script>
     <script src="/assets/js/asteroids/display/asteroid.js"></script>
     <script src="/assets/js/asteroids/display/container.js"></script>
 
-    <script src="/assets/js/asteroids/asteroids.js"></script>
+    <script src="/assets/js/asteroids/core/game.js"></script>
 
     <!-- Initialize Game -->
     <script>
-
-        var c = new ASTEROIDS.display.Container({
-          element: '#game'
-        });
-
-        var NUM_ASTEROIDS = 10;
-
-        for (var i = 0; i < NUM_ASTEROIDS; i++) {
-          var dx = (i % 2 === 0) ? 1 : -1;
-          var dy = (i % 2 === 0) ? 1 : -1;
-          var size = Math.random() * 100;
-          var a = new ASTEROIDS.display.Asteroid({
-            position: {
-              x: Math.random() * 800,
-              y: Math.random() * 600
-            },
-            velocity: {
-              x: Math.random() * 5 * dx,
-              y: Math.random() * 5 * dy
-            },
-            width: size,
-            height: size
-          });
-          c.add(a);
-        }
-
-        var e = new ASTEROIDS.events.Tick();
-        e.addListener($.proxy(c.update, c));
-        e.start();
-
+      var game = new ASTEROIDS.core.Game();
     </script>
   </body>
 </html>

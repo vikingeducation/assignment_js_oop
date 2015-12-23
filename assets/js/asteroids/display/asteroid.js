@@ -48,9 +48,16 @@ ASTEROIDS.display.Asteroid.prototype.update = function() {
 };
 
 ASTEROIDS.display.Asteroid.prototype.collide = function(asteroid) {
-  var distance = this._distanceTo(asteroid);
+  // var distance = this._distanceTo(asteroid);
 
-  if (distance < (this.radius + asteroid.radius)) {
+  // if (distance < (this.radius + asteroid.radius)) {
+  //   this.die();
+  //   this.addCollision(asteroid);
+  // } else {
+  //   this.removeCollision(asteroid);
+  // }
+
+  if (ASTEROIDS.display.Sprite.prototype.collide.call(this, asteroid)) {
     this.die();
     this.addCollision(asteroid);
   } else {
@@ -90,20 +97,20 @@ ASTEROIDS.display.Asteroid.prototype._explode = function() {
       ASTEROIDS.display.Asteroid.MAX_CHILDREN
     );
 
-    var collidedAsteroid = this._collisions[0];
-    var point = this._collisionPointWith(collidedAsteroid);
+    var collided = this._collisions[0];
+    var point = this._collisionPointWith(collided);
 
     for (var i = 0; i < numChildren; i++) {
-      this._spawnChildAt(point, collidedAsteroid);
+      this._spawnChildAt(point, collided);
     }
   }
 };
 
-ASTEROIDS.display.Asteroid.prototype._spawnChildAt = function(point, collidedAsteroid) {
+ASTEROIDS.display.Asteroid.prototype._spawnChildAt = function(point, collided) {
   var angle = ASTEROIDS.utils.Math.randomAngle();
   var velocity = {
-    x: (this.diameter / collidedAsteroid.radius) * angle.x,
-    y: (this.diameter / collidedAsteroid.radius) * angle.y
+    x: (this.diameter / (collided.width / 2)) * angle.x,
+    y: (this.diameter / (collided.width / 2)) * angle.y
   };
   var position = {
     x: point.x + (angle.x * (this.diameter + 1)),
@@ -117,28 +124,28 @@ ASTEROIDS.display.Asteroid.prototype._spawnChildAt = function(point, collidedAst
   this.container.add(asteroid);
 };
 
-ASTEROIDS.display.Asteroid.prototype._distanceTo = function(asteroid) {
-  var a = this.position.x - asteroid.position.x;
-  var b = this.position.y - asteroid.position.y;
-  return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
-};
+// ASTEROIDS.display.Asteroid.prototype._distanceTo = function(asteroid) {
+//   var a = this.position.x - asteroid.position.x;
+//   var b = this.position.y - asteroid.position.y;
+//   return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+// };
 
-ASTEROIDS.display.Asteroid.prototype._collisionPointWith = function(asteroid) {
+ASTEROIDS.display.Asteroid.prototype._collisionPointWith = function(collided) {
   var point = {};
   var that = this;
   ['x', 'y'].forEach(function(axis) {
-    point[axis] = ((that.position[axis] * asteroid.radius) +
-      (asteroid.position[axis] * that.radius)) / (that.radius + asteroid.radius);
+    point[axis] = ((that.position[axis] * (collided.width / 2)) +
+      (collided.position[axis] * that.radius)) / (that.radius + (collided.width / 2));
   });
   return point;
 };
 
-ASTEROIDS.display.Asteroid.prototype._bounceVelocityFrom = function(asteroid) {
+ASTEROIDS.display.Asteroid.prototype._bounceVelocityFrom = function(collided) {
   var velocity = {};
   var that = this;
   ['x', 'y'].forEach(function(axis) {
-    velocity[axis] = (that.velocity[axis] * (that.radius - asteroid.radius) +
-      (2 * asteroid.radius * asteroid.velocity[axis])) / (that.radius + asteroid.radius);
+    velocity[axis] = (that.velocity[axis] * (that.radius - (collided.width / 2)) +
+      (2 * (collided.width / 2) * collided.velocity[axis])) / (that.radius + (collided.width / 2));
   });
   return velocity;
 };

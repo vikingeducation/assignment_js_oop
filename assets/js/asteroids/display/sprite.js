@@ -140,6 +140,11 @@ ASTEROIDS.display.Sprite.prototype.die = function() {
   this.isAlive = !this.isDead;
 };
 
+ASTEROIDS.display.Sprite.prototype.live = function() {
+  this.isDead = false;
+  this.isAlive = !this.isDead;
+};
+
 ASTEROIDS.display.Sprite.prototype.destroy = function() {
   //
 };

@@ -9,6 +9,7 @@ ASTEROIDS.display.Ship = function Ship(options) {
   this.bullets = [];
   this.width = 16;
   this.height = 32;
+  this.isInvincible = false;
 
   if (options) {
     this.bullets = options['bullets'] || this.bullets;
@@ -44,6 +45,29 @@ ASTEROIDS.display.Ship.prototype.update = function(e, data) {
   if (ASTEROIDS.events.Key.isPressed('space')) {
     key = 'space';
   }
+};
+
+ASTEROIDS.display.Ship.prototype.collide = function(sprite) {
+  var point = ASTEROIDS.display.Sprite.prototype.collide.call(this, sprite);
+
+  if (point && !this.isInvincible) {
+    this.die();
+  }
+};
+
+ASTEROIDS.display.Ship.prototype.removed = function() {
+  this.live();
+  this.position.x = this.container.width / 2 - this.width / 2;
+  this.position.y = this.container.height / 2 - this.height / 2;
+  this.rotation = 0;
+  this.update();
+  this.container.add(this);
+};
+
+ASTEROIDS.display.Ship.prototype.render = function() {
+  var $sprite = ASTEROIDS.display.Sprite.prototype.render.call(this);
+  $sprite.addClass('ship');
+  return $sprite;
 };
 
 ASTEROIDS.display.Ship.prototype._move = function() {

@@ -75,10 +75,12 @@ ASTEROIDS.display.Asteroid.prototype._explode = function() {
     );
 
     var collided = this._collisions[0];
-    var point = this._collisionPointWith(collided);
+    if (collided) {
+      var point = this._collisionPointWith(collided);
 
-    for (var i = 0; i < numChildren; i++) {
-      this._spawnChildAt(point, collided);
+      for (var i = 0; i < numChildren; i++) {
+        this._spawnChildAt(point, collided);
+      }
     }
   }
 };

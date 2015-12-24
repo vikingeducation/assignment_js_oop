@@ -76,7 +76,6 @@ ASTEROIDS.display.Container.prototype.removeSprite = function(sprite) {
   $.when($sprite.remove()).then(sprite.removed());
   var index = this.sprites.indexOf(sprite);
   this.sprites.splice(index, 1);
-  sprite.container = null;
   sprite.id = null;
   sprite.$element.attr('data-id', '');
   return sprite;

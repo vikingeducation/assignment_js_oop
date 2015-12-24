@@ -6,6 +6,7 @@ ASTEROIDS.display = ASTEROIDS.display || {};
 ASTEROIDS.display.Container = function Container(options) {
   this.sprites = [];
   this.observers = [];
+  this.trashes = [];
   this.$element = null;
   this.width = 0;
   this.height = 0;
@@ -73,11 +74,11 @@ ASTEROIDS.display.Container.prototype.addSprite = function(sprite) {
 
 ASTEROIDS.display.Container.prototype.removeSprite = function(sprite) {
   var $sprite = this.$element.find('div[data-id="' + sprite.id + '"]');
-  $.when($sprite.remove()).then(sprite.removed());
   var index = this.sprites.indexOf(sprite);
   this.sprites.splice(index, 1);
   sprite.id = null;
   sprite.$element.attr('data-id', '');
+  $.when($sprite.remove()).then(sprite.removed());
   return sprite;
 };
 
@@ -88,10 +89,20 @@ ASTEROIDS.display.Container.prototype.addObserver = function(observer) {
 };
 
 ASTEROIDS.display.Container.prototype.removeObserver = function(observer) {
-  observer.container = null;
   var index = this.observers.indexOf(observer);
   this.observers.splice(index, 1);
   return observer;
+};
+
+ASTEROIDS.display.Container.prototype.addTrash = function(sprite) {
+  sprite.isTrash = true;
+  this.trashes.push(sprite);
+};
+
+ASTEROIDS.display.Container.prototype.removeTrash = function(sprite) {
+  var index = this.trashes.indexOf(sprite);
+  this.trashes.splice(index, 1);
+  return sprite;
 };
 
 ASTEROIDS.display.Container.prototype._wrapPositionOf = function(sprite) {

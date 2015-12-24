@@ -44,13 +44,11 @@ ASTEROIDS.events.Key.prototype.onKeyDown = function(e) {
   ASTEROIDS.events.Key.justPressed = {};
   ASTEROIDS.events.Key.justPressed[e.keyCode] = true;
   ASTEROIDS.events.Key.pressed[e.keyCode] = true;
-  // console.log('Just Pressed', ASTEROIDS.events.Key.justPressed);
-  // console.log('Pressed', ASTEROIDS.events.Key.pressed);
-  // console.log('-');
   return this._onKeyEvent(e);
 };
 
 ASTEROIDS.events.Key.prototype.onKeyUp = function(e) {
+  ASTEROIDS.events.Key.justPressed = {};
   ASTEROIDS.events.Key.pressed[e.keyCode] = false;
   return this._onKeyEvent(e);
 };

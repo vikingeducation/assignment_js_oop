@@ -34,6 +34,7 @@ ASTEROIDS.display.Asteroid.MIN_RADIUS = 8;
 ASTEROIDS.display.Asteroid.MAX_RADIUS = 96;
 ASTEROIDS.display.Asteroid.MIN_CHILDREN = 1;
 ASTEROIDS.display.Asteroid.MAX_CHILDREN = 4;
+ASTEROIDS.display.Asteroid.MAX_ASTEROIDS = 50;
 
 ASTEROIDS.display.Asteroid.create = function(options) {
   return new ASTEROIDS.display.Asteroid(options);
@@ -63,11 +64,19 @@ ASTEROIDS.display.Asteroid.prototype.render = function() {
 
 ASTEROIDS.display.Asteroid.prototype.removed = function() {
   this._explode();
+  this.removeAllCollisions();
+  this.container.addTrash(this);
+};
+
+ASTEROIDS.display.Asteroid.prototype.destroy = function() {
+  ASTEROIDS.display.Sprite.prototype.destroy.call(this);
+  this.radius = 0;
+  this.diameter = 0;
 };
 
 ASTEROIDS.display.Asteroid.prototype._explode = function() {
   if (this.radius > ASTEROIDS.display.Asteroid.MIN_RADIUS &&
-    this.container.sprites.length < ASTEROIDS.MAX_ASTEROIDS) {
+    this.container.sprites.length < ASTEROIDS.display.Asteroid.MAX_ASTEROIDS) {
 
     var numChildren = ASTEROIDS.utils.Math.random(
       ASTEROIDS.display.Asteroid.MIN_CHILDREN,
@@ -81,6 +90,7 @@ ASTEROIDS.display.Asteroid.prototype._explode = function() {
       for (var i = 0; i < numChildren; i++) {
         this._spawnChildAt(point, collided);
       }
+      this.removeCollision(collided);
     }
   }
 };

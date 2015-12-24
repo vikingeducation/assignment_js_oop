@@ -19,7 +19,9 @@ ASTEROIDS.display.Sprite = function Sprite(options) {
   this.rotation = 0;
   this.isDead = false;
   this.isAlive = true;
+  this.isTrash = false;
   this.isDestroyed = false;
+  this.invisible = false;
 
   this._collisions = [];
 
@@ -30,6 +32,9 @@ ASTEROIDS.display.Sprite = function Sprite(options) {
     this.width = options['width'] || this.width;
     this.height = options['height'] || this.height;
     this.rotation = options['rotation'] || this.rotation;
+    this.invisible = options['invisible'] || this.invisible;
+    this.isDead = options['isDead'] || this.isDead;
+    this.isAlive = options['isAlive'] || this.isAlive;
   }
 
   this.$element = this.render();
@@ -37,6 +42,10 @@ ASTEROIDS.display.Sprite = function Sprite(options) {
     width: this.width + 'px',
     height: this.height + 'px'
   });
+
+  if (this.invisible) {
+    this.hide();
+  }
 
   this._lastRotation = this.rotation;
 
@@ -106,9 +115,7 @@ ASTEROIDS.display.Sprite.prototype.collide = function(sprite) {
   var width = (left.position.x + left.width) - right.position.x;
   var height = (top.position.y + top.height) - bottom.position.y;
 
-  if (width <= 0 || height <= 0) {
-    this.removeCollision(sprite);
-  } else {
+  if (!(width <= 0 || height <= 0)) {
     this.addCollision(sprite);
     return {
       x: (x + width) / 2,
@@ -131,6 +138,10 @@ ASTEROIDS.display.Sprite.prototype.removeCollision = function(sprite) {
   }
 };
 
+ASTEROIDS.display.Sprite.prototype.removeAllCollisions = function() {
+  this._collisions = [];
+};
+
 ASTEROIDS.display.Sprite.prototype.render = function() {
   return this.$element = $('<div class="sprite" data-id="' + this.id + '"></div>');
 };
@@ -145,8 +156,12 @@ ASTEROIDS.display.Sprite.prototype.live = function() {
   this.isAlive = !this.isDead;
 };
 
-ASTEROIDS.display.Sprite.prototype.destroy = function() {
-  //
+ASTEROIDS.display.Sprite.prototype.hide = function() {
+  this.$element.hide();
+};
+
+ASTEROIDS.display.Sprite.prototype.show = function() {
+  this.$element.show();
 };
 
 ASTEROIDS.display.Sprite.prototype.removed = function() {};
@@ -162,5 +177,25 @@ ASTEROIDS.display.Sprite.prototype.clampVelocity = function() {
       that.velocity[axis] = direction * that.MAX_VELOCITY;
     }
   });
+};
+
+ASTEROIDS.display.Sprite.prototype.destroy = function() {
+  this.id = null;
+  this.container = null;
+  this.position = null;
+  this.velocity = null;
+  this.width = 0;
+  this.height = 0;
+  this.rotation = 0;
+  this.isDead = true;
+  this.isAlive = false;
+  this.isDestroyed = true;
+  this.invisible = true;
+
+  this._collisions = [];
+
+  this.$element = null;
+
+  this._lastRotation = 0;
 };
 

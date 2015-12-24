@@ -11,6 +11,7 @@ ASTEROIDS.core.Game = function Game(options) {
   this._container;
   this._ship;
   this._tick;
+  this._trash;
   this._key;
 
   if (options) {
@@ -26,8 +27,8 @@ ASTEROIDS.core.Game.prototype.initialize = function() {
   });
 
   this._ai = new ASTEROIDS.observers.AI();
-  
   this._collision = new ASTEROIDS.observers.Collision();
+  this._trash = new ASTEROIDS.observers.Trash();
   
   this._ship = new ASTEROIDS.display.Ship();
   this._ship.position = {
@@ -39,6 +40,7 @@ ASTEROIDS.core.Game.prototype.initialize = function() {
   this._container.add(this._ship);
   this._container.add(this._ai);
   this._container.add(this._collision);
+  this._container.add(this._trash);
 
   this._tick = new ASTEROIDS.events.Tick();
   this._tick.addListener($.proxy(this._container.update, this._container));

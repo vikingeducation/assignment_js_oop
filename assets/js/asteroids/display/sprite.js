@@ -70,7 +70,7 @@ ASTEROIDS.display.Sprite.prototype.update = function(e, data) {
     left: this.position.x + 'px'
   });
 
-  if (this.rotation !== 0 && this.rotation !== this._lastRotation) {
+  if (this.rotation !== this._lastRotation) {
     if (this.rotation < -180) {
       this.rotation = 180;
     } else if (this.rotation > 180) {

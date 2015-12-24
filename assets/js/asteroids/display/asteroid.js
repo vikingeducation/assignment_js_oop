@@ -22,8 +22,6 @@ ASTEROIDS.display.Asteroid = function Asteroid(options) {
 
   ASTEROIDS.display.Sprite.call(this, options);
 
-  this.clampVelocity();
-
   this.$element.css({
     borderRadius: (this.width / 2) + 'px'
   });
@@ -34,8 +32,6 @@ ASTEROIDS.display.Asteroid.prototype.constructor = ASTEROIDS.display.Asteroid;
 
 ASTEROIDS.display.Asteroid.MIN_RADIUS = 8;
 ASTEROIDS.display.Asteroid.MAX_RADIUS = 96;
-ASTEROIDS.display.Asteroid.MIN_VELOCITY = 1;
-ASTEROIDS.display.Asteroid.MAX_VELOCITY = 5;
 ASTEROIDS.display.Asteroid.MIN_CHILDREN = 1;
 ASTEROIDS.display.Asteroid.MAX_CHILDREN = 4;
 
@@ -43,20 +39,14 @@ ASTEROIDS.display.Asteroid.create = function(options) {
   return new ASTEROIDS.display.Asteroid(options);
 };
 
-ASTEROIDS.display.Asteroid.prototype.update = function() {
-  ASTEROIDS.display.Sprite.prototype.update.call(this);
+ASTEROIDS.display.Asteroid.prototype.MIN_VELOCITY = 1;
+ASTEROIDS.display.Asteroid.prototype.MAX_VELOCITY = 5;
+
+ASTEROIDS.display.Asteroid.prototype.update = function(e, data) {
+  ASTEROIDS.display.Sprite.prototype.update.call(this, e, data);
 };
 
 ASTEROIDS.display.Asteroid.prototype.collide = function(asteroid) {
-  // var distance = this._distanceTo(asteroid);
-
-  // if (distance < (this.radius + asteroid.radius)) {
-  //   this.die();
-  //   this.addCollision(asteroid);
-  // } else {
-  //   this.removeCollision(asteroid);
-  // }
-
   if (ASTEROIDS.display.Sprite.prototype.collide.call(this, asteroid)) {
     this.die();
     this.addCollision(asteroid);
@@ -73,19 +63,6 @@ ASTEROIDS.display.Asteroid.prototype.render = function() {
 
 ASTEROIDS.display.Asteroid.prototype.removed = function() {
   this._explode();
-};
-
-ASTEROIDS.display.Asteroid.prototype.clampVelocity = function() {
-  var that = this;
-  ['x', 'y'].forEach(function(axis) {
-    var direction = (that.velocity[axis] > 0) ? 1 : -1;
-    var value = Math.abs(that.velocity[axis]);
-    if (value < ASTEROIDS.display.Asteroid.MIN_VELOCITY) {
-      that.velocity[axis] = direction * ASTEROIDS.display.Asteroid.MIN_VELOCITY;
-    } else if (value > ASTEROIDS.display.Asteroid.MAX_VELOCITY) {
-      that.velocity[axis] = direction * ASTEROIDS.display.Asteroid.MAX_VELOCITY;
-    }
-  });
 };
 
 ASTEROIDS.display.Asteroid.prototype._explode = function() {
@@ -123,12 +100,6 @@ ASTEROIDS.display.Asteroid.prototype._spawnChildAt = function(point, collided) {
   });
   this.container.add(asteroid);
 };
-
-// ASTEROIDS.display.Asteroid.prototype._distanceTo = function(asteroid) {
-//   var a = this.position.x - asteroid.position.x;
-//   var b = this.position.y - asteroid.position.y;
-//   return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
-// };
 
 ASTEROIDS.display.Asteroid.prototype._collisionPointWith = function(collided) {
   var point = {};

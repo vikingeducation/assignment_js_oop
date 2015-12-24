@@ -22,3 +22,11 @@ ASTEROIDS.utils.Math.randomAngle = function() {
   };
 };
 
+ASTEROIDS.utils.Math.toRadians = function(degrees) {
+  return degrees * (Math.PI / 180);
+};
+
+ASTEROIDS.utils.Math.toDegrees = function(radians) {
+  return radians * (180 / Math.PI);
+};
+

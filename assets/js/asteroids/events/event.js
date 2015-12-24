@@ -40,19 +40,27 @@ ASTEROIDS.events.Event.prototype.stop = function() {
 
 ASTEROIDS.events.Event.prototype.addListener = function(listener) {
   this.listeners.push(listener);
-  $(this.selector).bind(this._event, listener);
+  this._bind(this.selector, this._event, listener);
 };
 
 ASTEROIDS.events.Event.prototype.removeListener = function(listener) {
   var index = this.listeners.indexOf(listener);
   this.listeners.splice(index, 1);
-  $(this.selector).unbind(this._event, listener);
+  this._unbind(this.selector, this._event, listener);
 };
 
 ASTEROIDS.events.Event.prototype.removeAll = function(listener) {
   this.listeners.forEach(function(listener) {
     this.removeListener(listener);
   });
+};
+
+ASTEROIDS.events.Event.prototype._bind = function(selector, event, callback) {
+  $(selector).bind(event, callback);
+};
+
+ASTEROIDS.events.Event.prototype._unbind = function(selector, event, callback) {
+  $(selector).unbind(event, callback);
 };
 
 ASTEROIDS.events.Event.prototype._startMethod = function() {

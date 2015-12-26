@@ -7,11 +7,13 @@ ASTEROIDS.sound.Sound = function Sound(options) {
   this.name = null;
   this.url = null;
   this.audio = new Audio();
+  this.audio.preload = 'auto';
   this.isPlaying = false;
   this.loop = false;
   this.types = [];
   this.useDefaultTypes = true;
   this.volume = 0.5;
+  this.loaded = false;
 
   if (options) {
     this.name = options['name'] || this.name;
@@ -27,10 +29,6 @@ ASTEROIDS.sound.Sound = function Sound(options) {
   }
 
   this.crossBrowserify();
-
-  if (this.url) {
-    this.load();
-  }
 };
 
 ASTEROIDS.sound.Sound.MIME_TYPES = {
@@ -46,14 +44,16 @@ ASTEROIDS.sound.Sound.prototype.load = function() {
 };
 
 ASTEROIDS.sound.Sound.prototype.play = function() {
-  if (!this.isPlaying && this.audio.readyState) {
-    this.audio.onended = $.proxy(this._onEnd, this);
+  if (!this.isPlaying && this.audio.readyState > 0) {
+    this.loaded = true;
     this.isPlaying = true;
+    $(this.audio).bind('ended', $.proxy(this._onEnded, this));
     this.audio.volume = this.volume;
     this.audio.play();
-  } else if (!this.audio.readyState) {
+  } else if (!this.loaded) {
+    var that = this;
     this.audio.addEventListener('loadeddata', function(e) {
-      this.play();
+      that.play();
     });
     this.load();
   }
@@ -112,11 +112,10 @@ ASTEROIDS.sound.Sound.prototype.getMimeType = function() {
   return ASTEROIDS.sound.Sound.MIME_TYPES[ext];
 };
 
-ASTEROIDS.sound.Sound.prototype._onEnd = function(e) {
+ASTEROIDS.sound.Sound.prototype._onEnded = function(e) {
   this.stop();
   this.isPlaying = false;
   if (this.loop) {
-    this.load();
     this.play();
   }
 };

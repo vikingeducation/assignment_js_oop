@@ -1,0 +1,78 @@
+<?php
+  header( 'Accept-Ranges: bytes');
+?><!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+
+    <title>Bideo Wego | Asteroids</title>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <script src="/assets/js/asteroids/sound/sound.js"></script>
+    <script src="/assets/js/asteroids/sound/sfx.js"></script>
+
+    <button id="bullet">Bullet</button>
+    <button id="asteroid-explosion">Asteroid Explosion</button>
+    <button id="ship-explosion">Ship Explosion</button>
+    <button id="music">Music</button>
+
+    <!-- Initialize Game -->
+    <script>
+      var sounds = {};
+      sounds['bullet'] = [];
+      sounds['asteroid-explosion'] = [];
+      sounds['ship-explosion'] = [];
+      sounds['music'] = [];
+      var sound;
+      for (var i = 0; i < 10; i++) {
+        sound = new ASTEROIDS.sound.Sound({
+          url: '/assets/audio/bullet.mp3'
+        });
+        sounds['bullet'].push(sound);
+
+        sound = new ASTEROIDS.sound.Sound({
+          url: '/assets/audio/asteroid-explosion.mp3'
+        });
+        sounds['asteroid-explosion'].push(sound);
+
+        sound = new ASTEROIDS.sound.Sound({
+          url: '/assets/audio/ship-explosion.mp3'
+        });
+        sounds['ship-explosion'].push(sound);
+      }
+
+      sound = new ASTEROIDS.sound.Sound({
+        url: '/assets/audio/music.mp3',
+        loop: true
+      });
+      sounds['music'].push(sound);
+
+      var sfx = new ASTEROIDS.sound.SFX({
+        sounds: sounds
+      });
+      ASTEROIDS.sound.SFX.instance = sfx;
+
+      $('#bullet').click(function(e) {
+        ASTEROIDS.sound.SFX.play('bullet');
+      });
+
+      $('#asteroid-explosion').click(function(e) {
+        ASTEROIDS.sound.SFX.play('asteroid-explosion');
+      });
+
+      $('#ship-explosion').click(function(e) {
+        ASTEROIDS.sound.SFX.play('ship-explosion');
+      });
+
+      $('#music').click(function(e) {
+        ASTEROIDS.sound.SFX.play('music');
+      });
+    </script>
+  </body>
+</html>
+

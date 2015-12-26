@@ -28,3 +28,7 @@ html,
   background: #F6777F;
 }
 
+.controls ul {
+  list-style: none;
+}
+

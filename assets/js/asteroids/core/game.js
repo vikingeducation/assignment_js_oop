@@ -5,6 +5,7 @@ ASTEROIDS.core = ASTEROIDS.core || {};
 
 ASTEROIDS.core.Game = function Game(options) {
   this.element = '#game';
+  this.audioUrl = '';
 
   this._ai;
   this._collision;
@@ -14,9 +15,11 @@ ASTEROIDS.core.Game = function Game(options) {
   this._trash;
   this._key;
   this._sfx;
+  this._score;
 
   if (options) {
     this.select = options['element'] || this.element;
+    this.audioUrl = options['audioUrl'] || this.audioUrl;
   }
 
   this.initialize();
@@ -25,6 +28,7 @@ ASTEROIDS.core.Game = function Game(options) {
 ASTEROIDS.core.Game.prototype.initialize = function() {
   this._initializeContainer();
   this._initializeObservers();
+  this._initializeScore();
   this._initializeShip();
   this._populateContainer();
   this._initializeEvents();
@@ -44,12 +48,21 @@ ASTEROIDS.core.Game.prototype._initializeObservers = function() {
 };
 
 ASTEROIDS.core.Game.prototype._initializeShip = function() {
-  this._ship = new ASTEROIDS.display.Ship();
+  this._ship = new ASTEROIDS.display.Ship({
+    scoreBoard: this._score
+  });
   this._ship.position = {
     x: this._container.width / 2 - this._ship.width / 2,
-    y: this._container.height / 2 - this._ship.height / 2
+    y: this._container.height / 2 - this._ship.height / 2,
   };
   this._ship.update();
+};
+
+ASTEROIDS.core.Game.prototype._initializeScore = function() {
+  this._score = new ASTEROIDS.display.Text({
+    value: 'Score: 0'
+  });
+  this._container.add(this._score);
 };
 
 ASTEROIDS.core.Game.prototype._populateContainer = function() {
@@ -77,23 +90,23 @@ ASTEROIDS.core.Game.prototype._initializeSounds = function() {
   var sound;
   for (var i = 0; i < 10; i++) {
     sound = new ASTEROIDS.sound.Sound({
-      url: '/assets/audio/bullet.mp3'
+      url: this.audioUrl + '/assets/audio/bullet.mp3'
     });
     sounds['bullet'].push(sound);
 
     sound = new ASTEROIDS.sound.Sound({
-      url: '/assets/audio/asteroid-explosion.mp3'
+      url: this.audioUrl + '/assets/audio/asteroid-explosion.mp3'
     });
     sounds['asteroid-explosion'].push(sound);
 
     sound = new ASTEROIDS.sound.Sound({
-      url: '/assets/audio/ship-explosion.mp3'
+      url: this.audioUrl + '/assets/audio/ship-explosion.mp3'
     });
     sounds['ship-explosion'].push(sound);
   }
 
   sound = new ASTEROIDS.sound.Sound({
-    url: '/assets/audio/music.mp3',
+    url: this.audioUrl + '/assets/audio/music.mp3',
     loop: true
   });
   sounds['music'].push(sound);

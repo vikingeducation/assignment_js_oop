@@ -47,7 +47,7 @@ ASTEROIDS.sound.Sound.prototype.load = function() {
 
 ASTEROIDS.sound.Sound.prototype.play = function() {
   if (!this.isPlaying && this.audio.readyState) {
-    $(this.audio).on('ended', $.proxy(this._onEnd, this));
+    this.audio.onended = $.proxy(this._onEnd, this);
     this.isPlaying = true;
     this.audio.volume = this.volume;
     this.audio.play();

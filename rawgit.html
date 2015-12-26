@@ -26,6 +26,9 @@
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/asteroids.js"></script>
     
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/utils/math.js"></script>
+
+    <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/sound/sound.js"></script>
+    <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/sound/sfx.js"></script>
     
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/events/event.js"></script>
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/events/key.js"></script>
@@ -41,12 +44,15 @@
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/display/bullet.js"></script>
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/display/container.js"></script>
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/display/ship.js"></script>
+    <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/display/text.js"></script>
 
     <script src="https://rawgit.com/BideoWego/assignment_js_oop/master/assets/js/asteroids/core/game.js"></script>
 
     <!-- Initialize Game -->
     <script>
-      var game = new ASTEROIDS.core.Game();
+      var game = new ASTEROIDS.core.Game({
+        audioUrl: 'https://rawgit.com/BideoWego/assignment_js_oop/master'
+      });
     </script>
   </body>
 </html>

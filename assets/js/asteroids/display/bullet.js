@@ -56,6 +56,7 @@ ASTEROIDS.display.Bullet.prototype.collide = function(sprite) {
 
   if (point && !this.isInvincible) {
     this.die();
+    this.ship.score = Math.ceil(this.ship.score + sprite.width);
   }
 };
 

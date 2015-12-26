@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.display = ASTEROIDS.display || {};
@@ -10,11 +10,14 @@ ASTEROIDS.display.Ship = function Ship(options) {
   this.width = 16;
   this.height = 32;
   this.isInvincible = false;
+  this.score = 0;
+  this.scoreBoard = null;
 
   this.lastDelta = null;
 
   if (options) {
     this.bullets = options['bullets'] || this.bullets;
+    this.scoreBoard = options['scoreBoard'] || this.scoreBoard;
   }
 
   this.$element = this.render();
@@ -44,6 +47,9 @@ ASTEROIDS.display.Ship.prototype.update = function(e, data) {
   ASTEROIDS.display.Sprite.prototype.update.call(this, e, data);
 
   this._move();
+
+  this._updateScore();
+
   if (data) {
     if (this.lastDelta === null ||
         data.delta - this.lastDelta > ASTEROIDS.display.Ship.RELOAD_TIME) {
@@ -94,6 +100,12 @@ ASTEROIDS.display.Ship.prototype.destroy = function() {
     bullet.destroy();
   });
   this.bullets = null;
+};
+
+ASTEROIDS.display.Ship.prototype._updateScore = function() {
+  if (this.scoreBoard) {
+    this.scoreBoard.value = 'Score: ' + this.score;
+  }
 };
 
 ASTEROIDS.display.Ship.prototype._fire = function() {

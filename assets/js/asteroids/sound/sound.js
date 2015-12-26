@@ -29,6 +29,10 @@ ASTEROIDS.sound.Sound = function Sound(options) {
   }
 
   this.crossBrowserify();
+
+  if (this.url) {
+    this.load();
+  }
 };
 
 ASTEROIDS.sound.Sound.MIME_TYPES = {
@@ -45,14 +49,14 @@ ASTEROIDS.sound.Sound.prototype.load = function() {
 
 ASTEROIDS.sound.Sound.prototype.play = function() {
   if (!this.isPlaying && this.audio.readyState > 0) {
-    this.loaded = true;
     this.isPlaying = true;
     $(this.audio).bind('ended', $.proxy(this._onEnded, this));
     this.audio.volume = this.volume;
     this.audio.play();
-  } else if (!this.loaded) {
+  } else if (!this.audio.readyState) {
     var that = this;
     this.audio.addEventListener('loadeddata', function(e) {
+      that.loaded = true;
       that.play();
     });
     this.load();

@@ -7,7 +7,6 @@ ASTEROIDS.sound.Sound = function Sound(options) {
   this.name = null;
   this.url = null;
   this.audio = new Audio();
-  this.audio.preload = 'auto';
   this.isPlaying = false;
   this.loop = false;
   this.types = [];

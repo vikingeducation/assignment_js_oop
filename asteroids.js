@@ -32,8 +32,8 @@ GAME.Asteroid = function(posX, posY, size, velX, velY){
   this.posX = posX || GAME.util.rand(10,490);
   this.posY = posY || GAME.util.rand(10,490);
   this.size = size || GAME.util.rand(35,45);
-  this.velX = velX || GAME.util.rand(-1,2) || GAME.util.rand(-2,1);
-  this.velY = velY || GAME.util.rand(-1,2) || GAME.util.rand(-2,1);
+  this.velX = velX || GAME.util.rand(-1,1) || GAME.util.rand(-1,1);
+  this.velY = velY || GAME.util.rand(-1,1) || GAME.util.rand(-1,1);
 };
 
 
@@ -43,7 +43,58 @@ GAME.Asteroid.prototype.tic = function(){
 };
 
 
+GAME.Asteroid.prototype.draw = function(){
+  GAME.canvas.ctx.beginPath();
+  GAME.canvas.ctx.arc(this.posX, this.posY, this.size, 0, 2 * Math.PI);
+  GAME.canvas.ctx.stroke();
+};
+
+
+GAME.Ship = function(){
+  this.posX = 250;
+  this.posY = 250;
+  this.vel = 0.15;
+  this.angle = 270;
+  this.rotateLeft = false;
+  this.rotateRight = false;
+};
+
+
+GAME.Ship.prototype.tic = function(){
+  if (this.rotateLeft) {
+    this.angle -= 10;
+  } else if (this.rotateRight) {
+    this.angle += 10;
+  }
+
+  var radians = this.angle * Math.PI/180;
+  this.posX += Math.cos(radians) * this.vel;
+  this.posY += Math.sin(radians) * this.vel;
+};
+
+
+GAME.Ship.prototype.draw = function(){
+  var ctx = GAME.canvas.ctx;
+  
+  ctx.save();
+
+  ctx.fillStyle = '#00f';
+  ctx.translate(this.posX, this.posY -22 );
+  ctx.rotate(this.angle * Math.PI/180);
+
+  ctx.beginPath();
+  ctx.moveTo(16, 0);
+  ctx.lineTo(0, -44);
+  ctx.lineTo(-16, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+};
+
+
 GAME.model = {
+  ship: new GAME.Ship(),
   asteroids: [],
   // store astr in obj, with ids
 
@@ -58,20 +109,23 @@ GAME.model = {
 
 GAME.controller = {
   init: function(){
-    GAME.model.init(8);
+    GAME.model.init(5);
     GAME.canvas.init();
-    window.requestAnimationFrame(GAME.controller.playLoop);
+    window.requestAnimationFrame(GAME.controller.playLoop, 200);
   },
 
 
   playLoop: function(){ 
     GAME.controller.moveAsteroids();
     GAME.controller.explodeAsteroids();
-    if (GAME.util.rand(0,GAME.model.asteroids.length) + 1 > GAME.model.asteroids.length){
-      GAME.model.asteroids.push(new GAME.Asteroid());
-    }
+    GAME.controller.moveShip();
     GAME.canvas.draw();
-    window.requestAnimationFrame(GAME.controller.playLoop);
+    window.requestAnimationFrame(GAME.controller.playLoop, 200);
+  },
+
+
+  moveShip: function(){
+    GAME.model.ship.tic();
   },
 
 
@@ -94,9 +148,14 @@ GAME.controller = {
     var explodeQueue = GAME.util.astrCollide();
     var newAsteroids = [];
 
+    if (GAME.util.rand(0,200)  > 195){
+      GAME.model.asteroids.push(new GAME.Asteroid());
+      GAME.model.asteroids.splice(0,1);
+    }
+
     for( var i=explodeQueue.length - 1; i >= 0; i--){
       var astr = GAME.model.asteroids.splice(explodeQueue[i], 1)[0];
-      if (astr.size > 10){ 
+      if (astr.size > 15){ 
 
         newAsteroids.push(new GAME.Asteroid( astr.posX - astr.size/2,
                                              astr.posY - astr.size/2,
@@ -122,10 +181,10 @@ GAME.canvas = {
     GAME.canvas.ctx.clearRect(0,0,500,500);
 
     $.each(GAME.model.asteroids, function(i, astr){
-      GAME.canvas.ctx.beginPath();
-      GAME.canvas.ctx.arc(astr.posX, astr.posY, astr.size, 0, 2 * Math.PI);
-      GAME.canvas.ctx.stroke();
+      astr.draw();
     });
+
+    GAME.model.ship.draw();
   }
 };
 
@@ -133,6 +192,9 @@ GAME.canvas = {
 $( document ).ready(function(){
   GAME.controller.init();
 });
+
+
+
 
 
 // GAME.AsteroidInst = function(posX, posY){

@@ -6,28 +6,33 @@ var view = {
 
   this.canvas = document.getElementById('board');
   this.context = this.canvas.getContext('2d');
+  this.canvas.width = 500;
+  this.canvas.height = 500;
 
     
-    this.render();
+  this.render();
   },
 
   render: function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    asteroidModel.collection.forEach(function(element){
-      view.renderAsteroids(element);
+
+    asteroidModel.collection.forEach(function(element, index){
+      view.renderAsteroid(element);
+      //console.log(index);
     })
 
   }, 
 
-  renderAsteroids: function(element){
+  renderAsteroid: function(element){
     
     this.context.beginPath();
     this.context.arc(element.X,element.Y,element.radius, 0, Math.PI*2, false);
     this.context.closePath();
 
-    this.context.strokeStyle = "#FFF";
+    this.context.strokeStyle = "#FF0000";
     this.context.stroke();
+
   },
 
 

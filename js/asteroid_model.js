@@ -55,8 +55,15 @@ GAME.asteroidModel = {
           astrToExplode.push(astr);
         }
       }
+      // check for ship collisions
+      var astr = this.asteroids[i];
+      var radius = astr.size + GAME.controller.ship.size;
+      var distance = Math.sqrt( Math.pow(astr.xCoord - GAME.controller.ship.xCoord, 2) + Math.pow(astr.yCoord - GAME.controller.ship.yCoord, 2) );
 
-
+      if (distance <= radius) {
+        console.log("Game over :(");
+        alert("Game over :(");
+      }
 
     }
     return astrToExplode;

@@ -33,7 +33,6 @@ GAME.controller = {
 
   turnShip: function(amount) {
     this.ship.direction.rotateDeg(amount);
-    console.log(this.ship.direction)
   },
 
 

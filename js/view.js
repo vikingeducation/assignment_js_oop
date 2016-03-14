@@ -88,7 +88,6 @@ GAME.view = {
         e.preventDefault();
         if (e.which === 32) {
           GAME.controller.shootLaser();
-          console.log("space bar!")
         }
       })
     },
@@ -99,12 +98,10 @@ GAME.view = {
         switch(e.which) {
           case 38:
           // controller.direction = "up";
-          console.log("Up!")
           break;
 
           case 40:
           // controller.direction = "down";
-          console.log("Down!")
           break;
         }
       })

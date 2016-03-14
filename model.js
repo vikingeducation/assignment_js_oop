@@ -56,10 +56,11 @@ var model = {
       var asteroid = asteroids[i];
       var otherAsteroids = asteroids.slice();
       //otherAsteroids = otherAsteroids.splice(i,1);
+      otherAsteroids.splice(i,1);
 
       for (var j=0;j < otherAsteroids.length; j++) {
          var otherAsteroid = otherAsteroids[j];
-          otherAsteroids[j]
+          
           //console.log("Hyp is :" + this.hypotenuse(asteroid,otherAsteroid));
           console.log("Asteroid 1 **: " + asteroid.x);
           console.log("Asteroid 2 **: " + otherAsteroid.x);

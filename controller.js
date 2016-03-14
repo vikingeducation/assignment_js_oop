@@ -27,7 +27,7 @@ var controller = {
   gameLoop: function(){
     // controller.generateAsteroids(1);
     view.clearCanvas();
-    view.drawShipv2( ship );
+    view.drawShip( ship );
     controller.setDirection();
     controller.updateAsteroidPos();
     ship.updatePosition();

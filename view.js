@@ -4,9 +4,10 @@ var view = {
   init: function(){
     //listeners
 
-  this.canvas = document.getElementById('board');
-  this.context = this.canvas.getContext('2d');
-
+    this.canvas = document.getElementById('board');
+    this.context = this.canvas.getContext('2d');
+    this.canvas.width = 500;
+    this.canvas.height = 500;
     
     this.render();
   },

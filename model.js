@@ -12,16 +12,16 @@ var asteroidModel = {
   },
 
   createAsteroid: function(){
-    this.X = Math.floor(Math.random() * 500);
-    this.Y = Math.floor(Math.random() * 500);
-    this.radius = Math.floor(Math.random() * 5 + 1);
-    this.Xvel = Math.floor(Math.random() * 10);
-    this.Yvel = Math.floor(Math.random() * 10);
+    this.X = Math.floor(Math.random() * 500 + 1);
+    this.Y = Math.floor(Math.random() * 500 + 1);
+    this.radius = Math.floor(Math.random()) + 5;
+
+    // TODO adjust velocity when necessary
+
+    this.Xvel = (Math.random() * 5 - 2) * 3;
+    this.Yvel = (Math.random() * 5 - 2) * 3;
     
-    // this.tic = function(){
-    //   this.X += this.Xvel;
-    //   this.Y += this.Yvel;
-    // }
+
     return this
   },
 

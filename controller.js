@@ -3,7 +3,7 @@ var controller = {
   init: function(){
     asteroidModel.init(5);
     view.init();
-    setInterval(function(){controller.update()}, 60);
+    setInterval(function(){controller.update()}, 30);
     //after update need to clear canvas and then re-render
   },
 

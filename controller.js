@@ -6,7 +6,7 @@ var controller = {
     view.clearCanvas();
     view.drawShip( ship );
     ship.randomStartInfo();
-    controller.generateAsteroids(2);
+    controller.generateAsteroids(5);
   },
 
   setDirection: function(  ) {
@@ -34,11 +34,21 @@ var controller = {
   },
 
   updateAsteroidPos: function(){
-    space.asteroids.forEach(function(ast){
-
+    space.asteroids.forEach(function(ast, index, array){
+      if (ast.collision === true && ast.width > 20){
+        controller.splitAsteroid(ast, index);
+      }
       ast.updatePosition();
       view.drawAsteroid(ast);
     });
+  },
+
+  splitAsteroid: function(ast, index){
+    space.asteroids.push(new asteroid.Constructor(ast.locationX - 50, ast.locationY - 50, ast.velX * -1, ast.velY * -1, ast.width/2, ast.height/2));
+    space.asteroids.push(new asteroid.Constructor(ast.locationX + 50, ast.locationY + 50, ast.velX * -1, ast.velY * -1, ast.width/2, ast.height/2));
+
+    space.asteroids.splice(index, 1);
+
   },
 
   generateAsteroids: function(num){

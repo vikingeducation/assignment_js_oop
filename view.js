@@ -33,7 +33,7 @@ var view = {
     var ctx=c.getContext("2d");
     ctx.fillStyle="#FFFFFF";
     ctx.strokeStyle="#FFFFFF";
-    ctx.rect(asteroid.locationX, asteroid.locationY, 50, 50);
+    ctx.rect(asteroid.locationX, asteroid.locationY, asteroid.width, asteroid.height);
     ctx.stroke();
   },
 

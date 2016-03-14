@@ -4,14 +4,14 @@
 
 
 var asteroid = {
-  Constructor: function(x, y, vx, vy ){
+  Constructor: function(x, y, vx, vy, wd, ht ){
     this.locationX = x;
     this.locationY = y;
     this.velX = vx;
     this.velY= vy;
     this.collision = false;
-    this.width = 50;
-    this.height = 50;
+    this.width = wd;
+    this.height = ht;
 
     this.updatePosition = function() {
       this.locationX += this.velX;
@@ -29,7 +29,7 @@ var asteroid = {
     var randVX =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY );
     var randVY =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY);
 
-    return new asteroid.Constructor( randX, randY, randVX, randVY );
+    return new asteroid.Constructor( randX, randY, randVX, randVY, 50, 50 );
   },
 
   collision: function(){

@@ -9,6 +9,9 @@ var asteroid = {
     this.locationY = y;
     this.velX = vx;
     this.velY= vy;
+    this.collision = false;
+    this.width = 50;
+    this.height = 50;
 
     this.updatePosition = function() {
       this.locationX += this.velX;
@@ -27,6 +30,23 @@ var asteroid = {
     var randVY =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY);
 
     return new asteroid.Constructor( randX, randY, randVX, randVY );
+  },
+
+  collision: function(){
+    $.each(space.asteroids, function(indexA, astA){
+      $.each(space.asteroids, function(indexB, astB){
+        if (astA.locationX < astB.locationX + astB.width &&
+           astA.locationX + astA.width > astB.locationX &&
+           astA.locationY < astB.locationY + astB.height &&
+           astA.height + astA.locationY > astB.locationY && astA !== astB){
+             console.log('Collision!');
+             astA.collision = true;
+             astB.collision = true;
+           }
+      });
+
+    });
+
   }
 };
 

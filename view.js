@@ -114,11 +114,11 @@ var view = {
    ctx.lineTo( rearPoint2.x, rearPoint2.y );
    ctx.closePath();
    // console.log( ship.direction );
-   ctx.translate( headPoint.x, headPoint.y );
+   ctx.translate( headPoint.x -10, headPoint.y -10);
 
    //reset the canvas
    ctx.rotate(rad * ( -1 ) );
-   ctx.translate(headPoint.x, headPoint.y);
+   ctx.translate(headPoint.x  * (-1), headPoint.y  * (-1));
  },
 
   clearCanvas: function() {

@@ -6,7 +6,7 @@ var controller = {
     view.clearCanvas();
     view.drawShip( ship );
     ship.randomStartInfo();
-    controller.generateAsteroids(10);
+    controller.generateAsteroids(2);
   },
 
   setDirection: function(  ) {
@@ -19,7 +19,7 @@ var controller = {
     ship.direction -= 1/8 * Math.PI;
     controller.direction = "";
   }
-  console.log(ship.direction);
+  // console.log(ship.direction);
   },
 
   direction: "",
@@ -27,10 +27,11 @@ var controller = {
   gameLoop: function(){
     // controller.generateAsteroids(1);
     view.clearCanvas();
-    view.drawShipv2( ship );
+    view.drawShip( ship );
     controller.setDirection();
     controller.updateAsteroidPos();
     ship.updatePosition();
+    asteroid.collision();
   },
 
   updateAsteroidPos: function(){

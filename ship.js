@@ -18,8 +18,8 @@ var Ship = function(x, y, x_vel, y_vel, size) {
   this.accelerate = function() {
     var xVector = Math.cos(this.direction);
     var yVector = Math.sin(this.direction);
-    if ((Math.random() * 10) > 8) {
-      var particle = new Particle(this.x + Math.random() * 8, this.y + Math.random() * 8, (xVector * -3), yVector * -3);
+    if ((Math.random() * 10) > 6) {
+      var particle = new Particle(this.x + Math.random() * 8, this.y + Math.random() * 8, (xVector * -3) + Math.random() * 2, yVector * -3 + Math.random() * 2);
       this.board.addParticle(particle);
     }
     this.x_vel += (xVector * this.accerelation);

@@ -4,7 +4,7 @@ var GAME = GAME || {};
 GAME.view = {
   init: function() {
     this.draw();
-    this.eventListeners.registerKeys;
+    this.eventListeners.changeShipDirection();
   },
 
   canvas: $('canvas').get(0),
@@ -28,11 +28,22 @@ GAME.view = {
 
   drawShip: function() {
     var ship = GAME.controller.ship;
+    // var newXCoords = ship.xCoord + ship.direction["x"];
+    // var newYCoords = ship.yCoord - ship.direction["y"];
+    var victor = ship.direction.clone();
+    
+
     this.context.fillStyle = '#000';
     this.context.beginPath();
-    this.context.moveTo(ship.xCoord, ship.yCoord);
-    this.context.lineTo(ship.xCoord + ship.size, ship.yCoord + ship.size/2);
-    this.context.lineTo(ship.xCoord + ship.size, ship.yCoord - ship.size/2);
+    this.context.moveTo(ship.xCoord + victor.x, ship.yCoord + victor.y);
+
+    var rotated = victor.rotateDeg(90)
+    this.context.lineTo(ship.xCoord + rotated.x, ship.yCoord + rotated.y);
+
+    var taters = rotated.rotateDeg(180)
+    this.context.lineTo(ship.xCoord + taters.x, ship.yCoord + taters.y)
+
+
     this.context.closePath();
     this.context.stroke();
     this.context.fill();
@@ -43,33 +54,48 @@ GAME.view = {
   },
 
   eventListeners: {
-    registerKeys: function() {
-      // up, right, down, left
-      // spacebar to shoot
-    }
+    changeShipDirection: function() {
+      $( document ).keydown(function(e) {
+        e.preventDefault();
+        switch(e.which) {
+          case 37:
+          GAME.controller.turnShip(-10);
+          break;
+
+          case 39:
+          GAME.controller.turnShip(10);
+          break;
+        }
+      })
+
+
+    },
+
+
+    shootLasers: function() {
+    },
+    // spacebar to shoot
+
+    accelerateDecelerate: function() {
+      $( document ).keydown(function(e) {
+        e.preventDefault();
+        switch(e.which) {
+          case 38:
+          // controller.direction = "up";
+          console.log("Up!")
+          break;
+
+          case 40:
+          // controller.direction = "down";
+          console.log("Down!")
+          break;
+        }
+      })
+    },
   }
-
 }
 
 
-
-
-GAME.shipModel.Ship.prototype.draw = function() {
-  var context = GAME.view.context;
-  context.save();
-
-  context.fillStyle = '#000';
-  context.translate(this.xCoord, this.yCoord );
-
-  context.beginPath();
-  context.moveTo(50, 0);
-  context.lineTo(0, 15);
-  context.lineTo(0, -15);
-  context.closePath();
-  context.fill();
-
-  // context.restore();
-}
 
 
 

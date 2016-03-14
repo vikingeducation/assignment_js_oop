@@ -20,8 +20,6 @@ GAME.controller = {
       GAME.controller.gameLoop();
     }, 1000 / 60 );
 
-    // new GAME.Ship() // build ship
-
     // initialize score
 
   },
@@ -30,5 +28,13 @@ GAME.controller = {
     GAME.asteroidModel.update();
     GAME.view.draw();
   },
+
+
+  turnShip: function(amount) {
+    this.ship.direction.rotateDeg(amount);
+    console.log(this.ship.direction)
+  }
+
+
 
 }

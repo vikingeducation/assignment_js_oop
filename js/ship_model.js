@@ -7,8 +7,9 @@ GAME.shipModel = {
   Ship: function() {
     this.xCoord = GAME.width / 2;
     this.yCoord = GAME.height / 2;
-    this.direction = 0;
     this.size = 35;
+    this.direction = new Victor(this.size,0);
+
   }
 }
 

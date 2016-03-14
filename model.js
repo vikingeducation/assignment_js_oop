@@ -89,7 +89,7 @@ var ship = {
 };
 
 var space = {
-  MAX_VELOCITY: 25,
+  MAX_VELOCITY: 5,
   width: 800,
   height: 600,
   asteroids: [],

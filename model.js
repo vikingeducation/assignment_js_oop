@@ -19,12 +19,6 @@ GAME.model = {
 
   },
 
-  // question: can you get prototypes to work here?
-
-  // Asteroid.prototype: var tic = function() {
-  //   this.xCoord += this.xVelocity;
-  //   this.yCoord += this.yVelocity;
-  // },
 
   generateAsteroids: function(numAsteroids) {
     numAsteroids = numAsteroids || 1;
@@ -33,6 +27,11 @@ GAME.model = {
       GAME.model.asteroids.push(ast);
     }
   },
+
+
+  explodeAsteroids: function() {
+    // one asteroid explodes into two asteroids of half size
+  }
 
 
 
@@ -56,7 +55,44 @@ GAME.model.Asteroid.prototype.tic = function() {
 GAME.useful = {
   random: function(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+  },
+
+
+  // function to see if two objects collide
+
+
 }
 
 
+GAME.Ship = function() {
+  this.xCoord = 500;
+  this.yCoord = 500;
+  this.size = 35;
+}
+
+GAME.Ship.prototype.tic = function() {
+
+}
+
+
+
+
+GAME.Ship.prototype.fire = function() {
+  
+}
+
+
+
+
+
+
+GAME.laser = function() {
+  this.size = 2;
+
+}
+
+
+
+GAME.laser.prototype.tic = function() {
+
+}

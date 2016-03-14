@@ -1,15 +1,20 @@
 var GAME = GAME || {};
 
-// GAME.view.init()
-// GAME.model.generateAsteroids(10)
-// GAME.view.draw()
+
+
 
 
 
 GAME.controller = {
 
   init: function() {
-    GAME.model.init();    
+    GAME.model.init(10); // generate asteroids
+    GAME.view.init(); // draw asteroids
+
+    // new GAME.Ship() // build ship
+    
+    // initialize score
+
   },
 
 

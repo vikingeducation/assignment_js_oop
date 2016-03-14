@@ -29,16 +29,13 @@ var view = {
     }//end keypressListener
   },
 
-  drawLittleAsteroid: function(){
-
-  },
-
-  drawMediumAsteroid: function(){
-
-  },
-
-  drawBigAsteroid: function(){
-
+  drawAsteroid: function(asteroid){
+    var c=document.getElementById("canvas");
+    var ctx=c.getContext("2d");
+    ctx.fillStyle="#FFFFFF";
+    ctx.strokeStyle="#FFFFFF";
+    ctx.rect(asteroid.startX, asteroid.startY, 50, 50);
+    ctx.stroke();
   },
 
   drawShip: function( ship ){
@@ -47,20 +44,20 @@ var view = {
     console.log('im also here');
     if(canvas.getContext) {
 
-      var rearPoint1 =  { 
+      var rearPoint1 =  {
           x: ship.locationX - ship.height,
           y: ship.locationY + ship.width / 2,
-      }
+      };
 
-      var rearPoint2 = { 
+      var rearPoint2 = {
           x: ship.locationX - ship.height,
           y: ship.locationY - ship.width / 2,
-        }
+        };
 
-      var headPoint = { 
+      var headPoint = {
           x: ship.locationX,
           y: ship.locationY,
-        }
+        };
 
 
       var ctx = canvas.getContext("2d");
@@ -74,7 +71,7 @@ var view = {
       ctx.lineTo( headPoint.x, headPoint.y );
       ctx.lineTo( rearPoint2.x, rearPoint2.y );
       ctx.closePath();
-      console.log( ship.direction )
+      console.log( ship.direction );
       ctx.rotate( ship.direction );
       ctx.restore();
       ctx.fill();

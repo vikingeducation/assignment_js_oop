@@ -27,19 +27,17 @@ var model = {
       asteroid.tic();
     });
 
-    var that = this;
-
-    this.particles.forEach(function(particle, index){
+    this.particles.forEach(function(particle, index, array){
       particle.tic();
       if (particle.life <= 0) {
-        that.particles.splice(index, 1);
+        array.splice(index, 1);
       }
     });
 
-    this.bullets.forEach(function(bullet, index){
+    this.bullets.forEach(function(bullet, index, array){
       bullet.tic();
       if (bullet.life <= 0) {
-        that.bullets.splice(index, 1);
+        array.splice(index, 1);
       }
     });
 

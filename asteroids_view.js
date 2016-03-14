@@ -13,8 +13,9 @@ var view = {
       var asteroidField = new Two(params);
       var gameField = document.getElementById('asteroid-field');
       asteroidField.appendTo(gameField);
-      $('#asteroid-field > svg').addClass('game')
-        return this.asteroidField = asteroidField;
+      $('#asteroid-field > svg').addClass('game');
+      this.asteroidField = asteroidField;
+      return asteroidField;
     }
   },
 
@@ -27,7 +28,6 @@ var view = {
 
     asteroidField.clear();
 
-
     asteroidField.add(ship.render());
 
     bullets.forEach( function(bullet) {
@@ -35,19 +35,19 @@ var view = {
     });
 
     var that = this;
-    asteroidCollection.forEach( function(asteroid) {
 
+    asteroidCollection.forEach( function(asteroid) {
       asteroidField.add(asteroid.render());
 
-      // asteroidCollection.forEach(function(asteroid2) {
-      //   if (asteroid != asteroid2 && asteroid2.collision(asteroid)) {
-      //     asteroid2.asteroidHit(asteroid);
-      //   };
-      // })
+      asteroidCollection.forEach(function(asteroid2) {
+        if (asteroid != asteroid2 && asteroid2.collision(asteroid)) {
+          asteroid2.asteroidHit(asteroid);
+        };
+      })
 
-      // if (ship.collision(asteroid)) {
-      //   model.reset();
-      // };
+      if (ship.collision(asteroid)) {
+        model.reset();
+      };
 
       bullets.forEach(function(bullet){
         if (bullet.collision(asteroid)) {

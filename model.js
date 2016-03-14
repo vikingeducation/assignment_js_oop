@@ -21,13 +21,12 @@ var asteroid = {
     };
   },
 
-
   randAsteroid: function(){
-    var randX = Math.floor(Math.random() * space.width) + 1;
-    var randY = Math.floor(Math.random() * space.height) + 1;
+    var randX = Math.random() * space.width + 1;
+    var randY = Math.random() * space.height+ 1;
 
-    var randVX =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY );
-    var randVY =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY);
+    var randVX =  2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY;
+    var randVY =  2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY;
 
     return new asteroid.Constructor( randX, randY, randVX, randVY, 50, 50 );
   },
@@ -105,11 +104,24 @@ var ship = {
     return point;
   },
 
+  fire: function() 
+  {
+    console.log('fire');
+    var bulletHeight = 2;
+    var bulletWidth = 2;
+    var bulletVX =  10 * Math.cos( ship.direction);
+    var bulletVY = 10 * Math.sin( ship.direction);
+    var bullet =  new asteroid.Constructor( ship.locationX, ship.locationY,
+     bulletVX, bulletVY, bulletHeight, bulletWidth );
+
+    space.asteroids.push(bullet);
+  },
+
 
 };
 
 var space = {
-  MAX_VELOCITY: 5,
+  MAX_VELOCITY: 1.8,
   width: 800,
   height: 600,
   asteroids: [],

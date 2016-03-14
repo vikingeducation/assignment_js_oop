@@ -12,8 +12,8 @@ var view = {
           controller.direction = "left";
           break;
 
-          case 38: // up
-          controller.direction = "up";
+          case 32: // space
+          controller.fire = true;
           break;
 
           case 39: // right

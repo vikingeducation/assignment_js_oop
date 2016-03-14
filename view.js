@@ -13,6 +13,7 @@ var view = {
         view.update();
         view.clearCanvas(c);
         view.drawAsteroids(c);
+        view.drawShip(c);
       }, INTERVAL);
     };
   },
@@ -28,6 +29,12 @@ var view = {
       canvas.arc(asteroids[a].x, asteroids[a].y, asteroids[a].size,0,2 *Math.PI);
       canvas.fill();
     }
+  },
+
+  drawShip: function(canvas) {
+    //view.clearCanvas(canvas);
+    var ship = controller.getShip();
+    ship.draw(canvas);
   },
 
   clearCanvas: function(canvas) {

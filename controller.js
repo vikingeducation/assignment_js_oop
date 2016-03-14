@@ -18,6 +18,10 @@ var controller = {
 
   checkCollisions: function() {
     model.checkCollisions();
+  },
+
+  getShip: function() {
+    return model.getShip();
   }
 
 };

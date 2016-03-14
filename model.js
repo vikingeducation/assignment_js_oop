@@ -1,8 +1,14 @@
 var model = {
+  ship: new Ship(),
   asteroids: [],
+  
 
   getAsteroids: function() {
     return this.asteroids;
+  },
+
+  getShip: function() {
+    return this.ship;
   },
 
   generateAsteroids: function() {
@@ -94,6 +100,24 @@ var model = {
 
 };
 
+function Ship() {
+
+  this.size = 50;
+  this.x = 375;
+  this.y = 375;
+
+   // Velocity
+  this.dx = 10;
+  this.dy = 10;
+
+
+  this.image = new Image();
+  this.image.src = "images/batwing.jpg";
+
+  this.draw = function(context) {
+    context.drawImage(this.image, this.x, this.y, this.size, this.size);
+  };
+};
 
 function Asteroid(size, x, y, dx, dy) {
   // Size

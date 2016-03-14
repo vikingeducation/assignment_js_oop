@@ -27,10 +27,6 @@ GAME.model = {
       var ast = new GAME.model.Asteroid();
       GAME.model.asteroids.push(ast);
     }
-
-    var d = new Date();
-    GAME.model.deltaTime = d.getTime() - GAME.model.lastAsteroidCreatedAt;
-    GAME.model.lastAsteroidCreatedAt = d.getTime();
   },
 
 
@@ -41,7 +37,7 @@ GAME.model = {
 
     for (var i = 0; i < GAME.model.asteroids.length; i++) {
       for (var j = 0; j < GAME.model.asteroids.length; j++) {
-        if (i == j) {
+        if (i === j) {
           continue;
         }
         var astrA = GAME.model.asteroids[i];
@@ -49,7 +45,7 @@ GAME.model = {
         var distance = Math.sqrt( Math.pow(astrA.xCoord - astrB.xCoord, 2) + Math.pow(astrA.yCoord - astrB.yCoord, 2) );
         var sumRadii = astrA.size + astrB.size;
 
-        if (distance < sumRadii) {
+        if (distance <= sumRadii) {
           astrToExplode.push(astrA);
           astrToExplode.push(astrB);
         }
@@ -57,7 +53,6 @@ GAME.model = {
     }
     return astrToExplode;
   },
-
 
   explodeAsteroids: function(arr) {
     // halve existing asteroid's size, randomize velocity
@@ -67,18 +62,16 @@ GAME.model = {
       var originalSize = arr[i].size;
 
       // if size is too small, don't add
-      if (originalSize / 2 < 20) {
+      var aIdx = GAME.model.asteroids.indexOf(arr[i]);
+      if (originalSize < 10) {
         arr.splice(i,1);
-        var astrToRemove = GAME.model.asteroids.indexOf(arr[i]);
-        GAME.model.asteroids.splice(astrToRemove, 1);
-      }
-
-      else {
-        arr[i].xCoord = collisionX + originalSize;
-        arr[i].yCoord = collisionY + originalSize;
-        arr[i].size = originalSize / 2;
-        arr[i].xVelocity = GAME.useful.randomVelocity();
-        arr[i].yVelocity = GAME.useful.randomVelocity();
+        GAME.model.asteroids.splice(aIdx, 1);
+      } else {
+        GAME.model.asteroids[aIdx].xCoord = collisionX + originalSize;
+        GAME.model.asteroids[aIdx].yCoord = collisionY + originalSize;
+        GAME.model.asteroids[aIdx].size = GAME.useful.halfSize(originalSize);
+        GAME.model.asteroids[aIdx].xVelocity = GAME.useful.randomVelocity();
+        GAME.model.asteroids[aIdx].yVelocity = GAME.useful.randomVelocity();
 
         // create new tiny asteroid, with random velocity
         GAME.model.asteroids.push(new GAME.model.Asteroid(collisionX-originalSize, collisionY-originalSize, originalSize/2));
@@ -92,17 +85,19 @@ GAME.model = {
       this.asteroids[i].tic();
     }
     this.explodeAsteroids(this.findAsteroidsToExplode());
+    this.addNewAsteroid();
   },
 
 
   addNewAsteroid: function() {
+    var d = new Date();
+    GAME.model.deltaTime = d.getTime() - GAME.model.lastAsteroidCreatedAt;
     if (GAME.model.deltaTime > 5000) {
-      generateAsteroids(1);
+      this.generateAsteroids(1);
+      console.log("generating");
+      GAME.model.lastAsteroidCreatedAt = d.getTime();
     }
   }
-
-
-
 }
 
 GAME.model.Asteroid.prototype.tic = function() {
@@ -139,10 +134,21 @@ GAME.useful = {
   },
 
   randomVelocity: function() {
-    return Math.floor(Math.random() * 20 - 10);
-  }
-  // function to see if two objects collide
+    return Math.floor(Math.random() * 10 - 5);
+  },
 
+  circleArea: function(r) {
+    return Math.PI * Math.pow(r, 2);
+  },
+
+  radiusFromArea: function(a) {
+    return Math.sqrt( a / Math.PI );
+  },
+
+  halfSize: function(r) {
+    var halfArea = this.circleArea(r) / 2;
+    return this.radiusFromArea(halfArea);
+  }
 
 }
 

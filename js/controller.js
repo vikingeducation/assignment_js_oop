@@ -14,7 +14,7 @@ GAME.controller = {
 
     setInterval( function() {
       GAME.controller.gameLoop();
-    }, 20 );
+    }, 1000 / 60 );
 
     // new GAME.Ship() // build ship
 

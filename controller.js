@@ -20,15 +20,15 @@ var controller = {
   direction: "",
 
   gameLoop: function(){
-
+    view.clearCanvas();
+    view.drawShip( ship );
     controller.updateAsteroidPos();
-
   },
 
   updateAsteroidPos: function(){
     space.asteroids.forEach(function(ast){
-      asteroid.startX += asteroid.velX;
-      asteroid.startY += asteroid.velY;
+      ast.startX += ast.velX;
+      ast.startY += ast.velY;
       view.drawAsteroid(ast);
     });
   },

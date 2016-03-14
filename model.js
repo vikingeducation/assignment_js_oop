@@ -5,8 +5,8 @@ var asteroid = {
   Constructor: function(x, y){
     this.startX = x;
     this.startY = y;
-    this.velX = 1;
-    this.velY= 1;
+    this.velX = 11;
+    this.velY= 11;
   },
 
   randAsteroid: function(){
@@ -20,7 +20,7 @@ var ship = {
   // uses locationX, locationY, direction
   width: 30,
   height: 50,
-  acceleration: 1,
+  acceleration: 12,
 
 };
 

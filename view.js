@@ -41,7 +41,7 @@ var view = {
   drawShip: function( ship ){
 
     var canvas = document.getElementById("canvas");
-    console.log('im also here');
+    // console.log('im also here');
     if(canvas.getContext) {
 
       var rearPoint1 =  {
@@ -80,10 +80,12 @@ var view = {
 
   clearCanvas: function() {
     var canvas = document.getElementById("canvas");
-    console.log('im also here');
     if(canvas.getContext) {
+      // console.log('im also here');
       var ctx = canvas.getContext("2d");
-      ctx.clearRect( 0, 0, 800, 600 );
+      // console.log(ctx);
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = canvas.width
     }
 
   }

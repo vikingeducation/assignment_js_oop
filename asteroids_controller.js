@@ -2,6 +2,15 @@ var controller = {
   init: function() {
     view.init();
     this.loop();
+    Mousetrap.bind('right', function(){
+      model.turnRight();
+    });
+    Mousetrap.bind('left', function(){
+      model.turnLeft();
+    });
+    Mousetrap.bind('up', function(){
+      model.accelerate();
+    });
   },
 
   loop: function() {

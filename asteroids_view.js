@@ -39,10 +39,8 @@ var view = {
     shipObject.fill = null;
     asteroidField.bind('update', function() {
       shipObject.translation.set(ship.x, ship.y);
-      shipObject.rotation = ship.direction;
+      shipObject.rotation = ship.direction - (Math.PI / 180) * 30;
     })
     asteroidField.play();
   },
-
-  
 }

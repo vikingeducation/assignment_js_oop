@@ -17,5 +17,19 @@ var model = {
     this.asteroidCollection.forEach(function(asteroid){
       asteroid.tic();
     });
+    model.ship.tic();
+  },
+
+  accelerate: function() {
+    this.ship.accelerate();
+  },
+
+  turnRight: function() {
+    this.ship.turnRight();
+  },
+
+  turnLeft: function() {
+    this.ship.turnLeft();
   }
+
 };

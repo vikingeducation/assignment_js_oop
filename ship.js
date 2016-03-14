@@ -25,6 +25,15 @@ var Particle = function(x, y, x_vel, y_vel) {
   this.otherTic = function() {
     this.life -= 1;
   }
+
+  this.render = function() {
+    var particleObject = new Two.Line(this.x, this.y, this.x + this.x_vel * 5, this.y + this.y_vel * 5);
+    particleObject.stroke = '#FFAAAA';
+    particleObject.fill = null;
+    particleObject.opacity = this.life / 100;
+    particleObject.translation.set(this.x, this.y);
+    return particleObject;
+  }
 };
 
 var Ship = function(x, y, x_vel, y_vel, size) {

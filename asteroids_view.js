@@ -24,13 +24,11 @@ var view = {
     var bullets = model.bullets;
     var asteroidField = this.two();
     var ship = model.ship;
-    var bulletObjects = [];
 
     asteroidField.clear();
 
-    var shipObject = model.ship.render();
 
-    asteroidField.add(shipObject);
+    asteroidField.add(ship.render());
 
     bullets.forEach( function(bullet) {
       asteroidField.add(bullet.render());
@@ -38,28 +36,21 @@ var view = {
 
     var that = this;
     asteroidCollection.forEach( function(asteroid) {
-      var asteroidObject = asteroidField.makePolygon(asteroid.x, asteroid.y, asteroid.size*5, 5);
-      asteroidObject.stroke = '#FFFFFF';
-      asteroidObject.fill = null;
-      asteroidObject.translation.set(asteroid.x, asteroid.y);
-      asteroidObject.rotation = asteroid.direction;
 
-      asteroidCollection.forEach(function(asteroid2) {
+      asteroidField.add(asteroid.render());
 
-        if (asteroid2.collision(asteroidObject)) {
-          asteroid2.asteroidHit(asteroid);
-          asteroidField.remove(asteroidObject);
-          asteroidField.remove(asteroid2);
-        };
-      })
+      // asteroidCollection.forEach(function(asteroid2) {
+      //   if (asteroid != asteroid2 && asteroid2.collision(asteroid)) {
+      //     asteroid2.asteroidHit(asteroid);
+      //   };
+      // })
 
-      if (ship.collision(asteroidObject)) {
-        model.reset();
-      };
+      // if (ship.collision(asteroid)) {
+      //   model.reset();
+      // };
 
       bullets.forEach(function(bullet){
-        if (bullet.collision(asteroidObject)) {
-          asteroidField.remove(asteroidObject);
+        if (bullet.collision(asteroid)) {
           bullet.asteroidHit(asteroid);
         };
       })
@@ -67,12 +58,9 @@ var view = {
     });
 
     particles.forEach( function(particle) {
-      var particleObject = asteroidField.makeLine(particle.x, particle.y, particle.x + particle.x_vel * 5, particle.y + particle.y_vel * 5);
-      particleObject.stroke = '#FFAAAA';
-      particleObject.fill = null;
-      particleObject.opacity = particle.life / 100;
-      particleObject.translation.set(particle.x, particle.y);
+      asteroidField.add(particle.render());
     });
+
 
     asteroidField.update();
   },

@@ -9,7 +9,7 @@ GAME.height = 800;
 GAME.controller = {
 
   init: function() {
-    GAME.model.init(10); // generate asteroids
+    GAME.model.init(2); // generate asteroids
     GAME.view.init(); // draw asteroids
 
     setInterval( function() {

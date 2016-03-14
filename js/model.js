@@ -14,8 +14,8 @@ GAME.model = {
     this.xCoord = xCoord || GAME.useful.random(10, 1590);
     this.yCoord = yCoord || GAME.useful.random(10, 790);
     this.size = size || GAME.useful.random(20,90);
-    this.xVelocity = Math.random() * 20 - 10;
-    this.yVelocity = Math.random() * 20 - 10;
+    this.xVelocity = xVelocity || GAME.useful.randomVelocity();
+    this.yVelocity = yVelocity || GAME.useful.randomVelocity();
   },
 
 
@@ -28,8 +28,51 @@ GAME.model = {
   },
 
 
-  explodeAsteroids: function() {
+  findAsteroidsToExplode: function() {
     // one asteroid explodes into two asteroids of half size
+    // OR bullet hits asteroid
+    var astrToExplode = [];
+
+    for (var i = 0; i < GAME.model.asteroids.length; i++) {
+      for (var j = 0; j < GAME.model.asteroids.length; j++) {
+        if (i == j) {
+          continue;
+        }
+        var astrA = GAME.model.asteroids[i];
+        var astrB = GAME.model.asteroids[j];
+        var distance = Math.sqrt( Math.pow(astrA.xCoord - astrB.xCoord, 2) + Math.pow(astrA.yCoord - astrB.yCoord, 2) );
+        var sumRadii = astrA.size + astrB.size;
+
+        if (distance < sumRadii) {
+          astrToExplode.push(astrA);
+          astrToExplode.push(astrB);
+          console.log("Explode!!!!!!")
+        }
+      }
+    }
+    return astrToExplode;
+  },
+
+
+  explodeAsteroids: function(arr) {
+    // halve existing asteroid's size, randomize velocity
+    for (var i = 0; i < arr.length; i++) {
+      var collisionX = arr[i].xCoord;
+      var collisionY = arr[i].yCoord;
+      var originalSize = arr[i].size;
+
+
+      arr[i].xCoord = collisionX + originalSize;
+      arr[i].yCoord = collisionY + originalSize;
+      arr[i].size = originalSize / 2;
+      arr[i].xVelocity = GAME.useful.randomVelocity();
+      arr[i].yVelocity = GAME.useful.randomVelocity();
+
+      // create new tiny asteroid, with random velocity
+      GAME.model.asteroids.push(new GAME.model.Asteroid(collisionX-originalSize, collisionY-originalSize, originalSize/2))
+    }
+
+
   },
 
 
@@ -37,6 +80,7 @@ GAME.model = {
     for ( var i = 0; i < this.asteroids.length; i++ ) {
       this.asteroids[i].tic();
     }
+    this.explodeAsteroids(this.findAsteroidsToExplode());
   },
 
 
@@ -79,7 +123,9 @@ GAME.useful = {
     return Math.floor(Math.random() * (max - min + 1) + min);
   },
 
-
+  randomVelocity: function() {
+    return Math.floor(Math.random() * 20 - 10);
+  }
   // function to see if two objects collide
 
 

@@ -3,8 +3,8 @@ var controller = {
   left: false,
   up: false,
 
-  init: function() {
-    model.init()
+  init: function(height, width) {
+    model.init(width, height)
     view.init();
     this.loop();
     Mousetrap.bind('right', function(){
@@ -28,6 +28,9 @@ var controller = {
       this.up = false
     }, 'keyup');
 
+    Mousetrap.bind('space', function(){
+      model.fire();
+    });
   },
 
   loop: function() {
@@ -47,5 +50,5 @@ var controller = {
 };
 
 $(function() {
-  controller.init();
+  controller.init($(window).height() - 10, $(window).width());
 });

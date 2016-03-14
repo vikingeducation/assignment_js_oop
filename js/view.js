@@ -14,6 +14,7 @@ GAME.view = {
   draw: function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawAsteroids();
+    this.drawShip();
   },
 
   drawAsteroids: function() {
@@ -25,6 +26,21 @@ GAME.view = {
     });
   },
 
+  drawShip: function() {
+    var ship = GAME.controller.ship;
+    this.context.fillStyle = '#000';
+    this.context.beginPath();
+    this.context.moveTo(ship.xCoord, ship.yCoord);
+    this.context.lineTo(ship.xCoord + ship.size, ship.yCoord + ship.size/2);
+    this.context.lineTo(ship.xCoord + ship.size, ship.yCoord - ship.size/2);
+    this.context.closePath();
+    this.context.stroke();
+    this.context.fill();
+  },
+
+  drawLaser: function() {
+
+  },
 
   eventListeners: {
     registerKeys: function() {
@@ -38,7 +54,7 @@ GAME.view = {
 
 
 
-GAME.Ship.prototype.draw = function() {
+GAME.shipModel.Ship.prototype.draw = function() {
   var context = GAME.view.context;
   context.save();
 

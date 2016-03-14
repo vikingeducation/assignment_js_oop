@@ -14,7 +14,7 @@ var view = {
       var gameField = document.getElementById('asteroid-field');
       asteroidField.appendTo(gameField);
       $('#asteroid-field > svg').addClass('game')
-      return this.asteroidField = asteroidField;
+        return this.asteroidField = asteroidField;
     }
   },
 
@@ -29,20 +29,16 @@ var view = {
       var asteroidObject = asteroidField.makePolygon(asteroid.x, asteroid.y, asteroid.size*5, 5);
       asteroidObject.stroke = '#FFFFFF';
       asteroidObject.fill = null;
-      asteroidField.bind('update', function() {
-        asteroidObject.translation.set(asteroid.x, asteroid.y);
-        asteroidObject.rotation = asteroid.direction;
-      })
+      asteroidObject.translation.set(asteroid.x, asteroid.y);
+      asteroidObject.rotation = asteroid.direction;
     });
 
     particles.forEach( function(particle) {
       var particleObject = asteroidField.makeLine(particle.x, particle.y, particle.x + particle.x_vel * 5, particle.y + particle.y_vel * 5);
-      particleObject.stroke = '#FFEEFF';
+      particleObject.stroke = '#FFAAAA';
       particleObject.fill = null;
-      asteroidField.bind('update', function() {
-        particleObject.opacity = particle.life / 100;
-        particleObject.translation.set(particle.x, particle.y);
-      })
+      particleObject.opacity = particle.life / 100;
+      particleObject.translation.set(particle.x, particle.y);
     });
 
     shipObject = asteroidField.makePolygon(ship.x, ship.y, 15, 3);
@@ -51,11 +47,9 @@ var view = {
     shipObject.linewidth = 2;
     shipObject.stroke = '#FFFFFF';
     shipObject.fill = null;
-    asteroidField.bind('update', function() {
-      shipObject.translation.set(ship.x, ship.y);
-      shipObject.rotation = ship.direction - (Math.PI / 180) * 30;
-    })
+    shipObject.translation.set(ship.x, ship.y);
+    shipObject.rotation = ship.direction - (Math.PI / 180) * 30;
 
-    asteroidField.play();
+    asteroidField.update();
   },
 }

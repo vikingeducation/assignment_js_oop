@@ -36,7 +36,6 @@ var model = {
 
   accelerate: function() {
     this.ship.accelerate();
-    console.log(this.particles);
   },
 
   turnRight: function() {
@@ -50,6 +49,4 @@ var model = {
   addParticle: function(particle) {
     this.particles.push(particle);
   }
-
-
 };

@@ -54,6 +54,8 @@ GAME.model = {
     return astrToExplode;
   },
 
+
+
   explodeAsteroids: function(arr) {
     // halve existing asteroid's size, randomize velocity
     for (var i = 0; i < arr.length; i++) {
@@ -80,6 +82,7 @@ GAME.model = {
   },
 
 
+
   update: function() {
     for ( var i = 0; i < this.asteroids.length; i++ ) {
       this.asteroids[i].tic();
@@ -87,6 +90,7 @@ GAME.model = {
     this.explodeAsteroids(this.findAsteroidsToExplode());
     this.addNewAsteroid();
   },
+
 
 
   addNewAsteroid: function() {
@@ -100,12 +104,15 @@ GAME.model = {
   }
 }
 
+
+
 GAME.model.Asteroid.prototype.tic = function() {
   this.xCoord += this.xVelocity;
   this.yCoord += this.yVelocity;
 
   this.wrap();
 }
+
 
 
 GAME.model.Asteroid.prototype.wrap = function() {
@@ -123,18 +130,13 @@ GAME.model.Asteroid.prototype.wrap = function() {
 
 
 
-
-
-
-
-
 GAME.useful = {
   random: function(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   },
 
   randomVelocity: function() {
-    return Math.floor(Math.random() * 10 - 5);
+    return Math.floor(Math.random() * 4 - 2);
   },
 
   circleArea: function(r) {
@@ -153,6 +155,7 @@ GAME.useful = {
 }
 
 
+
 GAME.Ship = function() {
   this.xCoord = 500;
   this.yCoord = 500;
@@ -165,13 +168,9 @@ GAME.Ship.prototype.tic = function() {
 
 
 
-
 GAME.Ship.prototype.fire = function() {
 
 }
-
-
-
 
 
 

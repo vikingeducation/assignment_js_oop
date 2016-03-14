@@ -46,19 +46,20 @@ var view = {
   },
 
   update: function() {
-    //var LEFT = 97, UP = 119, RIGHT = 100, DOWN = 115; // WASD keys
+    
     controller.generateAsteroids();
     controller.updateAsteroids();
     controller.checkCollisions();
 
     // Avatar movement
-    // if (key.isPressed("A")) controller.updateAvatar(LEFT);
-    // if (key.isPressed("D")) controller.updateAvatar(RIGHT);
-    // if (key.isPressed("W")) controller.updateAvatar(UP);
-    // if (key.isPressed("S")) controller.updateAvatar(DOWN);
+    if (key.isPressed("A")) controller.updateShip("left");
+    if (key.isPressed("D")) controller.updateShip("right");
+    if (key.isPressed("W")) controller.updateShip("up");
+    //if (key.isPressed("S")) controller.updateAvatar(DOWN);
     // Update bullet locations
     //if (controller.getBullets) controller.updateBullets();
     // After updating everything, check and process any collisions
     //controller.checkCollisions();
   }
+
 };

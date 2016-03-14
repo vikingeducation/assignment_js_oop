@@ -1,7 +1,7 @@
 var model = {
   ship: new Ship(),
   asteroids: [],
-
+  angle: 0,
 
   getAsteroids: function() {
     return this.asteroids;
@@ -32,6 +32,19 @@ var model = {
           allAsteroids.splice(a, 1);
       }
     }
+  },
+
+  updateShip: function(dir) {
+
+    if (dir === "left") {
+      this.angle += 0.15;
+    } else if (dir === "right") {
+      this.angle -= 0.15; 
+    } else if (dir === "up" ) {
+      this.x += Math.cos(this.angle) * 5 * Math.pow(2,0.5);
+      this.x += Math.sin(this.angle) * 5 * Math.pow(2,0.5);
+    }
+    console.log("Here with angle " + this.angle);
   },
 
   hypotenuse: function(asteroid1,asteroid2) {
@@ -114,6 +127,7 @@ function Ship() {
 
   this.draw = function(context) {
     context.drawImage(this.image, this.x, this.y, this.size, this.size);
+    context.rotate(this.angle);
   };
 }
 

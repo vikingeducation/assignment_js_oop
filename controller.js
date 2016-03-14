@@ -22,6 +22,10 @@ var controller = {
 
   getShip: function() {
     return model.getShip();
+  },
+
+  updateShip: function(dir) {
+    model.updateShip(dir);
   }
 
 };

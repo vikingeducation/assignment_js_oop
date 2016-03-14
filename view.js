@@ -1,6 +1,5 @@
 var view = {
 
-
   init: function(){
     view.listeners.keypressListener();
   },
@@ -11,6 +10,7 @@ var view = {
         switch(e.which) {
           case 37: // left
           controller.direction = "left";
+          controller.setDirection();
           break;
 
           case 38: // up
@@ -44,16 +44,17 @@ var view = {
   drawShip: function( ship ){
 
     var canvas = document.getElementById("canvas");
+    console.log('im also here');
     if(canvas.getContext) {
 
       var rearPoint1 =  { 
-          x: ship.locationX - ship.width / 2,
-          y: ship.locationY - ship.height,
+          x: ship.locationX - ship.height,
+          y: ship.locationY + ship.width / 2,
       }
 
       var rearPoint2 = { 
-          x: ship.locationX + ship.width / 2,
-          y: ship.locationY - ship.height,
+          x: ship.locationX - ship.height,
+          y: ship.locationY - ship.width / 2,
         }
 
       var headPoint = { 
@@ -63,6 +64,8 @@ var view = {
 
 
       var ctx = canvas.getContext("2d");
+
+
       // Draw triangle
       ctx.fillStyle="#A2322E";
       ctx.beginPath();
@@ -71,9 +74,21 @@ var view = {
       ctx.lineTo( headPoint.x, headPoint.y );
       ctx.lineTo( rearPoint2.x, rearPoint2.y );
       ctx.closePath();
+      console.log( ship.direction )
+      ctx.rotate( ship.direction );
+      ctx.restore();
       ctx.fill();
     }
   },
 
+  clearCanvas: function() {
+    var canvas = document.getElementById("canvas");
+    console.log('im also here');
+    if(canvas.getContext) {
+      var ctx = canvas.getContext("2d");
+      ctx.clearRect( 0, 0, 800, 600 );
+    }
+
+  }
 
 };

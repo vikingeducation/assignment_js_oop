@@ -9,28 +9,33 @@ var view = {
         c = canvas.getContext("2d");
       // The Main Game Loop
       setInterval(function() {
-        view.clearCanvas(c);
+        //view.clearCanvas(c);
         view.update();
+        view.clearCanvas(c);
         view.drawAsteroids(c);
       }, INTERVAL);
     };
   },
 
   drawAsteroids: function(canvas) {
+    //view.clearCanvas(canvas);
     var asteroids = controller.getAsteroids();
     for (var a in asteroids) {
+
       canvas.beginPath();
       canvas.fillStyle = "brown";
+      //canvas.rect(asteroids[a].x, asteroids[a].y, asteroids[a].size, asteroids[a].size);
       canvas.arc(asteroids[a].x, asteroids[a].y, asteroids[a].size,0,2 *Math.PI);
       canvas.fill();
     }
   },
 
   clearCanvas: function(canvas) {
-    canvas.beginPath();
-    canvas.rect(0,0,view.max,view.max);
-    canvas.fillStyle = "white";
-    canvas.fill();
+    // canvas.beginPath();
+    // canvas.rect(0,0,view.max,view.max);
+    // canvas.fillStyle = "white";
+    // canvas.fill();
+    canvas.clearRect(0,0,view.max,view.max);
   },
 
   update: function() {

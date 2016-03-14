@@ -7,7 +7,7 @@ var model = {
 
   generateAsteroids: function() {
     var max = 100;
-    var spawnRate = 75; // lower = more
+    var spawnRate = 25; // lower = more
     var random = Math.floor(Math.random() * max);
 
     if (spawnRate < random) {
@@ -29,26 +29,14 @@ var model = {
   },
 
   hypotenuse: function(asteroid1,asteroid2) {
-
-
-    // console.log("Asteroid 1: " + typeof parseInt(asteroid1.x).toFixed(2));
-    // console.log("Asteroid 2: " + typeof parseInt(asteroid2.x).toFixed(2));
-    // a = Number(asteroid1.x);
-    // b = Number(asteroid2.x);
-    // console.log("Asteroid 1 **: " + a);
-    // console.log("Asteroid 2 **: " + b);
-    // console.log("Asteroid **: " + Number(a - b).toFixed(2));
-   
-
     var xDiff = Math.pow(asteroid1.x - asteroid2.x, 2);
     var yDiff = Math.pow(asteroid1.y - asteroid2.y, 2);
 
     return Math.pow((xDiff+yDiff),0.5);
-
   },
 
   checkCollisions: function() {
-    
+
     var asteroids = this.asteroids;
     var max = asteroids.length;
 
@@ -57,14 +45,9 @@ var model = {
       var otherAsteroids = asteroids.slice();
       //otherAsteroids = otherAsteroids.splice(i,1);
       otherAsteroids.splice(i,1);
-
-      for (var j=0;j < otherAsteroids.length; j++) {
+      var oA = otherAsteroids.length;
+      for (var j=0;j < oA; j++) {
          var otherAsteroid = otherAsteroids[j];
-          
-          //console.log("Hyp is :" + this.hypotenuse(asteroid,otherAsteroid));
-          console.log("Asteroid 1 **: " + asteroid.x);
-          console.log("Asteroid 2 **: " + otherAsteroid.x);
-
          if (this.hypotenuse(asteroid,otherAsteroid) < (asteroid.size + otherAsteroid.size)) {
              this.asteroidHitsAsteroid(asteroid,otherAsteroid);
          }
@@ -74,11 +57,34 @@ var model = {
   },
 
   asteroidHitsAsteroid: function(asteroid,otherAsteroid) {
+    // Break asteroid into pieces
+    // if (asteroid.size/2 >= 10) {
+    //   var a1 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 0, -5); // N
+    //   var a2 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 5, 0); // E
+    //   var a3 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 0, 5); // S
+    //   var a4 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, -5, 5); // W
+    //   model.asteroids.push(a1);
+    //   model.asteroids.push(a2);
+    //   model.asteroids.push(a3);
+    //   model.asteroids.push(a4);
+    //
+    // }
+    // // Break asteroid2 into pieces
+    // if (asteroid.size/2 >= 10) {
+    //   var b1 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 0, -5); // N
+    //   var b2 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 5, 0); // E
+    //   var b3 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, 0, 5); // S
+    //   var b4 = new Asteroid(asteroid.size/2, asteroid.x, asteroid.y, -5, 5); // W
+    //   model.asteroids.push(b1);
+    //   model.asteroids.push(b2);
+    //   model.asteroids.push(b3);
+    //   model.asteroids.push(b4);
+    // }
+    // Remove collided asteroids
      this.killAsteroid(asteroid,otherAsteroid);
   },
 
   killAsteroid: function(asteroid,otherAsteroid) {
-    console.log("Killing asteroid");
     for (var a in arguments) {
        var index = this.asteroids.indexOf(arguments[a]);
        this.asteroids.splice(index,1);
@@ -89,7 +95,7 @@ var model = {
 };
 
 
-function Asteroid() {
+function Asteroid(size, x, y, dx, dy) {
   // Size
   this.size = 50;
   this.randomVal = Math.random();
@@ -121,4 +127,19 @@ function Asteroid() {
   // Velocity
   this.dx = (Math.random() * 10) - 5;
   this.dy = (Math.random() * 10) - 5;
+
+  if (arguments.length !== 0) {
+    this.size = size;
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+  }
+
+  this.image = new Image();
+  this.image.src = "images/charizard.jpg";
+
+  this.draw = function(context) {
+    context.drawImage(this.image, this.x, this.y, this.size, this.size);
+  };
 }

@@ -4,6 +4,8 @@ var view = {
   init: function() {
     var INTERVAL = 30; // ~30 fps
 
+    fireListener();
+
     window.onload = function() {
       var canvas = $("#canvas")[0],
         c = canvas.getContext("2d");
@@ -46,7 +48,7 @@ var view = {
   },
 
   update: function() {
-    
+
     controller.generateAsteroids();
     controller.updateAsteroids();
     controller.checkCollisions();
@@ -60,6 +62,13 @@ var view = {
     //if (controller.getBullets) controller.updateBullets();
     // After updating everything, check and process any collisions
     //controller.checkCollisions();
+  },
+
+  fireListener: function() {
+    // Avatar launching fireball on hitting spacebar
+    $(document).on("keydown", function(e) {
+      if (e.keyCode == 32) controller.shipFire();
+    });
   }
 
 };

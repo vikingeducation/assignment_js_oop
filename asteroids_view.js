@@ -21,6 +21,8 @@ var view = {
   render: function() {
     var asteroidCollection = model.asteroidCollection;
     var asteroidField = this.two();
+    var ship = model.ship;
+
     asteroidField.clear();
     asteroidCollection.forEach( function(asteroid) {
       var asteroidObject = asteroidField.makeRectangle(asteroid.x, asteroid.y, 30, asteroid.size*5);
@@ -32,6 +34,15 @@ var view = {
       })
     });
 
+    shipObject = asteroidField.makePolygon(ship.x, ship.y, 15, 3);
+    shipObject.stroke = '#FFFFFF';
+    shipObject.fill = null;
+    asteroidField.bind('update', function() {
+      shipObject.translation.set(ship.x, ship.y);
+      shipObject.rotation = ship.direction;
+    })
     asteroidField.play();
-  }
+  },
+
+  
 }

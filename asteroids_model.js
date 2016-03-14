@@ -2,6 +2,7 @@ var model = {
   asteroidCollection: [],
   boardX: 800,
   boardY: 600,
+  ship: new Ship(400, 300, 0, 0),
 
   generateAsteroids: function(n) {
     for(i=0; i < n; i++) {

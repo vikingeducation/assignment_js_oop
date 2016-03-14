@@ -19,6 +19,12 @@ var Sprite = function Sprite (x, y, x_vel, y_vel, size) {
 
   this.asteroidHit =  function(asteroid) {
     var that = this;
+    for (var i = 0; i < 8; ++i) {
+      var particle = new Particle(this.x + Math.random() * 8, this.y + Math.random() * 8, Math.random() * 2 - 1, Math.random() * 2 - 1);
+      particle.board = this.board;
+      this.board.addParticle(particle);
+    }
+
     if (that instanceof Bullet) {
       console.log(this.board.asteroidCollection.length);
       var bulletIndex = that.board.bullets.indexOf(that);

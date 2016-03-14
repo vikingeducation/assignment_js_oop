@@ -1,7 +1,6 @@
 var model = {
   ship: new Ship(),
   asteroids: [],
-  angle: 0,
 
   getAsteroids: function() {
     return this.asteroids;
@@ -37,14 +36,17 @@ var model = {
   updateShip: function(dir) {
 
     if (dir === "left") {
-      this.angle += 0.15;
+      this.ship.angle = (this.ship.angle + this.ship.dtheta) % (2 * Math.PI);
     } else if (dir === "right") {
-      this.angle -= 0.15; 
-    } else if (dir === "up" ) {
-      this.x += Math.cos(this.angle) * 5 * Math.pow(2,0.5);
-      this.x += Math.sin(this.angle) * 5 * Math.pow(2,0.5);
+      this.ship.angle = (this.ship.angle - this.ship.dtheta) % (2 * Math.PI);
     }
-    console.log("Here with angle " + this.angle);
+    if (dir === "up" ) {
+      this.ship.x += Math.cos(this.ship.angle) * 5 * Math.pow(2, 0.5);
+      this.ship.y += Math.sin(this.ship.angle) * 5 * Math.pow(2, 0.5);
+      console.log( this.x , this.y);
+
+    }
+    console.log("Here with angle " + this.ship.angle);
   },
 
   hypotenuse: function(asteroid1,asteroid2) {
@@ -116,18 +118,23 @@ function Ship() {
   this.size = 50;
   this.x = 375;
   this.y = 375;
+  this.angle = - Math.PI / 2 ;
 
    // Velocity
   this.dx = 10;
   this.dy = 10;
+  this.dtheta = Math.PI / 36;
 
 
   this.image = new Image();
   this.image.src = "images/batwing.jpg";
 
   this.draw = function(context) {
-    context.drawImage(this.image, this.x, this.y, this.size, this.size);
+    context.save();
+    context.translate(this.x + this.size/2, this.y + this.size/2);
     context.rotate(this.angle);
+    context.drawImage(this.image, - this.size/2, - this.size/2, this.size, this.size);
+    context.restore();
   };
 }
 

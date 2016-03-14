@@ -21,8 +21,8 @@ var view = {
           controller.direction = "right";
           break;
 
-          case 40: // down
-          controller.direction = "down";
+          case 38: // up
+          controller.direction = "up";
           break;
         }
       });

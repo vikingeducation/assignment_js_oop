@@ -11,38 +11,28 @@ var controller = {
 
   setDirection: function(  ) {
     if(controller.direction === "right"){
-<<<<<<< HEAD
-    ship.direction += 1/12 * Math.PI;
-    view.drawShip( ship );
-  }else if (controller.direction === "left"){
-    ship.direction -= 1/12 * Math.PI;
-  }
-  // console.log(ship.direction);
-=======
-      ship.direction += 1/8 * Math.PI;
+      ship.direction += 1/12 * Math.PI;
       view.drawShip( ship );
-      controller.direction = "";
     }else if (controller.direction === "left"){
-      ship.direction -= 1/8 * Math.PI;
-      controller.direction = "";
+      ship.direction -= 1/12 * Math.PI;
     }
   },
-
+  // console.log(ship.direction);
   controlShipFire: function() {
     if(controller.fire === true){
       ship.fire();
       controller.fire = false;
     }
->>>>>>> dd2bab43a75d0407ad6aacd5b5c4e469db496837
+
   },
 
   setThrust: function(){
     if(controller.direction === "up"){
-      ship.velX += 1 * Math.cos(ship.direction);
-      ship.velY += 1 * Math.sin(ship.direction);
+      ship.velX += 1 * Math.cos(ship.direction) / 2;
+      ship.velY += 1 * Math.sin(ship.direction) / 2;
     }else if (controller.direction === "down"){
-      ship.velX -= 1 * Math.cos(ship.direction);
-      ship.velY -= 1 * Math.sin(ship.direction);
+      ship.velX -= 1 * Math.cos(ship.direction) / 2;
+      ship.velY -= 1 * Math.sin(ship.direction) / 2;
     }
   },
 
@@ -54,11 +44,8 @@ var controller = {
     view.clearCanvas();
     view.drawShip( ship );
     controller.setDirection();
-<<<<<<< HEAD
     controller.setThrust();
-=======
     controller.controlShipFire();
->>>>>>> dd2bab43a75d0407ad6aacd5b5c4e469db496837
     controller.updateAsteroidPos();
     ship.updatePosition();
     asteroid.collision();

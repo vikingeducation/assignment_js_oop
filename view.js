@@ -4,7 +4,7 @@ var view = {
   init: function() {
     var INTERVAL = 30; // ~30 fps
 
-    fireListener();
+    view.fireListener();
 
     window.onload = function() {
       var canvas = $("#canvas")[0],

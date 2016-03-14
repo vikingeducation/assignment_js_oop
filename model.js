@@ -43,10 +43,10 @@ var model = {
     if (dir === "up" ) {
       this.ship.x += Math.cos(this.ship.angle) * 5 * Math.pow(2, 0.5);
       this.ship.y += Math.sin(this.ship.angle) * 5 * Math.pow(2, 0.5);
-      console.log( this.x , this.y);
 
     }
-    console.log("Here with angle " + this.ship.angle);
+    this.ship.x = Math.max(0, Math.min(this.ship.x, view.max - this.ship.size));
+    this.ship.y = Math.max(0, Math.min(this.ship.y, view.max - this.ship.size));
   },
 
   hypotenuse: function(asteroid1,asteroid2) {
@@ -57,7 +57,6 @@ var model = {
   },
 
   checkCollisions: function() {
-
     var asteroids = this.asteroids;
     var max = asteroids.length;
     var killed = false;

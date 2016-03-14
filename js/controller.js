@@ -1,7 +1,8 @@
 var GAME = GAME || {};
 
 
-
+GAME.width = 1600;
+GAME.height = 800;
 
 
 

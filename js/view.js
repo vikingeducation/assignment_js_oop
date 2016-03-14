@@ -38,13 +38,6 @@ GAME.view = {
 
 
 
-
-
-GAME.model.Asteroid.prototype.draw = function() {
-
-}
-
-
 GAME.Ship.prototype.draw = function() {
   var context = GAME.view.context;
   context.save();

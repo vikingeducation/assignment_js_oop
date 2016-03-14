@@ -11,10 +11,10 @@ var controller = {
 
   setDirection: function(  ) {
     if(controller.direction === "right"){
-      ship.direction += 1/12 * Math.PI;
+      ship.direction += 1/20 * Math.PI;
       view.drawShip( ship );
     }else if (controller.direction === "left"){
-      ship.direction -= 1/12 * Math.PI;
+      ship.direction -= 1/20 * Math.PI;
     }
   },
   controlShipFire: function() {

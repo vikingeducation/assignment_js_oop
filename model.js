@@ -1,7 +1,7 @@
 var model = {
   ship: new Ship(),
   asteroids: [],
-  
+
 
   getAsteroids: function() {
     return this.asteroids;
@@ -13,7 +13,7 @@ var model = {
 
   generateAsteroids: function() {
     var max = 100;
-    var spawnRate = 25; // lower = more
+    var spawnRate = 50; // lower = more
     var random = Math.floor(Math.random() * max);
 
     if (spawnRate < random) {
@@ -45,20 +45,18 @@ var model = {
 
     var asteroids = this.asteroids;
     var max = asteroids.length;
-
-    for (var i=0;i < max; i++) {
+    var killed = false;
+    for (var i=0;i < asteroids.length; i++) {
       var asteroid = asteroids[i];
       var otherAsteroids = asteroids.slice();
-      //otherAsteroids = otherAsteroids.splice(i,1);
       otherAsteroids.splice(i,1);
       var oA = otherAsteroids.length;
-      for (var j=0;j < oA; j++) {
+      for (var j=0;j < otherAsteroids.length; j++) {
          var otherAsteroid = otherAsteroids[j];
          if (this.hypotenuse(asteroid,otherAsteroid) < (asteroid.size + otherAsteroid.size)) {
-             this.asteroidHitsAsteroid(asteroid,otherAsteroid);
+          this.asteroidHitsAsteroid(asteroid,otherAsteroid);
          }
       }
-
     }
   },
 
@@ -117,11 +115,11 @@ function Ship() {
   this.draw = function(context) {
     context.drawImage(this.image, this.x, this.y, this.size, this.size);
   };
-};
+}
 
 function Asteroid(size, x, y, dx, dy) {
   // Size
-  this.size = 50;
+  this.size = 25;
   this.randomVal = Math.random();
   this.randomCoord = Math.random() * (800 + this.size) - this.size;
 

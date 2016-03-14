@@ -25,7 +25,7 @@ GAME.controller = {
   },
 
   gameLoop: function() {
-    GAME.asteroidModel.update();
+    GAME.asteroidModel.update(this.getLasers());
     GAME.laserModel.update();
     GAME.view.draw();
   },

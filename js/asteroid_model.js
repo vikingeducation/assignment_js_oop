@@ -25,12 +25,11 @@ GAME.asteroidModel = {
   },
 
 
-  findAsteroidsToExplode: function() {
-    // one asteroid explodes into two asteroids of half size
-    // OR bullet hits asteroid
+  findAsteroidsToExplode: function(lasers) {
     var astrToExplode = [];
 
     for (var i = 0; i < this.asteroids.length; i++) {
+      // check for asteroid collisions
       for (var j = 0; j < this.asteroids.length; j++) {
         if (i === j) {
           continue;
@@ -45,6 +44,20 @@ GAME.asteroidModel = {
           astrToExplode.push(astrB);
         }
       }
+      // check for laser collisions
+      for (var k = 0; k < lasers.length; k ++) {
+        var astr = this.asteroids[i]
+        var radius = astr.size;
+        var distance = Math.sqrt( Math.pow(astr.xCoord - lasers[k].xCoord, 2) + Math.pow(astr.yCoord - lasers[k].yCoord, 2) );
+
+        if (distance <= radius) {
+          // TODO: make sure it's not already there
+          astrToExplode.push(astr);
+        }
+      }
+
+
+
     }
     return astrToExplode;
   },
@@ -77,12 +90,12 @@ GAME.asteroidModel = {
   },
 
 
-
-  update: function() {
+  // TODO: make this better...
+  update: function(lasers) {
     for ( var i = 0; i < this.asteroids.length; i++ ) {
       this.asteroids[i].tic();
     }
-    this.explodeAsteroids(this.findAsteroidsToExplode());
+    this.explodeAsteroids(this.findAsteroidsToExplode(lasers));
     this.addNewAsteroid();
   },
 

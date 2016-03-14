@@ -10,16 +10,16 @@ var model = {
     return this
   },
 
-  createAsteroid: function(){
-    var asteroid = new this.Asteroid();
-    asteroid.X = Math.floor(Math.random() * 1000);
-    asteroid.Y = Math.floor(Math.random() * 1000);
-    asteroid.Xvel = Math.floor(Math.random() * 10);
-    asteroid.Yvel = Math.floor(Math.random() * 10);
+  // createAsteroid: function(){
+  //   var asteroid = new this.Asteroid();
+  //   asteroid.X = Math.floor(Math.random() * 1000);
+  //   asteroid.Y = Math.floor(Math.random() * 1000);
+  //   asteroid.Xvel = Math.floor(Math.random() * 10);
+  //   asteroid.Yvel = Math.floor(Math.random() * 10);
 
-    this.collection.push(asteroid);
-    return asteroid;
-  },
+  //   this.collection.push(asteroid);
+  //   return asteroid;
+  // },
 
   generateAsteroids: function(num){
     for(var i = 0; i < num; i++){

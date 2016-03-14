@@ -26,6 +26,7 @@ GAME.controller = {
 
   gameLoop: function() {
     GAME.asteroidModel.update();
+    GAME.laserModel.update();
     GAME.view.draw();
   },
 
@@ -33,7 +34,17 @@ GAME.controller = {
   turnShip: function(amount) {
     this.ship.direction.rotateDeg(amount);
     console.log(this.ship.direction)
-  }
+  },
+
+
+  shootLaser: function() {
+    GAME.laserModel.shootLaser(this.ship);
+  },
+
+
+  getLasers: function() {
+    return GAME.laserModel.laserBeams;
+  },
 
 
 

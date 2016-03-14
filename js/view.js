@@ -5,6 +5,8 @@ GAME.view = {
   init: function() {
     this.draw();
     this.eventListeners.changeShipDirection();
+    this.eventListeners.shootLasers();
+    this.eventListeners.accelerateDecelerate();
   },
 
   canvas: $('canvas').get(0),
@@ -15,6 +17,7 @@ GAME.view = {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawAsteroids();
     this.drawShip();
+    this.drawLasers();
   },
 
   drawAsteroids: function() {
@@ -28,10 +31,7 @@ GAME.view = {
 
   drawShip: function() {
     var ship = GAME.controller.ship;
-    // var newXCoords = ship.xCoord + ship.direction["x"];
-    // var newYCoords = ship.yCoord - ship.direction["y"];
     var victor = ship.direction.clone();
-    
 
     this.context.fillStyle = '#000';
     this.context.beginPath();
@@ -49,8 +49,19 @@ GAME.view = {
     this.context.fill();
   },
 
-  drawLaser: function() {
+  drawLasers: function() {
+    $.each(GAME.controller.getLasers(), function(i, laser) {
+      var vector = new Victor(laser.size, 0);
+      var rotated = vector.rotateDeg(laser.velocity.horizontalAngleDeg())
 
+      GAME.view.context.fillStyle = "#000";
+      GAME.view.context.beginPath();
+      GAME.view.context.moveTo(laser.xCoord, laser.yCoord);
+      GAME.view.context.lineTo(rotated.x + laser.xCoord, rotated.y + laser.yCoord);
+      GAME.view.context.closePath(); 
+      GAME.view.context.stroke();
+
+    })
   },
 
   eventListeners: {
@@ -73,8 +84,14 @@ GAME.view = {
 
 
     shootLasers: function() {
+      $(document).keydown(function(e) {
+        e.preventDefault();
+        if (e.which === 32) {
+          GAME.controller.shootLaser();
+          console.log("space bar!")
+        }
+      })
     },
-    // spacebar to shoot
 
     accelerateDecelerate: function() {
       $( document ).keydown(function(e) {
@@ -99,9 +116,4 @@ GAME.view = {
 
 
 
-GAME.laser.prototype.draw = function() {
-  GAME.view.context.fillStyle = '#000';
-  GAME.view.context.beginPath();
-  GAME.view.context.arc(this.posX, this.posY, this.size, 0, 2 * Math.PI);
-  GAME.view.context.fill();
-}
+

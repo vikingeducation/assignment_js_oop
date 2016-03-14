@@ -11,9 +11,15 @@ var controller = {
 
   setDirection: function(  ) {
     // console.log('im here');
-    ship.direction += 1/2 * Math.PI;
-    view.clearCanvas();
+    if(controller.direction === "right"){
+    ship.direction += 1/8 * Math.PI;
     view.drawShip( ship );
+    controller.direction = "";
+  }else if (controller.direction === "left"){
+    ship.direction -= 1/8 * Math.PI;
+    controller.direction = "";
+  }
+  console.log(ship.direction);
   },
 
   direction: "",
@@ -21,7 +27,8 @@ var controller = {
   gameLoop: function(){
     // controller.generateAsteroids(1);
     view.clearCanvas();
-    view.drawShip( ship );
+    view.drawShipv2( ship );
+    controller.setDirection();
     controller.updateAsteroidPos();
     ship.updatePosition();
   },

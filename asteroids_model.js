@@ -46,13 +46,13 @@ var model = {
     model.ship.tic();
   },
 
-  asteroidHit: function(bullet, asteroid) {
-    var bulletIndex = this.bullets.indexOf(bullet);
-    this.bullets.splice(bulletIndex, 1);
+  // asteroidHit: function(bullet, asteroid) {
+  //   var bulletIndex = this.bullets.indexOf(bullet);
+  //   this.bullets.splice(bulletIndex, 1);
 
-    var asteroidIndex = this.asteroidCollection.indexOf(asteroid);
-    this.asteroidCollection.splice(asteroidIndex, 1);
-  },
+  //   var asteroidIndex = this.asteroidCollection.indexOf(asteroid);
+  //   this.asteroidCollection.splice(asteroidIndex, 1);
+  // },
 
   fire: function() {
     this.ship.fire()
@@ -82,4 +82,5 @@ var model = {
     this.ship = new Ship(400, 300, 0, 0, 0);
     this.ship.board = this;
   },
+
 };

@@ -44,6 +44,15 @@ var view = {
       asteroidObject.translation.set(asteroid.x, asteroid.y);
       asteroidObject.rotation = asteroid.direction;
 
+      asteroidCollection.forEach(function(asteroid2) {
+
+        if (asteroid2.collision(asteroidObject)) {
+          asteroid2.asteroidHit(asteroid);
+          asteroidField.remove(asteroidObject);
+          asteroidField.remove(asteroid2);
+        };
+      })
+
       if (ship.collision(asteroidObject)) {
         model.reset();
       };
@@ -51,7 +60,7 @@ var view = {
       bullets.forEach(function(bullet){
         if (bullet.collision(asteroidObject)) {
           asteroidField.remove(asteroidObject);
-          model.asteroidHit(bullet, asteroid);
+          bullet.asteroidHit(asteroid);
         };
       })
 

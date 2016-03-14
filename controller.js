@@ -2,16 +2,15 @@ var controller = {
 
   init: function(){
     // set initial values for ship
-    ship.locationX = 115;
-    ship.locationY = 160;
-    ship.direction = 0.0 * Math.PI;
+
     view.clearCanvas();
     view.drawShip( ship );
+    ship.randomStartInfo();
     controller.generateAsteroids(10);
   },
 
   setDirection: function(  ) {
-    console.log('im here');
+    // console.log('im here');
     ship.direction += 1/2 * Math.PI;
     view.clearCanvas();
     view.drawShip( ship );
@@ -20,15 +19,17 @@ var controller = {
   direction: "",
 
   gameLoop: function(){
+    // controller.generateAsteroids(1);
     view.clearCanvas();
     view.drawShip( ship );
     controller.updateAsteroidPos();
+    ship.updatePosition();
   },
 
   updateAsteroidPos: function(){
     space.asteroids.forEach(function(ast){
-      ast.startX += ast.velX;
-      ast.startY += ast.velY;
+
+      ast.updatePosition();
       view.drawAsteroid(ast);
     });
   },

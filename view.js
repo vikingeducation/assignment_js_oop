@@ -34,7 +34,7 @@ var view = {
     var ctx=c.getContext("2d");
     ctx.fillStyle="#FFFFFF";
     ctx.strokeStyle="#FFFFFF";
-    ctx.rect(asteroid.startX, asteroid.startY, 50, 50);
+    ctx.rect(asteroid.locationX, asteroid.locationY, 50, 50);
     ctx.stroke();
   },
 
@@ -71,7 +71,7 @@ var view = {
       ctx.lineTo( headPoint.x, headPoint.y );
       ctx.lineTo( rearPoint2.x, rearPoint2.y );
       ctx.closePath();
-      console.log( ship.direction );
+      // console.log( ship.direction );
       ctx.rotate( ship.direction );
       ctx.restore();
       ctx.fill();

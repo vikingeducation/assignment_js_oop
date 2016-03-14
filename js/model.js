@@ -11,12 +11,11 @@ GAME.model = {
 
 
   Asteroid: function(xCoord, yCoord, size, xVelocity, yVelocity) {
-    this.xCoord = xCoord || GAME.useful.random(10, 990);
-    this.yCoord = yCoord || GAME.useful.random(10, 990);
-    this.size = size || GAME.useful.random(70,90);
-    this.xVelocity = xVelocity;
-    this.yVelocity = yVelocity;
-
+    this.xCoord = xCoord || GAME.useful.random(10, 1590);
+    this.yCoord = yCoord || GAME.useful.random(10, 790);
+    this.size = size || GAME.useful.random(20,90);
+    this.xVelocity = Math.random() * 20 - 10;
+    this.yVelocity = Math.random() * 20 - 10;
   },
 
 
@@ -31,6 +30,12 @@ GAME.model = {
 
   explodeAsteroids: function() {
     // one asteroid explodes into two asteroids of half size
+  },
+
+  update: function() {
+    for ( var i = 0; i < this.asteroids.length; i++ ) {
+      this.asteroids[i].tic();
+    }
   }
 
 
@@ -78,7 +83,7 @@ GAME.Ship.prototype.tic = function() {
 
 
 GAME.Ship.prototype.fire = function() {
-  
+
 }
 
 

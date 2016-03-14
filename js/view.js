@@ -3,17 +3,26 @@ var GAME = GAME || {};
 
 GAME.view = {
   init: function() {
-    GAME.view.draw();
-    eventListeners.registerKeys;
+    this.draw();
+    this.eventListeners.registerKeys;
   },
+
+  canvas: $('canvas').get(0),
 
   context: $('canvas').get(0).getContext("2d"),
 
-
   draw: function() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.drawAsteroids();
+  },
+
+  drawAsteroids: function() {
     $.each(GAME.controller.allAsteroids, function(i, astr) {
-      astr.draw()
-    })
+      GAME.view.context.beginPath();
+      // arc(x, y, radius, angle, Math.PI * 2, false for clockwise/true for counter-clockwise)
+      GAME.view.context.arc(astr.xCoord, astr.yCoord, astr.size, 0, Math.PI * 2, false)
+      GAME.view.context.stroke();
+    });
   },
 
 
@@ -32,10 +41,7 @@ GAME.view = {
 
 
 GAME.model.Asteroid.prototype.draw = function() {
-  GAME.view.context.beginPath();
-  // arc(x, y, radius, angle, Math.PI * 2, false for clockwise/true for counter-clockwise)
-  GAME.view.context.arc(this.xCoord, this.yCoord, this.size, 0, Math.PI * 2, false)
-  GAME.view.context.stroke();
+
 }
 
 

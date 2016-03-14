@@ -7,7 +7,7 @@ var model = {
 
   generateAsteroids: function() {
     var max = 100;
-    var spawnRate = 50; // lower = more
+    var spawnRate = 75; // lower = more
     var random = Math.floor(Math.random() * max);
 
     if (spawnRate < random) {
@@ -26,8 +26,64 @@ var model = {
           allAsteroids.splice(a, 1);
       }
     }
-  }
+  },
 
+  hypotenuse: function(asteroid1,asteroid2) {
+
+
+    // console.log("Asteroid 1: " + typeof parseInt(asteroid1.x).toFixed(2));
+    // console.log("Asteroid 2: " + typeof parseInt(asteroid2.x).toFixed(2));
+    // a = Number(asteroid1.x);
+    // b = Number(asteroid2.x);
+    // console.log("Asteroid 1 **: " + a);
+    // console.log("Asteroid 2 **: " + b);
+    // console.log("Asteroid **: " + Number(a - b).toFixed(2));
+   
+
+    var xDiff = Math.pow(asteroid1.x - asteroid2.x, 2);
+    var yDiff = Math.pow(asteroid1.y - asteroid2.y, 2);
+
+    return Math.pow((xDiff+yDiff),0.5);
+
+  },
+
+  checkCollisions: function() {
+    
+    var asteroids = this.asteroids;
+    var max = asteroids.length;
+
+    for (var i=0;i < max; i++) {
+      var asteroid = asteroids[i];
+      var otherAsteroids = asteroids.slice();
+      //otherAsteroids = otherAsteroids.splice(i,1);
+
+      for (var j=0;j < otherAsteroids.length; j++) {
+         var otherAsteroid = otherAsteroids[j];
+          otherAsteroids[j]
+          //console.log("Hyp is :" + this.hypotenuse(asteroid,otherAsteroid));
+          console.log("Asteroid 1 **: " + asteroid.x);
+          console.log("Asteroid 2 **: " + otherAsteroid.x);
+
+         if (this.hypotenuse(asteroid,otherAsteroid) < (asteroid.size + otherAsteroid.size)) {
+             this.asteroidHitsAsteroid(asteroid,otherAsteroid);
+         }
+      }
+
+    }
+  },
+
+  asteroidHitsAsteroid: function(asteroid,otherAsteroid) {
+     this.killAsteroid(asteroid,otherAsteroid);
+  },
+
+  killAsteroid: function(asteroid,otherAsteroid) {
+    console.log("Killing asteroid");
+    for (var a in arguments) {
+       var index = this.asteroids.indexOf(arguments[a]);
+       this.asteroids.splice(index,1);
+    }
+
+  },
 
 };
 

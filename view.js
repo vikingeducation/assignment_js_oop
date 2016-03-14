@@ -19,8 +19,10 @@ var view = {
   drawAsteroids: function(canvas) {
     var asteroids = controller.getAsteroids();
     for (var a in asteroids) {
+      canvas.beginPath();
       canvas.fillStyle = "brown";
-      canvas.fillRect(asteroids[a].x, asteroids[a].y, asteroids[a].size, asteroids[a].size);
+      canvas.arc(asteroids[a].x, asteroids[a].y, asteroids[a].size,0,2 *Math.PI);
+      canvas.fill();
     }
   },
 
@@ -35,6 +37,7 @@ var view = {
     //var LEFT = 97, UP = 119, RIGHT = 100, DOWN = 115; // WASD keys
     controller.generateAsteroids();
     controller.updateAsteroids();
+    controller.checkCollisions();
 
     // Avatar movement
     // if (key.isPressed("A")) controller.updateAvatar(LEFT);

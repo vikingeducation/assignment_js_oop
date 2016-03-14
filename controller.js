@@ -14,7 +14,12 @@ var controller = {
 
   updateAsteroids: function() {
     model.updateAsteroids();
+  },
+
+  checkCollisions: function() {
+    model.checkCollisions();
   }
+
 };
 
 $(document).ready( controller.init() );

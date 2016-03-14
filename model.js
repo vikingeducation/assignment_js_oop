@@ -38,7 +38,6 @@ var asteroid = {
            astA.locationX + astA.width > astB.locationX &&
            astA.locationY < astB.locationY + astB.height &&
            astA.height + astA.locationY > astB.locationY && astA !== astB){
-             console.log('Collision!');
              astA.collision = true;
              astB.collision = true;
            }
@@ -106,7 +105,6 @@ var ship = {
 
   fire: function() 
   {
-    console.log('fire');
     var bulletHeight = 2;
     var bulletWidth = 2;
     var bulletVX =  10 * Math.cos( ship.direction);

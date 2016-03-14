@@ -17,7 +17,6 @@ var controller = {
       ship.direction -= 1/12 * Math.PI;
     }
   },
-  // console.log(ship.direction);
   controlShipFire: function() {
     if(controller.fire === true){
       ship.fire();

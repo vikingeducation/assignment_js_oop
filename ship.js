@@ -10,7 +10,6 @@ var Particle = function(x, y, x_vel, y_vel) {
 
 var Ship = function(x, y, x_vel, y_vel, size) {
   Sprite.apply(this, arguments);
-  this.health = 100;
   this.direction = ((2 * Math.PI) / 360) * 270;
   this.accerelation = 0.1;
   this.turn = 0.3;
@@ -37,5 +36,6 @@ var Ship = function(x, y, x_vel, y_vel, size) {
   this.turnLeft = function(){
     this.turnSpeed -= (Math.PI / 360) * this.turn % (Math.PI * 2);
     this.turnSpeed = Math.min(this.turnSpeed, 3);
-  };
+  };  
+
 }

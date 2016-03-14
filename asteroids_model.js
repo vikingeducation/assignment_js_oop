@@ -48,5 +48,10 @@ var model = {
 
   addParticle: function(particle) {
     this.particles.push(particle);
+  },
+
+  reset: function() {
+    this.ship = new Ship(400, 300, 0, 0, 0);
+    this.ship.board = this;
   }
 };

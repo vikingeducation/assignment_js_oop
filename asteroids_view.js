@@ -20,27 +20,42 @@ var view = {
 
   render: function() {
     var asteroidCollection = model.asteroidCollection;
+    var particles = model.particles;
     var asteroidField = this.two();
     var ship = model.ship;
 
     asteroidField.clear();
     asteroidCollection.forEach( function(asteroid) {
-      var asteroidObject = asteroidField.makeRectangle(asteroid.x, asteroid.y, 30, asteroid.size*5);
+      var asteroidObject = asteroidField.makePolygon(asteroid.x, asteroid.y, asteroid.size*5, 5);
       asteroidObject.stroke = '#FFFFFF';
       asteroidObject.fill = null;
       asteroidField.bind('update', function() {
         asteroidObject.translation.set(asteroid.x, asteroid.y);
-        asteroidObject.rotation += 2 * Math.PI / 360;
+        asteroidObject.rotation = asteroid.direction;
+      })
+    });
+
+    particles.forEach( function(particle) {
+      var particleObject = asteroidField.makeLine(particle.x, particle.y, particle.x + particle.x_vel * 5, particle.y + particle.y_vel * 5);
+      particleObject.stroke = '#FFEEFF';
+      particleObject.fill = null;
+      asteroidField.bind('update', function() {
+        particleObject.opacity = particle.life / 100;
+        particleObject.translation.set(particle.x, particle.y);
       })
     });
 
     shipObject = asteroidField.makePolygon(ship.x, ship.y, 15, 3);
+    shipObject.vertices[2].y += 5;
+    shipObject.vertices[2].x += 10;
+    shipObject.linewidth = 2;
     shipObject.stroke = '#FFFFFF';
     shipObject.fill = null;
     asteroidField.bind('update', function() {
       shipObject.translation.set(ship.x, ship.y);
       shipObject.rotation = ship.direction - (Math.PI / 180) * 30;
     })
+
     asteroidField.play();
   },
 }

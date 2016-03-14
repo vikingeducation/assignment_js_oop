@@ -1,8 +1,13 @@
 var model = {
   asteroidCollection: [],
+  particles: [],
   boardX: 800,
   boardY: 600,
-  ship: new Ship(400, 300, 0, 0),
+  ship: new Ship(400, 300, 0, 0, 0),
+
+  init: function() {
+    this.ship.board = this;
+  },
 
   generateAsteroids: function(n) {
     for(i=0; i < n; i++) {
@@ -17,11 +22,21 @@ var model = {
     this.asteroidCollection.forEach(function(asteroid){
       asteroid.tic();
     });
+
+    var that = this;
+
+    this.particles.forEach(function(particle, index){
+      particle.tic();
+      if (particle.life <= 0) {
+        that.particles.splice(index, 1);
+      }
+    });
     model.ship.tic();
   },
 
   accelerate: function() {
     this.ship.accelerate();
+    console.log(this.particles);
   },
 
   turnRight: function() {
@@ -30,6 +45,11 @@ var model = {
 
   turnLeft: function() {
     this.ship.turnLeft();
+  },
+
+  addParticle: function(particle) {
+    this.particles.push(particle);
   }
+
 
 };

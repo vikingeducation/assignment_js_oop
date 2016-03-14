@@ -1,5 +1,6 @@
 var controller = {
   init: function() {
+    model.init()
     view.init();
     this.loop();
     Mousetrap.bind('right', function(){
@@ -10,6 +11,7 @@ var controller = {
     });
     Mousetrap.bind('up', function(){
       model.accelerate();
+      view.render();
     });
   },
 

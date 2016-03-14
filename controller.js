@@ -10,7 +10,6 @@ var controller = {
   },
 
   setDirection: function(  ) {
-    // console.log('im here');
     if(controller.direction === "right"){
     ship.direction += 1/8 * Math.PI;
     view.drawShip( ship );
@@ -49,7 +48,7 @@ var controller = {
   },
 
   game: function(){
-    setInterval(controller.gameLoop, 500);
+    setInterval(controller.gameLoop, 100);
   }
 
 };

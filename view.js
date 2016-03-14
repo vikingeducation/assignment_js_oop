@@ -1,7 +1,7 @@
 var view = {
 
   
-  init: function(){
+  init: function(asteroids){
     //listeners
 
     this.canvas = document.getElementById('board');
@@ -9,13 +9,13 @@ var view = {
     this.canvas.width = 500;
     this.canvas.height = 500;
     
-    this.render();
+    this.render(asteroids);
   },
 
-  render: function(){
+  render: function(asteroids){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    asteroidModel.collection.forEach(function(element){
+    asteroids.forEach(function(element){
       view.renderAsteroids(element);
     })
 

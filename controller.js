@@ -1,9 +1,10 @@
 var controller = {
 
   init: function(){
-    asteroidModel.init(5);
-    view.init();
-    setInterval(function(){controller.update()}, 30);
+    asteroidModel.init(10);
+    view.init(asteroidModel.collection);
+
+    setInterval(function(){controller.update()}, 60);
     //after update need to clear canvas and then re-render
   },
 
@@ -23,7 +24,7 @@ var controller = {
     asteroidModel.tic();
     spaceshipModel.tic();
     bulletModel.tic();
-    view.render();
+    view.render(asteroidModel.collection);
   }
 
 }

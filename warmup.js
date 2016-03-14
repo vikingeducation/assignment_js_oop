@@ -28,7 +28,7 @@ var model = {
   },
 
   Asteroid2: function(){
-    this.X = Math.floor(Math.random() * 1000);
+    this.X = Math.floor(Math.random() * 300);
     this.Y = Math.floor(Math.random() * 1000);
     this.Xvel = Math.floor(Math.random() * 10);
     this.Yvel = Math.floor(Math.random() * 10);

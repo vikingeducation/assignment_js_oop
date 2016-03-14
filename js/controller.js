@@ -13,7 +13,7 @@ GAME.controller = {
     GAME.view.init(); // draw asteroids
 
     setInterval( function() {
-      GAME.controller.gameLoop()
+      GAME.controller.gameLoop();
     }, 20 );
 
     // new GAME.Ship() // build ship

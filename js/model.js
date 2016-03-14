@@ -4,6 +4,9 @@ var GAME = GAME || {};
 GAME.model = {
 
   asteroids: [],
+  deltaTime: 0,
+  lastAsteroidCreatedAt: 0,
+
 
   init: function(numAsteroids) {
     GAME.model.generateAsteroids(numAsteroids);
@@ -20,11 +23,14 @@ GAME.model = {
 
 
   generateAsteroids: function(numAsteroids) {
-    numAsteroids = numAsteroids || 1;
     for (var i = 0; i < numAsteroids; i++) {
       var ast = new GAME.model.Asteroid();
       GAME.model.asteroids.push(ast);
     }
+
+    var d = new Date();
+    GAME.model.deltaTime = d.getTime() - GAME.model.lastAsteroidCreatedAt;
+    GAME.model.lastAsteroidCreatedAt = d.getTime();
   },
 
 
@@ -46,7 +52,6 @@ GAME.model = {
         if (distance < sumRadii) {
           astrToExplode.push(astrA);
           astrToExplode.push(astrB);
-          console.log("Explode!!!!!!")
         }
       }
     }
@@ -61,18 +66,24 @@ GAME.model = {
       var collisionY = arr[i].yCoord;
       var originalSize = arr[i].size;
 
+      // if size is too small, don't add
+      if (originalSize / 2 < 20) {
+        arr.splice(i,1);
+        var astrToRemove = GAME.model.asteroids.indexOf(arr[i]);
+        GAME.model.asteroids.splice(astrToRemove, 1);
+      }
 
-      arr[i].xCoord = collisionX + originalSize;
-      arr[i].yCoord = collisionY + originalSize;
-      arr[i].size = originalSize / 2;
-      arr[i].xVelocity = GAME.useful.randomVelocity();
-      arr[i].yVelocity = GAME.useful.randomVelocity();
+      else {
+        arr[i].xCoord = collisionX + originalSize;
+        arr[i].yCoord = collisionY + originalSize;
+        arr[i].size = originalSize / 2;
+        arr[i].xVelocity = GAME.useful.randomVelocity();
+        arr[i].yVelocity = GAME.useful.randomVelocity();
 
-      // create new tiny asteroid, with random velocity
-      GAME.model.asteroids.push(new GAME.model.Asteroid(collisionX-originalSize, collisionY-originalSize, originalSize/2))
+        // create new tiny asteroid, with random velocity
+        GAME.model.asteroids.push(new GAME.model.Asteroid(collisionX-originalSize, collisionY-originalSize, originalSize/2));
+      }
     }
-
-
   },
 
 
@@ -84,7 +95,11 @@ GAME.model = {
   },
 
 
-
+  addNewAsteroid: function() {
+    if (GAME.model.deltaTime > 5000) {
+      generateAsteroids(1);
+    }
+  }
 
 
 

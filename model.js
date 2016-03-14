@@ -64,8 +64,8 @@ var ship = {
   velY: 0,
 
   randomStartInfo: function(){
-    this.velX =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY );
-    this.velY =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY);
+    // this.velX =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY );
+    // this.velY =  Math.floor( 2 * Math.random() * space.MAX_VELOCITY - space.MAX_VELOCITY);
   },
 
   updatePosition: function() {
@@ -113,4 +113,5 @@ var space = {
   width: 800,
   height: 600,
   asteroids: [],
+  minAsteroidSize: 20,
 };

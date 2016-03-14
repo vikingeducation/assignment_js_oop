@@ -2,6 +2,7 @@ var view = {
 
   init: function(){
     view.listeners.keypressListener();
+    view.listeners.keyUpListener();
   },
 
   listeners: {
@@ -25,7 +26,30 @@ var view = {
           break;
         }
       });
-    }//end keypressListener
+    },//end keypressListener
+
+    keyUpListener: function(){
+      $( document ).keyup(function(e) {
+        switch(e.which) {
+          case 37: // left
+          controller.direction = "";
+          break;
+
+          case 38: // up
+          controller.direction = "";
+          break;
+
+          case 39: // right
+          controller.direction = "";
+          break;
+
+          case 40: // down
+          controller.direction = "";
+          break;
+        }
+      });
+    }
+
   },
 
   drawAsteroid: function(asteroid){

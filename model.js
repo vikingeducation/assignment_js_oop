@@ -2,6 +2,7 @@ var model = {
   ship: new Ship(),
   asteroids: [],
   bullets: [],
+  score: 0,
 
   getAsteroids: function() {
     return this.asteroids;
@@ -9,6 +10,10 @@ var model = {
 
   getShip: function() {
     return this.ship;
+  },
+
+  getBullets: function () {
+    return this.bullets;
   },
 
   generateAsteroids: function() {
@@ -21,7 +26,8 @@ var model = {
     }
   },
 
-  generateBullets: function() {
+  generateBullet: function() {
+    console.log(model.bullets);
     model.bullets.push(new Bullet());
   },
 
@@ -29,8 +35,10 @@ var model = {
   updateBullets: function() {
     var allBullets = model.bullets;
     for (var b in allBullets) {
-      allBullets[b].y -= allBullets[b].dy;
-      if (allBullets[b].y <= -20) {
+      allBullets[b].x += Math.cos(this.ship.angle) * allBullets[b].dx * Math.pow(2, 0.5);
+      allBullets[b].y += Math.sin(this.ship.angle) * allBullets[b].dy * Math.pow(2, 0.5);
+      if (allBullets[b].y <= -10 || allBullets[b].y >= 810 ||
+      allBullets[b].x <= -10 || allBullets[b].y >= 810) {
          allBullets.splice(b, 1);
       }
     }
@@ -73,19 +81,33 @@ var model = {
   },
 
   checkCollisions: function() {
+    var ship = this.ship;
     var asteroids = this.asteroids;
-    var max = asteroids.length;
     var killed = false;
     for (var i=0;i < asteroids.length; i++) {
       var asteroid = asteroids[i];
+      // asteroid vs asteroid
       var otherAsteroids = asteroids.slice();
       otherAsteroids.splice(i,1);
-      var oA = otherAsteroids.length;
       for (var j=0;j < otherAsteroids.length; j++) {
          var otherAsteroid = otherAsteroids[j];
          if (this.hypotenuse(asteroid,otherAsteroid) < (asteroid.size + otherAsteroid.size)) {
           this.asteroidHitsAsteroid(asteroid,otherAsteroid);
          }
+      }
+      // asteroid vs bullet
+      var bullets = this.bullets;
+      for (var k = 0; k < bullets.length; k++) {
+        var bullet = bullets[k];
+        if (this.hypotenuse(asteroid, bullet) < (asteroid.size + bullet.size)) {
+          this.asteroidHitsBullet(asteroid, bullet);
+        }
+      }
+      // asteroid vs ship
+      if (this.hypotenuse(asteroid, ship) < (asteroid.size + ship.size)) {
+        // This needs to be changed later obviously since a ship is not a circle
+        this.asteroidHitsAsteroid(asteroid);
+        this.ship.hp -= 10;
       }
     }
   },
@@ -118,19 +140,29 @@ var model = {
      this.killAsteroid(asteroid,otherAsteroid);
   },
 
+  asteroidHitsBullet: function(asteroid, bullet) {
+    this.killAsteroid(asteroid);
+    this.killBullet(bullet);
+    model.score += 1;
+  },
+
   killAsteroid: function(asteroid,otherAsteroid) {
     for (var a in arguments) {
        var index = this.asteroids.indexOf(arguments[a]);
        this.asteroids.splice(index,1);
     }
-
   },
+
+  killBullet: function(bullet) {
+    var i = this.bullets.indexOf(bullet);
+    this.bullets.splice(i, 1);
+  }
 
 };
 
 function Bullet() {
 
-  this.radius = 3;
+  this.size = 3;
   this.x = model.ship.x + model.ship.size/2;
   this.y = model.ship.y + model.ship.size/2;
   this.angle = model.ship.angle ;
@@ -147,13 +179,13 @@ function Bullet() {
     var sSize = model.ship.size;
     context.translate(this.x + sSize/2, this.y + sSize/2);
     context.rotate(this.angle);
-    context.arc(this.x,this.y,this.radius,0,Math.PI * 2);
+    context.arc(this.x,this.y,this.size,0,Math.PI * 2);
     context.restore();
   };
 }
 
 function Ship() {
-
+  this.hp = 100;
   this.size = 50;
   this.x = 375;
   this.y = 375;

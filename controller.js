@@ -26,14 +26,18 @@ var controller = {
 
   updateShip: function(dir) {
     model.updateShip(dir);
-  }
+  },
 
-  updateBullets: function(dir) {
-    model.updateBullets(dir);
-  }
+  updateBullets: function() {
+    model.updateBullets();
+  },
 
-  generateBullets: function() {
-    model.shipFire(dir);
+  generateBullet: function() {
+    model.generateBullet();
+  },
+
+  getBullets: function() {
+    return model.getBullets();
   }
 };
 

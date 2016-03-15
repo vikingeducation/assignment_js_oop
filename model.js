@@ -13,19 +13,7 @@ var asteroidModel = {
 
   createAsteroid: function(){
     var asteroid = {};
-<<<<<<< HEAD
-    asteroid.X = Math.floor(Math.random() * 500);
-    asteroid.Y = Math.floor(Math.random() * 500);
-    asteroid.radius = Math.floor(Math.random() * 5 + 3);
-    asteroid.Xvel = Math.floor(Math.random() * 10)-5;
-    asteroid.Yvel = Math.floor(Math.random() * 10)-5;
-    
-    // this.tic = function(){
-    //   this.X += this.Xvel;
-    //   this.Y += this.Yvel;
-    // }
-    return asteroid;
-=======
+
 
     asteroid.X = Math.floor(Math.random() * 20 + 1);
     asteroid.Y = Math.floor(Math.random() * 20 + 1);
@@ -40,9 +28,34 @@ var asteroidModel = {
     return asteroid
   },
 
+
   validateAsteroids: function(asteroid) {
+
     asteroidModel.collection.forEach(function(element){
-      if (element.x ) {
+      var xArr = [];
+      var yArr = [];
+
+      for (var i = element.x; i > element.x - element.radius; i++){
+        xArr.push(i);
+      }
+      for (var i = element.x; i < element.x + element.radius; i++){
+        xArr.push(i);
+      }
+
+      for (var i = element.y; i < element.y - element.radius; i++){
+        yArr.push(i);
+      }
+      for (var i = element.y; i > element.y + element.radius; i++){
+        yArr.push(i);
+      }
+    }
+
+    for(var i = 0; i < Xarr.length; i++){
+      x = (asteroid.X-asteroid.radius) + (2* asteroid.radius)
+      //want to check the whole range of Xs...
+      if(xArr[i] )
+    }
+      if(xArr.includes(element.X) && y.Arr.include(element.Y)){
 
       } else if(){
 
@@ -50,18 +63,24 @@ var asteroidModel = {
 
       }
     } );
->>>>>>> 60a2e4e9719900d1e7262a8599ee82d1825696ef
+
   },
 
   generateAsteroids: function(num){
     for(var i = 0; i < num; i++){
       var ast = new this.createAsteroid();
+      var validasteroid = false;
 
-      if (validateAsteroids(ast) {
-
-      }
-
-      this.collection.push(new this.createAsteroid());
+      while !(validasteroid) {
+        
+        if(validateAsteroids(ast)){
+          this.collection.push(ast);
+          validasteroid = true;
+        }
+        else{
+          ast = new this.createAsteroid();
+        } 
+      } 
     }
   },
 

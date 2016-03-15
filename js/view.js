@@ -7,6 +7,7 @@ GAME.view = {
     this.eventListeners.changeShipDirection();
     this.eventListeners.shootLasers();
     this.eventListeners.accelerateDecelerate();
+    this.eventListeners.clickListener();
   },
 
   canvas: $('canvas').get(0),
@@ -108,5 +109,11 @@ GAME.view = {
         }
       })
     },
+
+    clickListener: function() {
+      $( "canvas" ).click( function(e) {
+        location.reload();
+      });
+    }
   }
 }

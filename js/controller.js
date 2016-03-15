@@ -16,19 +16,20 @@ GAME.controller = {
 
     GAME.view.init(); // draw asteroids
 
+    this.playing = true;
+
     setInterval( function() {
       GAME.controller.gameLoop();
     }, 1000 / 60 );
-
-    // initialize score
-
   },
 
   gameLoop: function() {
-    GAME.asteroidModel.update(this.getLasers());
-    GAME.laserModel.update();
-    GAME.shipModel.update();
-    GAME.view.draw();
+    if (this.playing) {
+      GAME.asteroidModel.update(this.getLasers());
+      GAME.laserModel.update();
+      GAME.shipModel.update();
+      GAME.view.draw();
+    }
   },
 
 

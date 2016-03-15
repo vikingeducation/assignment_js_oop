@@ -1,0 +1,8 @@
+canvas {
+  border: 2px black solid;
+}
+
+.canvas-holder {
+  padding: auto;
+  text-align: center;
+}

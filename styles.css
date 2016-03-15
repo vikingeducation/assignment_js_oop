@@ -1,0 +1,15 @@
+#canvas {
+  border: solid 1px black;
+  background-color: black;
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#ship {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

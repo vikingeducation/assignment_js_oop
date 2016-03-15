@@ -16,23 +16,32 @@ GAME.controller = {
 
     GAME.view.init(); // draw asteroids
 
+    this.playing = true;
+
     setInterval( function() {
       GAME.controller.gameLoop();
     }, 1000 / 60 );
-
-    // initialize score
-
   },
 
   gameLoop: function() {
-    GAME.asteroidModel.update(this.getLasers());
-    GAME.laserModel.update();
-    GAME.view.draw();
+    if (this.playing) {
+      GAME.asteroidModel.update(this.getLasers());
+      GAME.laserModel.update();
+      GAME.shipModel.update();
+      GAME.view.draw();
+    }
   },
 
 
   turnShip: function(amount) {
-    this.ship.direction.rotateDeg(amount);
+    this.ship.rotation += amount;
+  },
+
+  accelerateShip: function(amount) {
+    var vVector = new Victor( amount, 0 );
+    var rotatedV = vVector.rotateDeg( this.ship.direction.horizontalAngleDeg() );
+
+    this.ship.velocity.add(rotatedV);
   },
 
 

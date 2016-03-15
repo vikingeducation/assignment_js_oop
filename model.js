@@ -1,6 +1,7 @@
 var model = {
   ship: new Ship(),
   asteroids: [],
+  bullets: [],
 
   getAsteroids: function() {
     return this.asteroids;
@@ -17,6 +18,21 @@ var model = {
 
     if (spawnRate < random) {
       this.asteroids.push(new Asteroid());
+    }
+  },
+
+  generateBullets: function() {
+    model.bullets.push(new Bullet());
+  },
+
+
+  updateBullets: function() {
+    var allBullets = model.bullets;
+    for (var b in allBullets) {
+      allBullets[b].y -= allBullets[b].dy;
+      if (allBullets[b].y <= -20) {
+         allBullets.splice(b, 1);
+      }
     }
   },
 
@@ -111,6 +127,30 @@ var model = {
   },
 
 };
+
+function Bullet() {
+
+  this.radius = 3;
+  this.x = model.ship.x + model.ship.size/2;
+  this.y = model.ship.y + model.ship.size/2;
+  this.angle = model.ship.angle ;
+
+   // Velocity
+  this.dx = 25;
+  this.dy = 25;
+
+  //this.image = new Image();
+  //this.image.src = "images/fireball.png";
+
+  this.draw = function(context) {
+    context.save();
+    var sSize = model.ship.size;
+    context.translate(this.x + sSize/2, this.y + sSize/2);
+    context.rotate(this.angle);
+    context.arc(this.x,this.y,this.radius,0,Math.PI * 2);
+    context.restore();
+  };
+}
 
 function Ship() {
 

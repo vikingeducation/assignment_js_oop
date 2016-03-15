@@ -28,6 +28,13 @@ var controller = {
     model.updateShip(dir);
   }
 
+  updateBullets: function(dir) {
+    model.updateBullets(dir);
+  }
+
+  generateBullets: function() {
+    model.shipFire(dir);
+  }
 };
 
 $(document).ready( controller.init() );

@@ -67,7 +67,7 @@ var view = {
   fireListener: function() {
     // Avatar launching fireball on hitting spacebar
     $(document).on("keydown", function(e) {
-      if (e.keyCode == 32) controller.shipFire();
+      if (e.keyCode == 32) controller.generateBullets();
     });
   }
 

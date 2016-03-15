@@ -27,12 +27,20 @@ GAME.controller = {
   gameLoop: function() {
     GAME.asteroidModel.update(this.getLasers());
     GAME.laserModel.update();
+    GAME.shipModel.update();
     GAME.view.draw();
   },
 
 
   turnShip: function(amount) {
-    this.ship.direction.rotateDeg(amount);
+    this.ship.rotation += amount;
+  },
+
+  accelerateShip: function(amount) {
+    var vVector = new Victor( amount, 0 );
+    var rotatedV = vVector.rotateDeg( this.ship.direction.horizontalAngleDeg() );
+
+    this.ship.velocity.add(rotatedV);
   },
 
 

@@ -62,7 +62,6 @@ GAME.asteroidModel = {
 
       if (distance <= radius) {
         console.log("Game over :(");
-        alert("Game over :(");
       }
 
     }

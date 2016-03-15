@@ -14,7 +14,9 @@ GAME.view = {
   context: $('canvas').get(0).getContext("2d"),
 
   draw: function() {
+    this.context.fillStyle="#000";
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawAsteroids();
     this.drawShip();
     this.drawLasers();
@@ -23,6 +25,7 @@ GAME.view = {
   drawAsteroids: function() {
     $.each(GAME.controller.allAsteroids, function(i, astr) {
       GAME.view.context.beginPath();
+      GAME.view.context.strokeStyle = '#fff';
       // arc(x, y, radius, angle, Math.PI * 2, false for clockwise/true for counter-clockwise)
       GAME.view.context.arc(astr.xCoord, astr.yCoord, astr.size, 0, Math.PI * 2, false)
       GAME.view.context.stroke();
@@ -33,7 +36,7 @@ GAME.view = {
     var ship = GAME.controller.ship;
     var victor = ship.direction.clone();
 
-    this.context.fillStyle = '#000';
+    this.context.strokeStyle = '#fff';
     this.context.beginPath();
     this.context.moveTo(ship.xCoord + victor.x, ship.yCoord + victor.y);
 
@@ -46,7 +49,6 @@ GAME.view = {
 
     this.context.closePath();
     this.context.stroke();
-    this.context.fill();
   },
 
   drawLasers: function() {
@@ -54,11 +56,11 @@ GAME.view = {
       var vector = new Victor(laser.size, 0);
       var rotated = vector.rotateDeg(laser.velocity.horizontalAngleDeg())
 
-      GAME.view.context.fillStyle = "#000";
+      GAME.view.context.strokeStyle = "#fff";
       GAME.view.context.beginPath();
       GAME.view.context.moveTo(laser.xCoord, laser.yCoord);
       GAME.view.context.lineTo(rotated.x + laser.xCoord, rotated.y + laser.yCoord);
-      GAME.view.context.closePath(); 
+      GAME.view.context.closePath();
       GAME.view.context.stroke();
 
     })
@@ -70,11 +72,11 @@ GAME.view = {
         e.preventDefault();
         switch(e.which) {
           case 37:
-          GAME.controller.turnShip(-10);
+          GAME.controller.turnShip(-1);
           break;
 
           case 39:
-          GAME.controller.turnShip(10);
+          GAME.controller.turnShip(1);
           break;
         }
       })
@@ -97,20 +99,14 @@ GAME.view = {
         e.preventDefault();
         switch(e.which) {
           case 38:
-          // controller.direction = "up";
+            GAME.controller.accelerateShip(1);
           break;
 
           case 40:
-          // controller.direction = "down";
+            GAME.controller.accelerateShip(-1);
           break;
         }
       })
     },
   }
 }
-
-
-
-
-
-

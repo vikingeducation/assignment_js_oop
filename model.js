@@ -48,21 +48,16 @@ var asteroidModel = {
       for (var i = element.y; i > element.y + element.radius; i++){
         yArr.push(i);
       }
-    }
+    });
 
     for(var i = 0; i < Xarr.length; i++){
       x = (asteroid.X-asteroid.radius) + (2* asteroid.radius)
       //want to check the whole range of Xs...
-      if(xArr[i] )
-    }
-      if(xArr.includes(element.X) && y.Arr.include(element.Y)){
-
-      } else if(){
-
-      } else {
-
+      if(xArr[i] ){
       }
-    } );
+      if(xArr.includes(element.X) && y.Arr.include(element.Y)){
+      } 
+    }
 
   },
 
@@ -71,16 +66,16 @@ var asteroidModel = {
       var ast = new this.createAsteroid();
       var validasteroid = false;
 
-      while !(validasteroid) {
+      // while !(validasteroid) {
         
-        if(validateAsteroids(ast)){
-          this.collection.push(ast);
-          validasteroid = true;
-        }
-        else{
-          ast = new this.createAsteroid();
-        } 
-      } 
+      //   if(validateAsteroids(ast)){
+      //     this.collection.push(ast);
+      //     validasteroid = true;
+      //   }
+      //   else{
+      //     ast = new this.createAsteroid();
+      //   } 
+      // } 
     }
   },
 

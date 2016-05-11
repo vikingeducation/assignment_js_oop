@@ -1,8 +1,8 @@
 'use strict;'
 
-function AsteroidModel(){
-  this.xLocation = 0;
-  this.yLocation = 0;
+function AsteroidModel(x,y){
+  this.xLocation = x;
+  this.yLocation = y;
   this.xVelocity = 1;
   this.yVelocity = 1;
 }

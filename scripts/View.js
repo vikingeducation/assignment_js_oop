@@ -14,6 +14,7 @@ View.prototype.drawAsteroid = function(x,y){
 
   // Circle
   context.beginPath();
+  // center coords (2), radius
   context.arc(x,y,5,0,2*Math.PI);
   context.stroke();
 };

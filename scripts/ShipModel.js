@@ -11,12 +11,13 @@ function ShipModel(canvas){
 }
 
 ShipModel.prototype.tic = function(){
-  // console.log(this.centerX + ', ' + this.centerY);
 
   this.setPositions();
 
-  if (this.velocity !== 0){
-    this.velocity -= 0.1;
+  if (this.velocity < 0) {
+    this.velocity = 0;
+  } else if (this.velocity !== 0){
+    this.velocity -= 0.2;
   }
 };
 
@@ -24,17 +25,11 @@ ShipModel.prototype.tic = function(){
 ShipModel.prototype.resetCoords = function(){
   if (this.centerX >= 500) {
     this.centerX = 0;
-  }
-
-  if (this.centerY >= 500) {
+  } else if (this.centerY >= 500) {
     this.centerY = 0;
-  }
-
-  if (this.centerX <= 0) {
+  } else if (this.centerX <= 0) {
     this.centerX = 500;
-  }
-
-  if (this.centerY <= 0) {
+  } else if (this.centerY <= 0) {
     this.centerY = 500;
   }
 };
@@ -51,7 +46,7 @@ ShipModel.prototype.controlShip = function(event){
     ship.direction -= 20;
    } else if (event.keyCode === 38 || event.keyCode === 73){
     // up
-    ship.velocity += 2;
+    ship.velocity += 3;
   }
 
   // Normalize to less than 360 degrees

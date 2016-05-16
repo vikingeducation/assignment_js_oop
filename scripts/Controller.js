@@ -1,35 +1,36 @@
 'use strict;'
 
-function Controller(){
-  this.view = new View();
-  this.asteroids = this.initAsteroids(10);
-  this.ship = new ShipModel(this.view.canvas);
-  this.startGameLoop();
-};
+var controller = {
+  init: function(){
+    controller.ship = new ShipModel();
+    controller.asteroids = controller.initAsteroids(10);
+    view.init();
+    controller.startGameLoop();
+  },
 
-Controller.prototype.initAsteroids = function(max){
-  var asteroids = [];
+  initAsteroids: function(max){
+    var asteroids = [];
 
-  for (var i = 1; i <= max; i++) {
-    asteroids.push(new AsteroidModel());
-  }
+    for (var i = 1; i <= max; i++) {
+      asteroids.push(new AsteroidModel());
+    }
 
-  return asteroids;
-}
+    return asteroids;
+  },
 
-Controller.prototype.startGameLoop = function(){
-  this.gameLoop = window.setInterval(this.gameInterval, 100, this.asteroids, this.ship, this.view);
-}
+  startGameLoop: function(){
+    controller.gameLoop = window.setInterval(controller.gameInterval, 100, controller.asteroids, controller.ship);
+  },
 
-Controller.prototype.gameInterval = function(asteroids, ship, view){
-  view.clearCanvas();
+  gameInterval: function(asteroids, ship){
+    view.clearCanvas();
 
-  view.drawShip(ship.x, ship.y);
+    view.drawShip(ship.x, ship.y);
 
-  asteroids.forEach(function(element){
-    element.tic();
-    view.drawAsteroid(element.xLocation, element.yLocation, element.radius);
-  });
+    asteroids.forEach(function(element){
+      element.tic();
+      view.drawAsteroid(element.xLocation, element.yLocation, element.radius);
+    });
     // model.moveSnake();
     // view.render();
 
@@ -47,8 +48,10 @@ Controller.prototype.gameInterval = function(asteroids, ship, view){
     //   model.addFood();
     //   view.renderFood();
     // }
-  },
+  }
+
+};
 
 $(document).ready(function(){
-  var game = new Controller();
+  controller.init();
 });

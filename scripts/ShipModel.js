@@ -1,6 +1,11 @@
 'use strict;'
 
 function ShipModel(canvas){
-  this.x = canvas.width / 2;
-  this.y = canvas.height / 2;
+  this.x = 250;
+  this.y = 250;
+  this.direction = 0;
 }
+
+ShipModel.prototype.setDirection = function(){
+
+};

@@ -67,8 +67,6 @@ ASTEROIDS.display.Ship.prototype.collide = function(sprite) {
 
   if (point && !this.isInvincible) {
     this.die();
-
-    ASTEROIDS.sound.SFX.play('ship-explosion');
   }
 };
 

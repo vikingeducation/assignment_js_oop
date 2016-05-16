@@ -32,7 +32,6 @@ ASTEROIDS.core.Game.prototype.initialize = function() {
   this._initializeShip();
   this._populateContainer();
   this._initializeEvents();
-  this._initializeSounds();
 };
 
 ASTEROIDS.core.Game.prototype._initializeContainer = function() {
@@ -79,43 +78,5 @@ ASTEROIDS.core.Game.prototype._initializeEvents = function() {
 
   this._key = new ASTEROIDS.events.Key();
   this._key.start();
-};
-
-ASTEROIDS.core.Game.prototype._initializeSounds = function() {
-  var sounds = {};
-  sounds['bullet'] = [];
-  sounds['asteroid-explosion'] = [];
-  sounds['ship-explosion'] = [];
-  sounds['music'] = [];
-  var sound;
-  for (var i = 0; i < 10; i++) {
-    sound = new ASTEROIDS.sound.Sound({
-      url: this.audioUrl + '/assets/audio/bullet.mp3'
-    });
-    sounds['bullet'].push(sound);
-
-    sound = new ASTEROIDS.sound.Sound({
-      url: this.audioUrl + '/assets/audio/asteroid-explosion.mp3'
-    });
-    sounds['asteroid-explosion'].push(sound);
-
-    sound = new ASTEROIDS.sound.Sound({
-      url: this.audioUrl + '/assets/audio/ship-explosion.mp3'
-    });
-    sounds['ship-explosion'].push(sound);
-  }
-
-  sound = new ASTEROIDS.sound.Sound({
-    url: this.audioUrl + '/assets/audio/music.mp3',
-    loop: true
-  });
-  sounds['music'].push(sound);
-
-  this._sfx = new ASTEROIDS.sound.SFX({
-    sounds: sounds
-  });
-  ASTEROIDS.sound.SFX.instance = this._sfx;
-
-  ASTEROIDS.sound.SFX.play('music');
 };
 

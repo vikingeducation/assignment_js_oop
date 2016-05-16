@@ -81,8 +81,6 @@ ASTEROIDS.display.Bullet.prototype.fireFrom = function(ship) {
   };
   this.timer = this.LIFE_TIME;
   ship.container.add(this);
-
-  ASTEROIDS.sound.SFX.play('bullet');
 };
 
 ASTEROIDS.display.Bullet.prototype.render = function() {

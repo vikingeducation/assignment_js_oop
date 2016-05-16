@@ -91,8 +91,6 @@ ASTEROIDS.display.Asteroid.prototype._explode = function() {
         this._spawnChildAt(point, collided);
       }
       this.removeCollision(collided);
-
-      ASTEROIDS.sound.SFX.play('asteroid-explosion');
     }
   }
 };

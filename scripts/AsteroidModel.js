@@ -12,6 +12,7 @@ AsteroidModel.prototype.tic = function(){
   this.yLocation += this.yVelocity;
 };
 
+// When asteroid goes off-screen, wrap to other side
 AsteroidModel.prototype.resetCoords = function(){
   if (this.xLocation > 500) {
     this.xLocation  = 0;

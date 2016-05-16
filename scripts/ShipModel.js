@@ -5,37 +5,36 @@ function ShipModel(canvas){
   this.centerY = 250;
   this.radius = 10;
   // Degrees with "north" equal to 0
-  this.direction = 270;
-  this.thrust = 0;
+  this.direction = 0;
+  this.velocity = 0;
   this.setPositions();
 }
 
 ShipModel.prototype.tic = function(){
-  this.resetCoords();
+  // console.log(this.centerX + ', ' + this.centerY);
 
-  this.centerX += this.xVelocity;
-  this.centerY += this.yVelocity;
+  this.setPositions();
 
-  if (this.thrust !== 0){
-    this.thrust -= 1;
+  if (this.velocity !== 0){
+    this.velocity -= 0.1;
   }
 };
 
+// When ship goes off-screen, wrap to other side
 ShipModel.prototype.resetCoords = function(){
-  if (this.centerX > 500) {
-    this.centerX  = 0;
+  if (this.centerX >= 500) {
+    this.centerX = 0;
   }
 
-  if (this.centerY > 500) {
+  if (this.centerY >= 500) {
     this.centerY = 0;
   }
 
-  if (this.centerX < 0) {
+  if (this.centerX <= 0) {
     this.centerX = 500;
   }
 
-
-  if (this.centerY < 0) {
+  if (this.centerY <= 0) {
     this.centerY = 500;
   }
 };
@@ -50,9 +49,9 @@ ShipModel.prototype.controlShip = function(event){
   } else if (event.keyCode === 37 || event.keyCode === 74){
     // left
     ship.direction -= 20;
-  } else if (event.keyCode === 38 || event.keyCode === 73){
+   } else if (event.keyCode === 38 || event.keyCode === 73){
     // up
-    ship.thrust += 2;
+    ship.velocity += 2;
   }
 
   // Normalize to less than 360 degrees
@@ -62,9 +61,14 @@ ShipModel.prototype.controlShip = function(event){
 };
 
 ShipModel.prototype.setPositions = function(){
+  this.resetCoords();
+  // console.log(this.centerX);
   var noseTheta = getTheta(this.direction);
   var starboardTheta = getTheta(this.direction + 150);
   var portTheta = getTheta(this.direction + 210);
+
+  this.centerX = arcX(this.centerX, this.velocity, noseTheta);
+  this.centerY = arcY(this.centerY, this.velocity, noseTheta);
 
   this.noseX = arcX(this.centerX, this.radius, noseTheta);
   this.noseY = arcY(this.centerY, this.radius, noseTheta);

@@ -25,6 +25,7 @@ var controller = {
   gameInterval: function(){
     view.clearCanvas();
 
+    controller.ship.tic();
     view.drawShip(controller.ship);
 
     controller.asteroids.forEach(function(element){

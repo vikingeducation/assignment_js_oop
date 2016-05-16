@@ -19,15 +19,15 @@ var controller = {
   },
 
   startGameLoop: function(){
-    controller.gameLoop = window.setInterval(controller.gameInterval, 100, controller.asteroids, controller.ship);
+    controller.gameLoop = window.setInterval(controller.gameInterval, 100);
   },
 
-  gameInterval: function(asteroids, ship){
+  gameInterval: function(){
     view.clearCanvas();
 
-    view.drawShip(ship.x, ship.y);
+    view.drawShip(controller.ship.x, controller.ship.y);
 
-    asteroids.forEach(function(element){
+    controller.asteroids.forEach(function(element){
       element.tic();
       view.drawAsteroid(element.xLocation, element.yLocation, element.radius);
     });

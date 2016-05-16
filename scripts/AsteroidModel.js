@@ -16,18 +16,13 @@ AsteroidModel.prototype.tic = function(){
 AsteroidModel.prototype.resetCoords = function(){
   if (this.xLocation > 500) {
     this.xLocation  = 0;
+  } else if (this.xLocation < 0) {
+    this.xLocation = 500;
   }
 
   if (this.yLocation > 500) {
     this.yLocation = 0;
-  }
-
-  if (this.xLocation < 0) {
-    this.xLocation = 500;
-  }
-
-
-  if (this.yLocation < 0) {
+  } else if (this.yLocation < 0) {
     this.yLocation = 500;
   }
 };

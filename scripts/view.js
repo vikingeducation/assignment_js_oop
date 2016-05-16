@@ -6,7 +6,7 @@ var view = {
     view.context = view.canvas.getContext("2d");
 
     // set listeners
-    $(document).keydown(controller.ship.setDirection);
+    $(document).keydown({ship: controller.ship}, controller.ship.controlShip);
   },
 
   drawAsteroid: function(x, y, radius){
@@ -17,11 +17,11 @@ var view = {
     view.context.stroke();
   },
 
-  drawShip: function(x, y){
+  drawShip: function(ship){
     view.context.beginPath();
-    view.context.moveTo(x, y);
-    view.context.lineTo(x + 5, y + 20);
-    view.context.lineTo(x - 5, y + 20);
+    view.context.moveTo(ship.noseX, ship.noseY);
+    view.context.lineTo(ship.starboardX, ship.starboardY);
+    view.context.lineTo(ship.portX, ship.portY);
     view.context.fill();
   },
 

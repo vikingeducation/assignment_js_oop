@@ -6,7 +6,7 @@
 
 The retro style game brought to life with jQuery and raw HTML elements.
 
-Play it [here](https://rawgit.com/BideoWego/assignment_js_oop/master/rawgit.html).
+Play it [here](http://bideowego-asteroids.surge.sh).
 
 Objectify! Construct! Prototype!  Win.
 [A JavaScript project using objects, constructors and prototypes from the Viking Code School](http://www.vikingcodeschool.com)

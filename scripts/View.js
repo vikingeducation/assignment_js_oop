@@ -6,17 +6,19 @@ function View(){
 }
 
 View.prototype.drawAsteroid = function(x, y, radius){
-  // var canvas = document.getElementById("game");
-
-  // Rectangle
-  // upper left coords (2) then width and height
-  // context.fillRect(x, y, 5, 5);
-
   // Circle
   this.context.beginPath();
   // center coords (2), radius
   this.context.arc(x, y, radius, 0, 2*Math.PI);
   this.context.stroke();
+};
+
+View.prototype.drawShip = function(x, y){
+  this.context.beginPath();
+  this.context.moveTo(x, y);
+  this.context.lineTo(x + 5, y + 20);
+  this.context.lineTo(x - 5, y + 20);
+  this.context.fill();
 };
 
 View.prototype.clearCanvas = function(){

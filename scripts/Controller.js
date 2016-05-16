@@ -3,6 +3,7 @@
 function Controller(){
   this.view = new View();
   this.asteroids = this.initAsteroids(10);
+  this.ship = new ShipModel(this.view.canvas);
   this.startGameLoop();
 };
 
@@ -17,11 +18,13 @@ Controller.prototype.initAsteroids = function(max){
 }
 
 Controller.prototype.startGameLoop = function(){
-  this.gameLoop = window.setInterval(this.gameInterval, 100, this.asteroids, this.view);
+  this.gameLoop = window.setInterval(this.gameInterval, 100, this.asteroids, this.ship, this.view);
 }
 
-Controller.prototype.gameInterval = function(asteroids, view){
+Controller.prototype.gameInterval = function(asteroids, ship, view){
   view.clearCanvas();
+
+  view.drawShip(ship.x, ship.y);
 
   asteroids.forEach(function(element){
     element.tic();

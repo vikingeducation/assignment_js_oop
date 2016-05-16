@@ -39,10 +39,3 @@ AsteroidModel.prototype.init = function(){
     this.yVelocity *= randomDirection;
   }
 };
-
-// Asteroid subclass
-function Asteroid(){}
-
-// Asteroid.prototype = Object.create(AsteroidModel.prototype);
-
-// instantiate in the controller?

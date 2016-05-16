@@ -5,7 +5,7 @@ function View(){
   this.context = this.canvas.getContext("2d");
 }
 
-View.prototype.drawAsteroid = function(x,y){
+View.prototype.drawAsteroid = function(x, y, radius){
   // var canvas = document.getElementById("game");
 
   // Rectangle
@@ -15,7 +15,7 @@ View.prototype.drawAsteroid = function(x,y){
   // Circle
   this.context.beginPath();
   // center coords (2), radius
-  this.context.arc(x,y,5,0,2*Math.PI);
+  this.context.arc(x, y, radius, 0, 2*Math.PI);
   this.context.stroke();
 };
 

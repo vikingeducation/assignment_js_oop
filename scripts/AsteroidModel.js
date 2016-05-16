@@ -17,6 +17,7 @@ AsteroidModel.prototype.init = function(){
   var randomDirection = [-1, 1][Math.floor(Math.random() * 2)];
   this.xVelocity = (Math.random() * 2) + 0.5;
   this.yVelocity = (Math.random() * 2) + 0.5;
+  this.radius = (Math.random() * 20) + 5;
 
   if (startEdge === 'top'){
     this.xLocation = startOtherCoord;

@@ -25,7 +25,7 @@ Controller.prototype.gameInterval = function(asteroids, view){
 
   asteroids.forEach(function(element){
     element.tic();
-    view.drawAsteroid(element.xLocation, element.yLocation);
+    view.drawAsteroid(element.xLocation, element.yLocation, element.radius);
   });
     // model.moveSnake();
     // view.render();

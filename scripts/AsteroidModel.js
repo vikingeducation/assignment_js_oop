@@ -6,8 +6,29 @@ function AsteroidModel(){
 
 // Asteroid methods
 AsteroidModel.prototype.tic = function(){
+  this.resetCoords();
+
   this.xLocation += this.xVelocity;
   this.yLocation += this.yVelocity;
+};
+
+AsteroidModel.prototype.resetCoords = function(){
+  if (this.xLocation > 500) {
+    this.xLocation  = 0;
+  }
+
+  if (this.yLocation > 500) {
+    this.yLocation = 0;
+  }
+
+  if (this.xLocation < 0) {
+    this.xLocation = 500;
+  }
+
+
+  if (this.yLocation < 0) {
+    this.yLocation = 500;
+  }
 };
 
 AsteroidModel.prototype.init = function(){

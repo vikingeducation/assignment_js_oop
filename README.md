@@ -8,7 +8,7 @@ by Sia Karmalegos
 
 Ship actions are as follows:
 
-- *Right arrow* or *k*: turn clockwise
-- *Left arrow* or *j*: turn counter-clockwise
-- *Space bar*: fire weapons
-- *Up* or *i*: apply thrust to increase velocity
+- **Right arrow** or **k**: turn clockwise
+- **Left arrow** or **j**: turn counter-clockwise
+- **Space bar**: fire weapons
+- **Up** or **i**: apply thrust to increase velocity

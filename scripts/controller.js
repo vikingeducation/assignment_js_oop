@@ -4,6 +4,7 @@ var controller = {
   init: function(){
     controller.ship = new ShipModel();
     controller.asteroids = controller.initAsteroids(10);
+    controller.photons = [];
     view.init();
     controller.startGameLoop();
   },
@@ -28,9 +29,15 @@ var controller = {
     controller.ship.tic();
     view.drawShip(controller.ship);
 
+    // TODO: delete photons once off-screen
+    controller.photons.forEach(function(element){
+      element.tic();
+      view.drawCircle(element.x, element.y, 1)
+    });
+
     controller.asteroids.forEach(function(element){
       element.tic();
-      view.drawAsteroid(element.xLocation, element.yLocation, element.radius);
+      view.drawCircle(element.xLocation, element.yLocation, element.radius);
     });
     // model.moveSnake();
     // view.render();

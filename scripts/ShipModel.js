@@ -47,6 +47,9 @@ ShipModel.prototype.controlShip = function(event){
    } else if (event.keyCode === 38 || event.keyCode === 73){
     // up
     ship.velocity += 3;
+  } else if (event.keyCode === 32){
+    // space bar = fire
+    controller.photons.push(new Photon(ship.noseX, ship.noseY, ship.direction, ship.velocity));
   }
 
   // Normalize to less than 360 degrees

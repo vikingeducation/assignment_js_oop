@@ -9,7 +9,7 @@ var view = {
     $(document).keydown({ship: controller.ship}, controller.ship.controlShip);
   },
 
-  drawAsteroid: function(x, y, radius){
+  drawCircle: function(x, y, radius){
     // Circle
     view.context.beginPath();
     // center coords (2), radius

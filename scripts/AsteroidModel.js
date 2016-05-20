@@ -1,58 +1,62 @@
 'use strict;'
 
-function AsteroidModel(){
-  this.init();
+function AsteroidModel(size, x, y, direction){
+  this.init(size, x, y, direction);
 }
 
-// Asteroid methods
+// Asteroid movement
 AsteroidModel.prototype.tic = function(){
   this.resetCoords();
 
-  this.xLocation += this.xVelocity;
-  this.yLocation += this.yVelocity;
+  var theta = getTheta(this.direction);
+  this.x = arcX(this.x, this.velocity, theta);
+  this.y = arcY(this.y, this.velocity, theta);
+
 };
 
 // When asteroid goes off-screen, wrap to other side
 AsteroidModel.prototype.resetCoords = function(){
-  if (this.xLocation > 500) {
-    this.xLocation  = 0;
-  } else if (this.xLocation < 0) {
-    this.xLocation = 500;
+  if (this.x > 500) {
+    this.x  = 0;
+  } else if (this.x < 0) {
+    this.x = 500;
   }
 
-  if (this.yLocation > 500) {
-    this.yLocation = 0;
-  } else if (this.yLocation < 0) {
-    this.yLocation = 500;
+  if (this.y > 500) {
+    this.y = 0;
+  } else if (this.y < 0) {
+    this.y = 500;
   }
 };
 
-AsteroidModel.prototype.init = function(){
-  var edges = ['top', 'bottom', 'left', 'right'];
-  var startEdge = edges[Math.floor(Math.random() * 3)];
-  var startOtherCoord = Math.floor(Math.random() * 500);
-  var randomDirection = [-1, 1][Math.floor(Math.random() * 2)];
-  this.xVelocity = (Math.random() * 2) + 0.5;
-  this.yVelocity = (Math.random() * 2) + 0.5;
-  this.radius = (Math.random() * 20) + 5;
+AsteroidModel.prototype.init = function(size, x, y, direction){
+  this.velocity = (Math.random() * 2) + 0.5;
+  this.radius = size || (Math.random() * 20) + 5;
+  this.direction = direction || Math.floor(Math.random() * 360);
 
-  if (startEdge === 'top'){
-    this.xLocation = startOtherCoord;
-    this.yLocation = 0;
-    this.xVelocity *= randomDirection;
-  } else if (startEdge === 'bottom'){
-    this.xLocation = startOtherCoord;
-    this.yLocation = 500;
-    this.xVelocity *= randomDirection;
-    this.yVelocity *= -1;
-  } else if (startEdge === 'left'){
-    this.xLocation = 0;
-    this.yLocation = startOtherCoord;
-    this.yVelocity *= randomDirection;
+  if (x) {
+    // Created from explosion - Initialize at site of parent
+    this.x = x;
+    this.y = y;
+
   } else {
-    this.xLocation = 500;
-    this.yLocation = startOtherCoord;
-    this.xVelocity *= -1;
-    this.yVelocity *= randomDirection;
+    // Created at game start - Initialize on random edges
+    var edges = ['top', 'bottom', 'left', 'right'];
+    var startEdge = edges[Math.floor(Math.random() * 3)];
+    var startOtherCoord = Math.floor(Math.random() * 500);
+
+    if (startEdge === 'top'){
+      this.x = startOtherCoord;
+      this.y = 0;
+    } else if (startEdge === 'bottom'){
+      this.x = startOtherCoord;
+      this.y = 500;
+    } else if (startEdge === 'left'){
+      this.x = 0;
+      this.y = startOtherCoord;
+    } else {
+      this.x = 500;
+      this.y = startOtherCoord;
+    }
   }
 };

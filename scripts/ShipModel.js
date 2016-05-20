@@ -4,6 +4,7 @@ function ShipModel(canvas){
   this.centerX = 250;
   this.centerY = 250;
   this.radius = 10;
+
   // Degrees with "north" equal to 0
   this.direction = 0;
   this.velocity = 0;
@@ -60,7 +61,6 @@ ShipModel.prototype.controlShip = function(event){
 
 ShipModel.prototype.setPositions = function(){
   this.resetCoords();
-  // console.log(this.centerX);
   var noseTheta = getTheta(this.direction);
   var starboardTheta = getTheta(this.direction + 150);
   var portTheta = getTheta(this.direction + 210);

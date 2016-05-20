@@ -35,9 +35,27 @@ var controller = {
       view.drawCircle(element.x, element.y, 1)
     });
 
-    controller.asteroids.forEach(function(element){
+    // Detect asteroid collisions with photons
+    var exploded = [];
+    controller.asteroids.forEach(function(element, index){
       element.tic();
-      view.drawCircle(element.xLocation, element.yLocation, element.radius);
+      if (element.detectCollision() === true){
+        console.log('I collided');
+        exploded.push(index);
+      } else {
+        view.drawCircle(element.x, element.y, element.radius);
+      }
+    });
+
+    // Remove exploded asteroids and replace with smaller ones
+    exploded.forEach(function(asteroidIndex){
+      // Temporary variable for hit asteroid
+      var original = controller.asteroids[asteroidIndex];
+
+      // Remove original asteroid from game set
+      controller.asteroids.splice(asteroidIndex, 1);
+
+      original.makeChildren();
     });
     // model.moveSnake();
     // view.render();

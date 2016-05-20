@@ -14,6 +14,37 @@ AsteroidModel.prototype.tic = function(){
 
 };
 
+// Detect collisions with photons and ship
+AsteroidModel.prototype.detectCollision = function(){
+  var collision = false;
+
+  for (var i = 0; i < controller.photons.length; i++){
+    var distanceX = this.x - controller.photons[i].x;
+    var distanceY = this.y - controller.photons[i].y;
+    var distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
+
+    // Radius of all photons = 1
+    if (distance <= this.radius + 1) {
+      collision = true;
+      console.log("Strike!");
+      break;
+    }
+  }
+
+  return collision;
+};
+
+AsteroidModel.prototype.makeChildren = function(){
+  if (this.radius > 16){
+    // Make 4 children
+    var newSize = this.radius / 4
+    controller.asteroids.push(new AsteroidModel(newSize, this.x, this.y, this.direction + 45));
+    controller.asteroids.push(new AsteroidModel(newSize, this.x, this.y, this.direction + 135));
+    controller.asteroids.push(new AsteroidModel(newSize, this.x, this.y, this.direction + 225));
+    controller.asteroids.push(new AsteroidModel(newSize, this.x, this.y, this.direction + 315));
+  }
+};
+
 // When asteroid goes off-screen, wrap to other side
 AsteroidModel.prototype.resetCoords = function(){
   if (this.x > 500) {

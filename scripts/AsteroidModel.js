@@ -15,20 +15,13 @@ AsteroidModel.prototype.tic = function(){
 };
 
 // Detect collisions with photons and ship
-AsteroidModel.prototype.detectCollision = function(){
+AsteroidModel.prototype.detectCollision = function(object){
   var collision = false;
+  var distance = getDistanceBetween(this, object);
 
-  for (var i = 0; i < controller.photons.length; i++){
-    var distanceX = this.x - controller.photons[i].x;
-    var distanceY = this.y - controller.photons[i].y;
-    var distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
-
-    // Radius of all photons = 1
-    if (distance <= this.radius + 1) {
-      collision = true;
-      console.log("Strike!");
-      break;
-    }
+  // Radius of all photons = 1
+  if (distance <= this.radius + 1) {
+    collision = true;
   }
 
   return collision;

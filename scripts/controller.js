@@ -35,12 +35,27 @@ var controller = {
       view.drawCircle(element.x, element.y, 1)
     });
 
-    // Detect asteroid collisions with photons
+    // Detect collisions
     var exploded = [];
     controller.asteroids.forEach(function(element, index){
       element.tic();
-      if (element.detectCollision() === true){
-        console.log('I collided');
+
+      // Detect collision with ship
+      var shipCollision = element.detectCollision(controller.ship);
+
+      // If no collision with ship, check for photon collisions
+      if (shipCollision === false) {
+        for (var i = 0; i < controller.photons.length; i++){
+          var photonCollision = element.detectCollision(controller.photons[i]);
+          if (photonCollision === true){
+            break
+          }
+        }
+      } else {
+        console.log('game over');
+      }
+
+      if (shipCollision === true || photonCollision === true){
         exploded.push(index);
       } else {
         view.drawCircle(element.x, element.y, element.radius);

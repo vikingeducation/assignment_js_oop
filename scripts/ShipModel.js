@@ -1,8 +1,8 @@
 'use strict;'
 
 function ShipModel(canvas){
-  this.centerX = 250;
-  this.centerY = 250;
+  this.x = 250;
+  this.y = 250;
   this.radius = 10;
 
   // Degrees with "north" equal to 0
@@ -24,14 +24,14 @@ ShipModel.prototype.tic = function(){
 
 // When ship goes off-screen, wrap to other side
 ShipModel.prototype.resetCoords = function(){
-  if (this.centerX >= 500) {
-    this.centerX = 0;
-  } else if (this.centerY >= 500) {
-    this.centerY = 0;
-  } else if (this.centerX <= 0) {
-    this.centerX = 500;
-  } else if (this.centerY <= 0) {
-    this.centerY = 500;
+  if (this.x >= 500) {
+    this.x = 0;
+  } else if (this.y >= 500) {
+    this.y = 0;
+  } else if (this.x <= 0) {
+    this.x = 500;
+  } else if (this.y <= 0) {
+    this.y = 500;
   }
 };
 
@@ -65,15 +65,15 @@ ShipModel.prototype.setPositions = function(){
   var starboardTheta = getTheta(this.direction + 150);
   var portTheta = getTheta(this.direction + 210);
 
-  this.centerX = arcX(this.centerX, this.velocity, noseTheta);
-  this.centerY = arcY(this.centerY, this.velocity, noseTheta);
+  this.x = arcX(this.x, this.velocity, noseTheta);
+  this.y = arcY(this.y, this.velocity, noseTheta);
 
-  this.noseX = arcX(this.centerX, this.radius, noseTheta);
-  this.noseY = arcY(this.centerY, this.radius, noseTheta);
+  this.noseX = arcX(this.x, this.radius, noseTheta);
+  this.noseY = arcY(this.y, this.radius, noseTheta);
 
-  this.starboardX = arcX(this.centerX, this.radius, starboardTheta);
-  this.starboardY = arcY(this.centerY, this.radius, starboardTheta);
+  this.starboardX = arcX(this.x, this.radius, starboardTheta);
+  this.starboardY = arcY(this.y, this.radius, starboardTheta);
 
-  this.portX = arcX(this.centerX, this.radius, portTheta);
-  this.portY = arcY(this.centerY, this.radius, portTheta);
+  this.portX = arcX(this.x, this.radius, portTheta);
+  this.portY = arcY(this.y, this.radius, portTheta);
 };

@@ -6,6 +6,8 @@ by Sia Karmalegos
 
 ## How to Play
 
+You can play this exciting game [here](http://siakaramalegos.github.io/assignment_js_oop/).
+
 Ship actions are as follows:
 
 - **Right arrow** or **k**: turn clockwise

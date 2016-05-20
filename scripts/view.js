@@ -27,5 +27,12 @@ var view = {
 
   clearCanvas: function(){
     view.context.clearRect(0, 0, view.canvas.width, view.canvas.height);
+  },
+
+  showGameOver: function(){
+    view.context.fillStyle = "red";
+    view.context.textAlign = "center";
+    view.context.font = "30px Arial";
+    view.context.fillText("Game Over! Refresh to play again.", view.canvas.width / 2, view.canvas.height / 2);
   }
 };

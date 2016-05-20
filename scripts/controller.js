@@ -52,7 +52,8 @@ var controller = {
           }
         }
       } else {
-        console.log('game over');
+        window.clearInterval(controller.gameLoop);
+        view.showGameOver();
       }
 
       if (shipCollision === true || photonCollision === true){
@@ -77,8 +78,7 @@ var controller = {
 
     // // Clear interval if game over
     // if (model.checkGameOver() === true) {
-    //   window.clearInterval(controller.gameLoop);
-    //   view.renderGameOver();
+    //
     // }
 
     // // Check if ate food

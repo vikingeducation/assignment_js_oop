@@ -4,7 +4,7 @@ function Photon(x, y, direction, velocity){
   this.x = x;
   this.y = y;
   this.theta = getTheta(direction);
-  this.velocity = velocity + 2;
+  this.velocity = velocity + 5;
 }
 
 Photon.prototype.tic = function(){

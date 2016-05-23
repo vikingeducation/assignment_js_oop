@@ -1,0 +1,34 @@
+/*
+  Asteroids
+*/
+
+body,
+html,
+#game {
+  color: #fff;
+  background: #000;
+}
+
+#game {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  border: 1px solid #fff;
+  overflow: hidden;
+}
+
+.sprite {
+  position: absolute;
+  border: 1px solid #fff;
+  background: #000;
+}
+
+.collision {
+  background: #F6777F;
+}
+
+.controls ul {
+  list-style: none;
+}
+

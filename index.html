@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+
+    <title>Bideo Wego | Asteroids</title>
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Asteroids CSS -->
+    <link rel="stylesheet" href="/assets/stylesheets/asteroids.css">
+  </head>
+  <body>
+    <h1 class="text-center">Asteroids</h1>
+
+    <!-- Game Container -->
+    <div id="game"></div>
+
+    <!-- Controls -->
+    <div class="controls text-center">
+      Hold SPACE to fire
+      <br>
+      Hold &LeftArrow; or &RightArrow; to rotate
+      <br>
+      Hold &UpArrow; or &DownArrow; to move
+    </div>
+
+    <!-- Links -->
+    <div class="links text-center">
+      JavaScripted by
+      <a target="_blank" href="http://bideowego.com">Bideo Wego</a>
+      |
+      Project for
+      <a target="_blank" href="http://vikingcodeschool.com">Viking Code School</a>
+      |
+      Source Code on
+      <a target="_blank" href="https://github.com/BideoWego/assignment_js_oop/">Github</a>
+    </div>
+
+    <!-- Asteroids JavaScript -->
+    <script src="/assets/js/asteroids/asteroids.js"></script>
+    
+    <script src="/assets/js/asteroids/utils/math.js"></script>
+    
+    <script src="/assets/js/asteroids/events/event.js"></script>
+    <script src="/assets/js/asteroids/events/key.js"></script>
+    <script src="/assets/js/asteroids/events/tick.js"></script>
+
+    <script src="/assets/js/asteroids/observers/observer.js"></script>
+    <script src="/assets/js/asteroids/observers/ai.js"></script>
+    <script src="/assets/js/asteroids/observers/collision.js"></script>
+    <script src="/assets/js/asteroids/observers/trash.js"></script>
+
+    <script src="/assets/js/asteroids/display/sprite.js"></script>
+    <script src="/assets/js/asteroids/display/asteroid.js"></script>
+    <script src="/assets/js/asteroids/display/bullet.js"></script>
+    <script src="/assets/js/asteroids/display/container.js"></script>
+    <script src="/assets/js/asteroids/display/ship.js"></script>
+    <script src="/assets/js/asteroids/display/text.js"></script>
+
+    <script src="/assets/js/asteroids/core/game.js"></script>
+
+    <!-- Initialize Game -->
+    <script>
+      var game = new ASTEROIDS.core.Game();
+    </script>
+  </body>
+</html>
+

@@ -9,7 +9,15 @@ var controller = {
 var model = {
   init: function(){
   	model.asteroids = [];
+    model.addToAsteroidsPrototype( model.asteroidConstructor );
     model.addAsteroidToGame( model.asteroids, model.asteroidConstructor )
+  },
+
+  addToAsteroidsPrototype: function( asteroidConstructor ){
+    asteroidConstructor.prototype.tic = function(){
+      this.x += this.xVelocity;
+      this.y += this.yVelocity;
+    }
   },
 
   addAsteroidToGame: function( asteroidsArray, asteroidConstructor ){

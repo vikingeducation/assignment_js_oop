@@ -29,12 +29,17 @@ var model = {
     var shipHeight = 30;
     var shipWidth = 30;
     model.ship = {
+      degrees: 0,
       x: (model.gameBoardSide/2 - (shipWidth/2)),
       y: (model.gameBoardSide/2 - (shipHeight/2)),
       xVelocity: 0,
       yVelocity: 0,
       height: shipHeight,
-      width: shipWidth
+      width: shipWidth,
+      tic: function(){
+        model.ship.x += model.ship.xVelocity;
+        model.ship.y += model.ship.yVelocity;
+      }
     };
   },
 
@@ -189,7 +194,25 @@ var model = {
   takeTurn: function(){
     model.runTicOnAllAsteroids( model.asteroids );
     model.adjustAsteroidsPositionsIfOffScreen( model.asteroids );
+    model.ship.tic();
+    view.renderShip( model.ship );
     view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
+  },
+
+  turnShipLeft: function(){
+    model.ship.degrees -= 1;
+    if (model.ship.degrees < 0) {
+      model.ship.degrees = 359;
+    };
+    console.log(model.ship.degrees);
+  },
+
+  turnShipRight: function(){
+    model.ship.degrees += 1;
+    if (model.ship.degrees >= 360){
+      model.ship.degrees = model.ship.degrees % 360;
+    };
+    console.log(model.ship.degrees);
   }
 };
 
@@ -201,7 +224,17 @@ var view = {
   },
 
   listenOutForKeyPresses: function(){
-    $(window).
+    $(window).keydown(function(event){
+      if ( event.keyCode === 37 ) {
+        model.turnShipLeft();
+      } else if ( event.keyCode === 38 ) {
+        model.increaseShipVelocity();
+      } else if ( event.keyCode === 39 ) {
+        model.turnShipRight();
+      } else if (event.keyCode === 40 ) {
+        model.decreaseShipVelocity();
+      };
+    });
   },
 
   // border-left: 50px solid transparent;
@@ -217,6 +250,11 @@ var view = {
   renderBoard: function( addAsteroidsToBoard , asteroids, clearAsteroids, setCSSOfAsteroid ){
     clearAsteroids();
     addAsteroidsToBoard( asteroids, setCSSOfAsteroid );
+  },
+
+  renderShip: function( ship ){
+    $("#ship").remove();
+    view.placeShip( ship );
   },
 
   clearAsteroids: function(){

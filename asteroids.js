@@ -4,6 +4,13 @@ var controller = {
   init: function(){
     model.init();
     view.init();
+    controller.startInterval();
+  },
+
+  startInterval: function(){
+    gameInterval = setInterval(function(){
+      model.takeTurn();
+    }, 1000);
   }
 };
 
@@ -68,6 +75,18 @@ var model = {
       number = Number( (Math.random() * largestNumber).toFixed(0) );
     };
     return number;
+  },
+
+  runTicOnAllAsteroids: function( asteroids ){
+    for(var i= 0; i < asteroids.length; i++) {
+      asteroids[i].tic();
+    };
+  },
+
+  // This is a control center so I'm gonna call model methods directly from here...
+  takeTurn: function(){
+    model.runTicOnAllAsteroids( model.asteroids );
+    view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
   }
 };
 

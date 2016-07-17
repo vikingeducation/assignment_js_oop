@@ -10,7 +10,7 @@ var model = {
   init: function(){
   	model.asteroids = [];
     model.addToAsteroidsPrototype( model.asteroidConstructor );
-    model.addAsteroidToGame( model.asteroids, model.asteroidConstructor )
+    model.buildAsteroids( 1000, model.asteroids, model.buildAsteroid, model.asteroidConstructor, model.randomNumber )
   },
 
   addToAsteroidsPrototype: function( asteroidConstructor ){
@@ -20,9 +20,15 @@ var model = {
     }
   },
 
-  addAsteroidToGame: function( asteroidsArray, asteroidConstructor ){
-    var asteroid = new asteroidConstructor( 1, 1, 2, 2 );
+  buildAsteroid: function( asteroidsArray, asteroidConstructor, randomNumberFunction ){
+    var asteroid = new asteroidConstructor( randomNumberFunction( 1000 ), randomNumberFunction( 1000 ), randomNumberFunction( 3 ), randomNumberFunction( 3 ) );
     asteroidsArray.push( asteroid );
+  },
+
+  buildAsteroids: function( numberOfAsteroids, asteroidsArray, buildAsteroidFunction, asteroidConstructor, randomNumberFunction ){
+    for( var i = 0; i < numberOfAsteroids; i++ ) {
+      buildAsteroidFunction( asteroidsArray, asteroidConstructor, randomNumberFunction );
+    };
   },
 
   asteroidConstructor: function ( x, y, xVelocity, yVelocity ){
@@ -30,6 +36,11 @@ var model = {
   	this.y = y;
   	this.xVelocity = xVelocity;
   	this.yVelocity = yVelocity;
+  },
+
+  // Random number from 0 to largestNumber
+  randomNumber: function( largestNumber ){
+    return Number( (Math.random() * largestNumber).toFixed(0) )
   }
 };
 
@@ -74,9 +85,23 @@ var tester = {
     console.log( "Current Coordinates" );
     console.log( "x: " + asteroid.x );
     console.log( "y: " + asteroid.y );
+  },
+
+  testSpeedOfAsteroidsTicWhenPrototypeInherited( asteroidConstructor, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction ){
+    var asteroids = [];
+    buildAsteroidsFunction( numberOfAsteroids, asteroids, buildAsteroidFunction, asteroidConstructor, randomNumberFunction );
+    var timeBeforeTic = new Date();
+    for(var asteroid = 0; asteroid < model.asteroids.length; asteroid++){
+      for(var tic = 0; tic < numberOfTics; tic++){
+        model.asteroids[asteroid].tic();
+      };
+    };
+    var timeAfterTic = new Date();
+    console.log( timeAfterTic - timeBeforeTic );
   }
 }
 
 $(document).ready(function(){
   controller.init();
+  tester.testSpeedOfAsteroidsTicWhenPrototypeInherited( model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 1000, 1000, model.randomNumber );
 });

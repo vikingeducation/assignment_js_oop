@@ -10,7 +10,7 @@ var controller = {
   startInterval: function(){
     gameInterval = setInterval(function(){
       model.takeTurn();
-    }, 1000);
+    }, 200);
   }
 };
 
@@ -36,9 +36,22 @@ var model = {
     };
   },
 
-  adjustAsteroidSPositionsIfOffScreen: function( asteroids ){
+  adjustAsteroidsPositionsIfOffScreen: function( asteroids ){
     for(var i = 0; i < asteroids.length; i++) {
+      var asteroid = asteroids[i];
+      if(!model.asteroidIsOnScreen(asteroid.x, asteroid.y, model.maxAsteroidSize, model.gameBoardSide)){
+        if( asteroid.x > model.gameBoardSide ) {
+          asteroid.x = model.maxAsteroidSize * -1;
+        } else if ( asteroid.x < model.maxAsteroidSize * -1 ) {
+          asteroid.x = model.gameBoardSide;
+        };
 
+        if( asteroid.y > model.gameBoardSide ) {
+          asteroid.y = model.maxAsteroidSize * -1;
+        } else if ( asteroid.y < model.maxAsteroidSize * -1 ) {
+          asteroid.y = model.gameBoardSide;
+        };
+      };
     };
   },
 
@@ -161,7 +174,7 @@ var model = {
   // This is a control center so I'm gonna call model methods directly from here...
   takeTurn: function(){
     model.runTicOnAllAsteroids( model.asteroids );
-    model.adjustAsteroidSPositionsIfOffScreen( model.asteroids );
+    model.adjustAsteroidsPositionsIfOffScreen( model.asteroids );
     view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
   }
 };

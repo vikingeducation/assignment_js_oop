@@ -20,6 +20,7 @@ $game-board-side: 300px;
 
 #game-board {
   border: 2px solid black;
+  overflow: hidden;
   position: relative;
   height: $game-board-side;
   width: $game-board-side;

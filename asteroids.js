@@ -10,7 +10,7 @@ var controller = {
   startInterval: function(){
     gameInterval = setInterval(function(){
       model.takeTurn();
-    }, 200);
+    }, 100);
   }
 };
 
@@ -21,7 +21,7 @@ var model = {
     model.maxAsteroidSize = maxAsteroidSize;
     model.addToAsteroidsPrototype( model.asteroidConstructor );
     // Building asteroids that have the tic function in it's prototype.
-    model.buildAsteroids( model.asteroids, model.asteroidConstructor, 1000 )
+    model.buildAsteroids( model.asteroids, model.asteroidConstructor, 100 )
   },
 
   // I feel like this a hub of sorts so don't have to pass in functions (as in it can just call method.something())
@@ -40,19 +40,19 @@ var model = {
     for(var i = 0; i < asteroids.length; i++) {
       var asteroid = asteroids[i];
       if(!model.asteroidIsOnScreen(asteroid.x, asteroid.y, model.maxAsteroidSize, model.gameBoardSide)){
-        if( asteroid.x > model.gameBoardSide ) {
-          asteroid.x = model.maxAsteroidSize * -1;
-        } else if ( asteroid.x < model.maxAsteroidSize * -1 ) {
-          asteroid.x = model.gameBoardSide;
-        };
-
-        if( asteroid.y > model.gameBoardSide ) {
-          asteroid.y = model.maxAsteroidSize * -1;
-        } else if ( asteroid.y < model.maxAsteroidSize * -1 ) {
-          asteroid.y = model.gameBoardSide;
-        };
+        asteroid.x = model.moveCoordinateToOtherSideOfBoard(asteroid.x);
+        asteroid.y = model.moveCoordinateToOtherSideOfBoard(asteroid.y);
       };
     };
+  },
+
+  moveCoordinateToOtherSideOfBoard: function( coordinate ){
+    if( coordinate > model.gameBoardSide ) {
+      coordinate = model.maxAsteroidSize * -1;
+    } else if ( coordinate < model.maxAsteroidSize * -1 ) {
+      coordinate = model.gameBoardSide;
+    };
+    return coordinate;
   },
 
   // Ways the asteroid can be travelling

@@ -23,6 +23,12 @@ $game-board-side: 300px;
   position: relative;
   height: $game-board-side;
   width: $game-board-side;
+
+  .asteroid {
+    border: 1px solid black;
+    border-radius: 25px;
+    position: absolute;
+  }
 }
 
 .top-scores-and-header {

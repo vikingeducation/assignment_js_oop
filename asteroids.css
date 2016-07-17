@@ -16,6 +16,10 @@
   position: relative;
   height: 300px;
   width: 300px; }
+  #game-board .asteroid {
+    border: 1px solid black;
+    border-radius: 25px;
+    position: absolute; }
 
 .top-scores-and-header .top-scores ol {
   font-weight: bold;

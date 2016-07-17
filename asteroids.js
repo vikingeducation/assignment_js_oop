@@ -3,6 +3,7 @@
 var controller = {
   init: function(){
     model.init();
+    view.init();
   }
 };
 
@@ -10,6 +11,7 @@ var model = {
   init: function(){
   	model.asteroids = [];
     model.addToAsteroidsPrototype( model.asteroidConstructor );
+    // Building asteroids that have the tic function in it's prototype.
     model.buildAsteroids( 1000, model.asteroids, model.buildAsteroid, model.asteroidConstructor, model.randomNumber )
   },
 
@@ -26,7 +28,7 @@ var model = {
   },
 
   buildAsteroid: function( asteroidsArray, asteroidConstructor, randomNumberFunction ){
-    var asteroid = new asteroidConstructor( randomNumberFunction( 1000 ), randomNumberFunction( 1000 ), randomNumberFunction( 3 ), randomNumberFunction( 3 ) );
+    var asteroid = new asteroidConstructor( randomNumberFunction( 1000 ), randomNumberFunction( 1000 ), randomNumberFunction( 3, 1 ), randomNumberFunction( 3, 1 ), randomNumberFunction( 30, 10 ), randomNumberFunction( 30, 10 ) );
     asteroidsArray.push( asteroid );
   },
 
@@ -36,18 +38,22 @@ var model = {
     };
   },
 
-  asteroidConstructor: function ( x, y, xVelocity, yVelocity ){
+  asteroidConstructor: function ( x, y, xVelocity, yVelocity, height, width ){
   	this.x = x;
   	this.y = y;
   	this.xVelocity = xVelocity;
   	this.yVelocity = yVelocity;
+    this.height = height;
+    this.width = width;
   },
 
-  asteroidWithTicConstructor: function( x, y, xVelocity, yVelocity ){
+  asteroidWithTicConstructor: function( x, y, xVelocity, yVelocity, height, width ){
     this.x = x;
     this.y = y;
     this.xVelocity = xVelocity;
     this.yVelocity = yVelocity;
+    this.height = height;
+    this.width = width;
     this.tic = function(){
       this.x += this.xVelocity;
       this.y += this.yVelocity;
@@ -55,14 +61,51 @@ var model = {
   },
 
   // Random number from 0 to largestNumber
-  randomNumber: function( largestNumber ){
-    return Number( (Math.random() * largestNumber).toFixed(0) )
+  randomNumber: function( largestNumber, smallestNumber ){
+    var smallest = smallestNumber || 0;
+    var number =  Number( (Math.random() * largestNumber).toFixed(0) );
+    while (number < smallestNumber) {
+      number = Number( (Math.random() * largestNumber).toFixed(0) );
+    };
+    return number;
   }
 };
 
 var view = {
   init: function(){
+    view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
+  },
 
+  // let's try the easier way which is to clear the board of all asteroids
+  // then render each asteroid...
+  renderBoard: function( addAsteroidsToBoard , asteroids, clearAsteroids, setCSSOfAsteroid ){
+    clearAsteroids();
+    addAsteroidsToBoard( asteroids, setCSSOfAsteroid );
+  },
+
+  clearAsteroids: function(){
+    $(".asteroid").remove();
+  },
+
+  addAsteroidsToBoard: function( asteroids, setCSSOfAsteroid ){
+    for (var asteroidNumber = 0; asteroidNumber < asteroids.length; asteroidNumber++) {
+      $("#game-board").append("<div class='asteroid' id='asteroid-"+ asteroidNumber + "' ></div>");
+      setCSSOfAsteroid(asteroids, asteroidNumber)
+    };
+  },
+
+  // I feel like this is the hub for all css position changes so going to call view functions straight from this function.
+  setCSSOfAsteroid: function( asteroids, asteroidNumber ){
+    view.setCSSPositionOfAsteroid( asteroids, asteroidNumber );
+    view.setCSSDimensionsOfAsteroid( asteroids, asteroidNumber );
+  },
+
+  setCSSDimensionsOfAsteroid: function( asteroids, asteroidNumber ){
+    $("#asteroid-" + asteroidNumber).css({height: asteroids[asteroidNumber].height, width: asteroids[asteroidNumber].width})
+  },
+
+  setCSSPositionOfAsteroid: function( asteroids, asteroidNumber ){
+    $("#asteroid-" + asteroidNumber).css({top: asteroids[asteroidNumber].y, left: asteroids[asteroidNumber].x})
   }
 };
 

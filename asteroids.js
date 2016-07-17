@@ -2,7 +2,7 @@
 
 var controller = {
   init: function(){
-    model.init( 300, 30 );
+    model.init( 300, 30, 3 );
     view.init();
     controller.startInterval();
   },
@@ -15,13 +15,27 @@ var controller = {
 };
 
 var model = {
-  init: function( boardSideLength, maxAsteroidSize ){
+  init: function( boardSideLength, maxAsteroidSize, startingNumberOfAsteroids ){
   	model.asteroids = [];
     model.gameBoardSide = boardSideLength;
     model.maxAsteroidSize = maxAsteroidSize;
     model.addToAsteroidsPrototype( model.asteroidConstructor );
     // Building asteroids that have the tic function in it's prototype.
-    model.buildAsteroids( model.asteroids, model.asteroidConstructor, 100 )
+    model.buildAsteroids( model.asteroids, model.asteroidConstructor, startingNumberOfAsteroids );
+    model.buildShip();
+  },
+
+  buildShip: function(){
+    var shipHeight = 30;
+    var shipWidth = 30;
+    model.ship = {
+      x: (model.gameBoardSide/2 - (shipWidth/2)),
+      y: (model.gameBoardSide/2 - (shipHeight/2)),
+      xVelocity: 0,
+      yVelocity: 0,
+      height: shipHeight,
+      width: shipWidth
+    };
   },
 
   // I feel like this a hub of sorts so don't have to pass in functions (as in it can just call method.something())
@@ -65,11 +79,11 @@ var model = {
     var y = model.randomNumber( gameBoardSide );
     x = model.changeCoordinateDependingOnVelocity( x, xVelocity, maxAsteroidSize );
     y = model.changeCoordinateDependingOnVelocity( y, yVelocity, maxAsteroidSize );
-    var coordinates = model.changeCoordinatesToStartingOffScreenPostion(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide);
+    var coordinates = model.changeCoordinatesToStartOffScreen(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide);
     return coordinates;
   },
 
-  changeCoordinatesToStartingOffScreenPostion: function(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide){
+  changeCoordinatesToStartOffScreen: function(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide){
     while( model.asteroidIsOnScreen(x, y, maxAsteroidSize, gameBoardSide) ){
       x -= xVelocity;
       y -= yVelocity;
@@ -102,7 +116,7 @@ var model = {
   // Do you really need to pass in the random number method or can we just call it... Just call it, 
   // Ruby you can't even pass around functions, is it really that big a deal... 
   buildAsteroid: function( asteroidsArray, asteroidConstructor ){
-    var maxSpeed = 3;
+    var maxSpeed = 6;
     var minSpeed = 1;
     var maxSize = 30;
     var minSize = 10;
@@ -182,6 +196,20 @@ var model = {
 var view = {
   init: function(){
     view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
+    view.placeShip( model.ship );
+    view.listenOutForKeyPresses();
+  },
+
+  listenOutForKeyPresses: function(){
+    $(window).
+  },
+
+  // border-left: 50px solid transparent;
+  // border-right: 50px solid transparent;
+  // border-bottom: 100px solid red;
+  placeShip: function( ship ){
+    $("#game-board").prepend("<div id='ship'></div>")
+    $("#ship").css({"left": model.ship.x + "px", "top": model.ship.y + "px", "border-left": model.ship.width/3 + "px solid transparent", "border-right": model.ship.width/3 + "px solid transparent", "border-bottom": model.ship.width + "px solid white"})
   },
 
   // let's try the easier way which is to clear the board of all asteroids

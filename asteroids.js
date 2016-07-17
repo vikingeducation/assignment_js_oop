@@ -13,11 +13,16 @@ var model = {
     model.buildAsteroids( 1000, model.asteroids, model.buildAsteroid, model.asteroidConstructor, model.randomNumber )
   },
 
+  // I feel like this a hub of sorts so don't have to pass in functions (as in it can just call method.something())
   addToAsteroidsPrototype: function( asteroidConstructor ){
+    model.addTicToConstructor( asteroidConstructor );
+  },
+
+  addTicToConstructor: function( asteroidConstructor ){
     asteroidConstructor.prototype.tic = function(){
       this.x += this.xVelocity;
       this.y += this.yVelocity;
-    }
+    };
   },
 
   buildAsteroid: function( asteroidsArray, asteroidConstructor, randomNumberFunction ){
@@ -38,6 +43,17 @@ var model = {
   	this.yVelocity = yVelocity;
   },
 
+  asteroidWithTicConstructor: function( x, y, xVelocity, yVelocity ){
+    this.x = x;
+    this.y = y;
+    this.xVelocity = xVelocity;
+    this.yVelocity = yVelocity;
+    this.tic = function(){
+      this.x += this.xVelocity;
+      this.y += this.yVelocity;
+    };
+  },
+
   // Random number from 0 to largestNumber
   randomNumber: function( largestNumber ){
     return Number( (Math.random() * largestNumber).toFixed(0) )
@@ -51,6 +67,17 @@ var view = {
 };
 
 var tester = {
+
+  compareTicOnPrototypeVsBuiltIn( constructorWithBuiltIn, constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction, addTicToConstructorFunction ){
+    addTicToConstructorFunction( constructorWithoutBuiltIn );
+    timeOfBuiltIn = tester.testSpeedOfAsteroidsTic( constructorWithBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
+    timeOfInherited = tester.testSpeedOfAsteroidsTic( constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
+    console.log( "Constructor With Built In Tic" );
+    console.log( timeOfBuiltIn + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
+    console.log( "Constructor That Inherited Tic" );
+    console.log( timeOfInherited + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
+  },
+
   verifyThatTicWorks: function( asteroid ){
     var asteroidsInitialX = asteroid.x;
     var asteroidsInitialY = asteroid.y;
@@ -87,7 +114,7 @@ var tester = {
     console.log( "y: " + asteroid.y );
   },
 
-  testSpeedOfAsteroidsTicWhenPrototypeInherited( asteroidConstructor, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction ){
+  testSpeedOfAsteroidsTic( asteroidConstructor, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction ){
     var asteroids = [];
     buildAsteroidsFunction( numberOfAsteroids, asteroids, buildAsteroidFunction, asteroidConstructor, randomNumberFunction );
     var timeBeforeTic = new Date();
@@ -97,11 +124,21 @@ var tester = {
       };
     };
     var timeAfterTic = new Date();
-    console.log( timeAfterTic - timeBeforeTic );
+    return ( timeAfterTic - timeBeforeTic );
   }
 }
 
 $(document).ready(function(){
   controller.init();
-  tester.testSpeedOfAsteroidsTicWhenPrototypeInherited( model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 1000, 1000, model.randomNumber );
 });
+
+// tester.testSpeedOfAsteroidsTicWhenPrototypeInherited( model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 1000, 1000, model.randomNumber );
+
+// Testing that the tic works on asteroids that have a built in tic.
+// var a = [];
+// model.buildAsteroid( a, model.asteroidWithTicConstructor, model.randomNumber );
+// tester.verifyThatTicWorks(a[0]);
+
+// Comparing inherited vs built-in tic method speed.
+// Built in is faster...
+// tester.compareTicOnPrototypeVsBuiltIn( model.asteroidWithTicConstructor, model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 100000, 100000, model.randomNumber, model.addTicToConstructor )

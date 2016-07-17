@@ -2,7 +2,7 @@
 
 var controller = {
   init: function(){
-    model.init();
+    model.init( 300, 30 );
     view.init();
     controller.startInterval();
   },
@@ -15,11 +15,13 @@ var controller = {
 };
 
 var model = {
-  init: function(){
+  init: function( boardSideLength, maxAsteroidSize ){
   	model.asteroids = [];
+    model.gameBoardSide = boardSideLength;
+    model.maxAsteroidSize = maxAsteroidSize;
     model.addToAsteroidsPrototype( model.asteroidConstructor );
     // Building asteroids that have the tic function in it's prototype.
-    model.buildAsteroids( 1000, model.asteroids, model.buildAsteroid, model.asteroidConstructor, model.randomNumber )
+    model.buildAsteroids( model.asteroids, model.asteroidConstructor, 1000 )
   },
 
   // I feel like this a hub of sorts so don't have to pass in functions (as in it can just call method.something())
@@ -34,14 +36,87 @@ var model = {
     };
   },
 
-  buildAsteroid: function( asteroidsArray, asteroidConstructor, randomNumberFunction ){
-    var asteroid = new asteroidConstructor( randomNumberFunction( 1000 ), randomNumberFunction( 1000 ), randomNumberFunction( 3, 1 ), randomNumberFunction( 3, 1 ), randomNumberFunction( 30, 10 ), randomNumberFunction( 30, 10 ) );
-    asteroidsArray.push( asteroid );
+  adjustAsteroidSPositionsIfOffScreen: function( asteroids ){
+    for(var i = 0; i < asteroids.length; i++) {
+
+    };
   },
 
-  buildAsteroids: function( numberOfAsteroids, asteroidsArray, buildAsteroidFunction, asteroidConstructor, randomNumberFunction ){
+  // Ways the asteroid can be travelling
+  // 1: +xVelocity & +yVelocity = Up and Right...
+  // 2: +xVelocity & -yVeolicty = Down and Right...
+  // 3: -xVelocity & +yVelocity = Up and Left...
+  // 4: -xVelocity & -yVelocity = Down and Left...
+  asteroidStartingCoordinates: function( gameBoardSide, maxAsteroidSize, xVelocity, yVelocity ){
+    var x = model.randomNumber( gameBoardSide );
+    var y = model.randomNumber( gameBoardSide );
+    x = model.changeCoordinateDependingOnVelocity( x, xVelocity, maxAsteroidSize );
+    y = model.changeCoordinateDependingOnVelocity( y, yVelocity, maxAsteroidSize );
+    var coordinates = model.changeCoordinatesToStartingOffScreenPostion(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide);
+    return coordinates;
+  },
+
+  changeCoordinatesToStartingOffScreenPostion: function(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide){
+    while( model.asteroidIsOnScreen(x, y, maxAsteroidSize, gameBoardSide) ){
+      x -= xVelocity;
+      y -= yVelocity;
+    };
+    return [x, y]
+  },
+
+  asteroidIsOnScreen: function(x, y, maxAsteroidSize, gameBoardSide){
+    if( ( (x + maxAsteroidSize) >= 0 && x < gameBoardSide ) && ( (y + maxAsteroidSize) >= 0 && y < gameBoardSide) ){
+      return true;
+    } else {
+      return false;
+    };
+  },
+
+  changeCoordinateDependingOnVelocity: function( coordinate, velocity, maxAsteroidSize ){
+    if (velocity > 0) {
+      coordinate -= maxAsteroidSize;
+    } else {
+      coordinate += maxAsteroidSize;
+    };
+    return coordinate;
+  },
+
+  // SOLID PRINCIPLES - A FUNCTION SHOULD JUST BE ABLE TO TAKE A BUNCH OF INPUTS AND SPIT SOMETHING OUT
+  // IT SHOULDN'T BE TIED IN WITH A LOT OF OTHER STUFF.
+  // AT THE SAME TIME, DOES THAT MEAN YOU HAVE TO CALLECT EVERYTHING AT THE START AND PASS THINGS IN ALL THE WAY THROUGH THE CHAIN??
+  // IT SEEMS LIKE A LOT OF UNNECESSARY CODE.
+  // I feel like this method should just take an array and an asteroid constructor, and return that array with a new asteroid pushed into it.
+  // Do you really need to pass in the random number method or can we just call it... Just call it, 
+  // Ruby you can't even pass around functions, is it really that big a deal... 
+  buildAsteroid: function( asteroidsArray, asteroidConstructor ){
+    var maxSpeed = 3;
+    var minSpeed = 1;
+    var maxSize = 30;
+    var minSize = 10;
+    var xVelocity = model.figureOutVelocity( maxSpeed, minSpeed );
+    var yVelocity = model.figureOutVelocity( maxSpeed, minSpeed );
+    var startingCoordinates = model.asteroidStartingCoordinates( model.gameBoardSide, model.maxAsteroidSize, xVelocity, yVelocity );
+    var x = startingCoordinates[0];
+    var y = startingCoordinates[1];
+    var height = model.randomNumber( maxSize, minSize );
+    var width = model.randomNumber( maxSize, minSize );
+    var asteroid = new asteroidConstructor( x, y, xVelocity, yVelocity, height, width );
+    asteroidsArray.push( asteroid );
+    return asteroidsArray;
+  },
+
+  figureOutVelocity: function( maxSpeed, minSpeed ){
+    var randomNumber = model.randomNumber( maxSpeed, minSpeed );
+    var oneOrZero = model.randomNumber( 1 );
+    if (oneOrZero === 1) {
+      randomNumber *= -1;
+    };
+    return randomNumber;
+  },
+
+  buildAsteroids: function( asteroidsArray, asteroidConstructor, numberOfAsteroids ){
     for( var i = 0; i < numberOfAsteroids; i++ ) {
-      buildAsteroidFunction( asteroidsArray, asteroidConstructor, randomNumberFunction );
+      model.buildAsteroid( asteroidsArray, asteroidConstructor);
     };
   },
 
@@ -86,6 +161,7 @@ var model = {
   // This is a control center so I'm gonna call model methods directly from here...
   takeTurn: function(){
     model.runTicOnAllAsteroids( model.asteroids );
+    model.adjustAsteroidSPositionsIfOffScreen( model.asteroids );
     view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
   }
 };
@@ -127,68 +203,6 @@ var view = {
     $("#asteroid-" + asteroidNumber).css({top: asteroids[asteroidNumber].y, left: asteroids[asteroidNumber].x})
   }
 };
-
-var tester = {
-
-  compareTicOnPrototypeVsBuiltIn( constructorWithBuiltIn, constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction, addTicToConstructorFunction ){
-    addTicToConstructorFunction( constructorWithoutBuiltIn );
-    timeOfBuiltIn = tester.testSpeedOfAsteroidsTic( constructorWithBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
-    timeOfInherited = tester.testSpeedOfAsteroidsTic( constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
-    console.log( "Constructor With Built In Tic" );
-    console.log( timeOfBuiltIn + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
-    console.log( "Constructor That Inherited Tic" );
-    console.log( timeOfInherited + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
-  },
-
-  verifyThatTicWorks: function( asteroid ){
-    var asteroidsInitialX = asteroid.x;
-    var asteroidsInitialY = asteroid.y;
-    asteroid.tic();
-
-    if (( asteroidsInitialX + asteroid.xVelocity) === asteroid.x && (asteroidsInitialY + asteroid.yVelocity) === asteroid.y) {
-      console.log( "asteroid.tic() works!" )
-      tester.printAsteroidsVelocity( asteroid );
-      tester.printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY );
-      tester.printAsteroidsCurrentCoordinates( asteroid );
-    } else {
-      console.log( "asteroid.tic() doesn't work!" )
-      tester.printAsteroidsVelocity( asteroid );
-      tester.printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY );
-      tester.printAsteroidsCurrentCoordinates( asteroid );
-    };
-  },
-
-  printAsteroidsVelocity( asteroid ){
-    console.log( "Asteroid's Velocity" );
-    console.log( "xVelocity: " + asteroid.xVelocity );
-    console.log( "yVelocity: " + asteroid.yVelocity );
-  },
-
-  printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY ){
-    console.log( "Initial Coordinates" );
-    console.log( "x: " + asteroidsInitialX );
-    console.log( "y: " + asteroidsInitialY );
-  },
-
-  printAsteroidsCurrentCoordinates( asteroid ){
-    console.log( "Current Coordinates" );
-    console.log( "x: " + asteroid.x );
-    console.log( "y: " + asteroid.y );
-  },
-
-  testSpeedOfAsteroidsTic( asteroidConstructor, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction ){
-    var asteroids = [];
-    buildAsteroidsFunction( numberOfAsteroids, asteroids, buildAsteroidFunction, asteroidConstructor, randomNumberFunction );
-    var timeBeforeTic = new Date();
-    for(var asteroid = 0; asteroid < model.asteroids.length; asteroid++){
-      for(var tic = 0; tic < numberOfTics; tic++){
-        model.asteroids[asteroid].tic();
-      };
-    };
-    var timeAfterTic = new Date();
-    return ( timeAfterTic - timeBeforeTic );
-  }
-}
 
 $(document).ready(function(){
   controller.init();

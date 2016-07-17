@@ -1,0 +1,43 @@
+$game-board-side: 300px;
+
+.page-header{
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+.new-game-and-current-score {
+  width: $game-board-side;
+  #new-game {
+    color: #337ab7;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .score-board {
+    float: right;
+  }
+}
+
+#game-board {
+  border: 2px solid black;
+  position: relative;
+  height: $game-board-side;
+  width: $game-board-side;
+}
+
+.top-scores-and-header {
+  .top-scores {
+    ol {
+      font-weight: bold;
+      padding-left: 15px;
+
+      #list-two {
+        opacity: 0.85;
+      }
+
+      #list-three {
+        opacity: 0.7;
+      }
+    }
+  }
+}

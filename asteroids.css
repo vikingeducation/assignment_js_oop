@@ -1,3 +1,28 @@
+.page-header {
+  margin-bottom: 0px;
+  padding-bottom: 0px; }
 
+.new-game-and-current-score {
+  width: 300px; }
+  .new-game-and-current-score #new-game {
+    color: #337ab7;
+    cursor: pointer;
+    display: inline-block; }
+  .new-game-and-current-score .score-board {
+    float: right; }
+
+#game-board {
+  border: 2px solid black;
+  position: relative;
+  height: 300px;
+  width: 300px; }
+
+.top-scores-and-header .top-scores ol {
+  font-weight: bold;
+  padding-left: 15px; }
+  .top-scores-and-header .top-scores ol #list-two {
+    opacity: 0.85; }
+  .top-scores-and-header .top-scores ol #list-three {
+    opacity: 0.7; }
 
 /*# sourceMappingURL=asteroids.css.map */

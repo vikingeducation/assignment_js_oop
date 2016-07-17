@@ -4,7 +4,7 @@
     <title>Asteroids By Chang</title>
     <!-- Latest compiled and minified CSS Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  
+
     <!-- Link to local CSS file -->
     <link rel="stylesheet" type="text/css" href="asteroids.css">
 
@@ -20,9 +20,49 @@
 
       <div class="row">
         <div class="col-xs-12">
-          
+          <div class="page-header">
+            <h1>Asteroids</h1>
+            <p>By Steven Chang</p>
+            <p>
+              Recreating the classic Asteroids game with Java Script.
+            </p>
+          </div>
+          <div class="new-game-and-current-score">
+            <div id="new-game">
+              <h4>
+                New Game
+              </h4>
+            </div>
+            <div class="score-board">
+              <h4>Score: <span id="current-score">0</span></h4>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="game-board">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="top-scores-and-header">
+            <div class="top-score-header">
+              <h4>Top Scores</h4>
+            </div>
+            <div class="top-scores">
+              <ol>
+                <li id="list-one">0</li>
+                <li id="list-two">0</li>
+                <li id="list-three">0</li>
+              </ol>
+            </div>
+          </div>
+        </div>
 
     </div>
 

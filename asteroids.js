@@ -2,176 +2,270 @@
 
 var controller = {
   init: function(){
-    model.init( 300, 30, 3 );
+    model.init();
     view.init();
     controller.startInterval();
   },
 
+  // controller.startInterval
   startInterval: function(){
     gameInterval = setInterval(function(){
       model.takeTurn();
+      view.renderBoard( model.asteroidCentre.asteroids, model.shipCentre.ship );
     }, 100);
   }
 };
 
 var model = {
-  init: function( boardSideLength, maxAsteroidSize, startingNumberOfAsteroids ){
-  	model.asteroids = [];
-    model.gameBoardSide = boardSideLength;
-    model.maxAsteroidSize = maxAsteroidSize;
-    model.addToAsteroidsPrototype( model.asteroidConstructor );
-    // Building asteroids that have the tic function in it's prototype.
-    model.buildAsteroids( model.asteroids, model.asteroidConstructor, startingNumberOfAsteroids );
-    model.buildShip();
+  init: function(){
+    var asteroidConstructor = model.asteroidCentre.constructors.asteroidConstructor;
+  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 3 );
+    model.boardSideLength = 300;
+    // Adding to asteroid constructor prototype.
+    model.asteroidCentre.addToAsteroidsPrototype( asteroidConstructor );
+    model.shipCentre.buildShip();
+    // Adding tic to ship constructor prototype.
+    model.addTicToConstructor( model.shipCentre.shipConstructor );
   },
 
-  buildShip: function(){
-    var shipHeight = 30;
-    var shipWidth = 30;
-    model.ship = {
-      degrees: 0,
-      x: (model.gameBoardSide/2 - (shipWidth/2)),
-      y: (model.gameBoardSide/2 - (shipHeight/2)),
-      xVelocity: 0,
-      yVelocity: 0,
-      height: shipHeight,
-      width: shipWidth,
-      tic: function(){
-        model.ship.x += model.ship.xVelocity;
-        model.ship.y += model.ship.yVelocity;
-      }
-    };
-  },
+  asteroidCentre: {
+    // model.asteroidCentre.asteroidConfiguration
+    asteroidConfiguration: {
+      maxSpeed: 6,
+      minSpeed: 30,
+      maxSize: 30,
+      minSize: 10,
+    },
 
-  // I feel like this a hub of sorts so don't have to pass in functions (as in it can just call method.something())
-  addToAsteroidsPrototype: function( asteroidConstructor ){
-    model.addTicToConstructor( asteroidConstructor );
-  },
+    // model.asteroidCentre.startingNumberOfAsteroids
+    startingNumberOfAsteroids: 3,
 
-  addTicToConstructor: function( asteroidConstructor ){
-    asteroidConstructor.prototype.tic = function(){
-      this.x += this.xVelocity;
-      this.y += this.yVelocity;
-    };
-  },
+    // model.asteroidCentre.addToAsteroidsProtoype
+    addToAsteroidsPrototype: function( asteroidConstructor ){
+      model.addTicToConstructor( asteroidConstructor );
+    },
 
-  adjustAsteroidsPositionsIfOffScreen: function( asteroids ){
-    for(var i = 0; i < asteroids.length; i++) {
-      var asteroid = asteroids[i];
-      if(!model.asteroidIsOnScreen(asteroid.x, asteroid.y, model.maxAsteroidSize, model.gameBoardSide)){
-        asteroid.x = model.moveCoordinateToOtherSideOfBoard(asteroid.x);
-        asteroid.y = model.moveCoordinateToOtherSideOfBoard(asteroid.y);
+    // model.asteroidCentre.asteroidConstructor
+    asteroidConstructor: function ( x, y, xVelocity, yVelocity, height, width, builtWithTic ){
+      this.x = x;
+      this.y = y;
+      this.xVelocity = xVelocity;
+      this.yVelocity = yVelocity;
+      this.height = height;
+      this.width = width;
+      this.longestDimension = model.calculateLongestSideOfTriangle( height, width );
+      if (builtWithTic === "y") {
+        this.tic = function(){
+          this.x += this.xVelocity;
+          this.y += this.yVelocity;
+        };
       };
-    };
+    },
+
+    // model.asteroidCentre.buildAsteroids
+    // I think it should just take a number of asteroids and then return an array of asteroids...
+    buildAsteroids: function( asteroidConstructor, numberOfAsteroids, builtWithTic ){
+      var asteroids = []
+      var boardSideLength = model.boardSideLength;
+      var maxSize = model.asteroidCentre.asteroidConfiguration.maxSize;
+      var minSize = model.asteroidCentre.asteroidConfiguration.minSize;
+      var maxSpeed = model.asteroidCentre.asteroidConfiguration.maxSpeed;
+      var minSpeed = model.asteroidCentre.asteroidConfiguration.minSpeed;
+
+      for( var i = 0; i < numberOfAsteroids; i++ ) {
+        var xVelocity = model.asteroidCentre.returnRandomVelocity( maxSpeed, minSpeed );
+        var yVelocity = model.asteroidCentre.returnRandomVelocity( maxSpeed, minSpeed );
+        var height = model.randomNumber( maxSize, minSize );
+        var width = model.randomNumber( maxSize, minSize );
+        var x = model.randomNumber( boardSideLength );
+        var y = model.randomNumber( boardSideLength );
+        var asteroid = new asteroidConstructor( x, y, xVelocity, yVelocity, height, width, builtWithTic );
+        model.asteroidCentre.moveAsteroidToStartingPosition( asteroid, boardSideLength );
+        asteroids.push( asteroid );
+      };
+      return asteroids;
+    },
+
+    // model.asteroidCentre.returnRandomVelocity
+    returnRandomVelocity: function( maxSpeed, minSpeed ){
+      var randomNumber = model.randomNumber( maxSpeed, minSpeed );
+      var oneOrZero = model.randomNumber( 1 );
+      if (oneOrZero === 1) {
+        randomNumber *= -1;
+      };
+      return randomNumber;
+    },
+
+    // model.asteroidCentre.moveAsteroidToStartingPosition
+    // aka offScreen.
+    // no need to return anything because it's working on the asteroid itself.
+    moveAsteroidToStartingPosition: function( asteroid, boardSideLength ){
+      while( model.objectIsOnScreen(asteroid, boardSideLength) ){
+        asteroid.x -= asteroid.xVelocity;
+        asteroid.y -= asteroid.yVelocity;
+      };
+    }
   },
 
-  moveCoordinateToOtherSideOfBoard: function( coordinate ){
-    if( coordinate > model.gameBoardSide ) {
-      coordinate = model.maxAsteroidSize * -1;
-    } else if ( coordinate < model.maxAsteroidSize * -1 ) {
-      coordinate = model.gameBoardSide;
-    };
-    return coordinate;
-  },
+  coordinatesCentre: {
 
-  // Ways the asteroid can be travelling
-  // 1: +xVelocity & +yVelocity = Up and Right...
-  // 2: +xVelocity & -yVeolicty = Down and Right...
-  // 3: -xVelocity & +yVelocity = Up and Left...
-  // 4: -xVelocity & -yVelocity = Down and Left...
-  asteroidStartingCoordinates: function( gameBoardSide, maxAsteroidSize, xVelocity, yVelocity ){
-    var x = model.randomNumber( gameBoardSide );
-    var y = model.randomNumber( gameBoardSide );
-    x = model.changeCoordinateDependingOnVelocity( x, xVelocity, maxAsteroidSize );
-    y = model.changeCoordinateDependingOnVelocity( y, yVelocity, maxAsteroidSize );
-    var coordinates = model.changeCoordinatesToStartOffScreen(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide);
-    return coordinates;
-  },
+    // model.coordinatesCentre.moveObjectsToOtherSideOfBoard( objectsArray, boardSideLength ){
+    moveObjectsToOtherSideOfBoard( objectsArray, boardSideLength ){
+      for(var i = 0; i < objectsArray.length; i++){
+        model.coordinatesCentre.moveObjectToOtherSideOfBoard(objectsArray[i], boardSideLength);
+      };
+    },
 
-  changeCoordinatesToStartOffScreen: function(x, y, xVelocity, yVelocity, maxAsteroidSize, gameBoardSide){
-    while( model.asteroidIsOnScreen(x, y, maxAsteroidSize, gameBoardSide) ){
-      x -= xVelocity;
-      y -= yVelocity;
-    };
-    return [x, y]
-  },
+    // model.coordinatesCentre.moveObjectToOtherSideOfBoard
+    moveObjectToOtherSideOfBoard: function( object, boardSideLength ){
+      if(!model.objectIsOnScreen(object, boardSideLength)){
+        object.x = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.x, object.longestDimension, boardSideLength);
+        object.y = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.y, object.longestDimension, boardSideLength);
+      };
+    },
 
-  asteroidIsOnScreen: function(x, y, maxAsteroidSize, gameBoardSide){
-    if( ( (x + maxAsteroidSize) >= 0 && x < gameBoardSide ) && ( (y + maxAsteroidSize) >= 0 && y < gameBoardSide) ){
-      return true;
-    } else {
+    // model.coordinatesCentre.moveCoordinateToOtherSideOfBoard
+    moveCoordinateToOtherSideOfBoard: function( coordinate, objectsLongestDimension, boardSideLength ){
+      if( model.coordinatesCentre.coordinateIsPastScreen( coordinate, boardSideLength ) ) {
+        coordinate = objectsLongestDimension * -1;
+      } else if ( model.coordinatesCentre.objectIsBehindScreen( coordinate, objectsLongestDimension ) ) {
+        coordinate = boardSideLength;
+      };
+      return coordinate;
+    },
+
+    // model.coordinatesCentre.coordinateIsPastScreen
+    coordinateIsPastScreen: function( coordinate, boardSideLength ){
+      if (coordinate > boardSideLength){
+        return true;
+      };
       return false;
-    };
+    },
+
+    // model.coordinatesCentre.objectIsBehindScreen
+    // although not passing in an object, it's still figuring out based on the objects coordinate and longest dimension.
+    objectIsBehindScreen: function( coordinate, objectsLongestDimension ){
+      if ( coordinate < objectsLongestDimension * -1) {
+        return true;
+      }
+      return false;
+    },
+
+    // model.coordinatesCentre.objectIsOnScreen
+    objectIsOnScreen: function( object, boardSideLength ){
+      var objectInBoardsXAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.x, object.longestDimension, boardSideLength );
+      var objectInBoardsYAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.y, objectsLongestDimension, boardSideLength );
+      if( objectinBoardsXAxis && objectinBoardsYAxis ){
+        return true;
+      };
+      return false;
+    },
+
+    // model.coordinatesCentre.objectBetweenBoardsAxis
+    // A function which takes a coordinate of an object, it's longest dimension the boardSideLength and figures out whether the object is in range of the board axis.
+    objectBetweenBoardsAxis: function( objectsCoordinate, objectsLongestDimension, boardSideLength ){
+      if (objectsCoordinate + objectsLongestDimension >= 0 && objectsCoordinate < boardSideLength ) {
+        return true;
+      };
+      return false;
+    }
   },
 
-  changeCoordinateDependingOnVelocity: function( coordinate, velocity, maxAsteroidSize ){
-    if (velocity > 0) {
-      coordinate -= maxAsteroidSize;
-    } else {
-      coordinate += maxAsteroidSize;
-    };
-    return coordinate;
+  shipCentre: {
+
+    // model.shipCentre.shipConfiguration
+    shipConfiguration: {
+      height: 30,
+      width: 30,
+      x: ( model.boardSideLength / 2 - (model.shipCentre.shipConfiguration.width / 2) ),
+      y: ( model.boardSideLength / 2 - (model.shipCentre.shipConfiguration.height / 2) ),
+      borderLeft: model.shipCentre.shipConfiguration.width / 3 + "px solid transparent",
+      borderRight: model.shipCentre.shipConfiguration.width / 3 + "px solid transparent",
+      borderBottom: model.shipCentre.shipConfiguration.width + "px solid white"
+    },
+
+    // model.shipCentre.buildShip
+    buildShip: function(){
+      var height = model.shipCentre.shipConfiguration.height;
+      var width = model.shipCentre.shipConfiguration.width;
+      var x = model.shipCentre.shipConfiguration.x;
+      var y = model.shipCentre.shipConfiguration.y;
+      var borderLeft = model.shipCentre.shipConfiguration.borderLeft;
+      var borderRight = model.shipCentre.shipConfiguration.borderRight;
+      var borderBottom = model.shipCentre.shipConfiguration.borderBottom;
+
+      model.ship = new model.shipCentre.shipConstructor( x, y, height, width, borderLeft, borderRight, borderBottom )
+    },
+
+    // model.shipcentre.shipConstructor
+    shipConstructor: function( x, y, height, width, borderLeft, borderRight, borderBottom ){
+      this.degrees = 0;
+      this.x = x;
+      this.y = y;
+      this.xVelocity = 0;
+      this.yVelocity = 0;
+      this.height = height;
+      this.width = width;
+      // The longest dimension will be based on a arrowhead shaped triangle.
+      this.longestDimension = model.calculateLongestSideOfTriangle( this.height, this.width / 2 );
+      this.borderLeft = borderLeft;
+      this.borderRight = borderRight;
+      this.borderBottom = borderBottom;
+    },
+
+    // model.shipCentre.turnLeft
+    turnLeft: function(){
+      model.ship.degrees -= 10;
+      if (model.ship.degrees < 0) {
+        model.ship.degrees = 360 + model.ship.degrees;
+      };
+    },
+
+    // model.shipCentre.turnRight
+    turnRight: function(){
+      model.ship.degrees += 10;
+      if (model.ship.degrees >= 360){
+        model.ship.degrees = model.ship.degrees % 360;
+      };
+    },
+
+    // model.shipCentre.increaseVelocity
+    increaseVelocity: function(){
+      // model.ship.degrees
+      if(model.ship.degrees <= 90){
+        model.ship.yVelocity -= (1 - (model.ship.degrees * 0.011));
+        model.ship.xVelocity += (0.011 * model.ship.degrees);
+      } else if(model.ship.degrees > 90 && model.ship.degrees <= 180 ){
+        model.ship.yVelocity += ((model.ship.degrees - 90) * 0.011);
+        model.ship.xvelocity += (1 - ((model.ship.degrees - 90) * 0.011));
+      } else if(model.ship.degrees > 180 && model.ship.degrees <= 270){
+        model.ship.yVelocity += (1 - ((model.ship.degrees - 180) * 0.011));
+        model.ship.xVelocity += ((model.ship.degrees - 180) * 0.011);
+      } else {
+        model.ship.xVelocity -= ((model.ship.degrees - 270) * 0.011);
+        model.ship.yVelocity += (0.011 * (model.ship.degrees - 270));
+      };
+    },
+
+    // model.shipCentre.decreaseVelocity.=
+    decreaseVelocity: function(){
+      
+    }
+
   },
 
-  // SOLID PRINCIPLES - A FUNCTION SHOULD JUST BE ABLE TO TAKE A BUNCH OF INPUTS AND SPIT SOMETHING OUT
-  // IT SHOULDN'T BE TIED IN WITH A LOT OF OTHER STUFF.
-  // AT THE SAME TIME, DOES THAT MEAN YOU HAVE TO CALLECT EVERYTHING AT THE START AND PASS THINGS IN ALL THE WAY THROUGH THE CHAIN??
-  // IT SEEMS LIKE A LOT OF UNNECESSARY CODE.
-  // I feel like this method should just take an array and an asteroid constructor, and return that array with a new asteroid pushed into it.
-  // Do you really need to pass in the random number method or can we just call it... Just call it, 
-  // Ruby you can't even pass around functions, is it really that big a deal... 
-  buildAsteroid: function( asteroidsArray, asteroidConstructor ){
-    var maxSpeed = 6;
-    var minSpeed = 1;
-    var maxSize = 30;
-    var minSize = 10;
-    var xVelocity = model.figureOutVelocity( maxSpeed, minSpeed );
-    var yVelocity = model.figureOutVelocity( maxSpeed, minSpeed );
-    var startingCoordinates = model.asteroidStartingCoordinates( model.gameBoardSide, model.maxAsteroidSize, xVelocity, yVelocity );
-    var x = startingCoordinates[0];
-    var y = startingCoordinates[1];
-    var height = model.randomNumber( maxSize, minSize );
-    var width = model.randomNumber( maxSize, minSize );
-    var asteroid = new asteroidConstructor( x, y, xVelocity, yVelocity, height, width );
-    asteroidsArray.push( asteroid );
-    return asteroidsArray;
-  },
-
-  figureOutVelocity: function( maxSpeed, minSpeed ){
-    var randomNumber = model.randomNumber( maxSpeed, minSpeed );
-    var oneOrZero = model.randomNumber( 1 );
-    if (oneOrZero === 1) {
-      randomNumber *= -1;
-    };
-    return randomNumber;
-  },
-
-  buildAsteroids: function( asteroidsArray, asteroidConstructor, numberOfAsteroids ){
-    for( var i = 0; i < numberOfAsteroids; i++ ) {
-      model.buildAsteroid( asteroidsArray, asteroidConstructor);
-    };
-  },
-
-  asteroidConstructor: function ( x, y, xVelocity, yVelocity, height, width ){
-  	this.x = x;
-  	this.y = y;
-  	this.xVelocity = xVelocity;
-  	this.yVelocity = yVelocity;
-    this.height = height;
-    this.width = width;
-  },
-
-  asteroidWithTicConstructor: function( x, y, xVelocity, yVelocity, height, width ){
-    this.x = x;
-    this.y = y;
-    this.xVelocity = xVelocity;
-    this.yVelocity = yVelocity;
-    this.height = height;
-    this.width = width;
-    this.tic = function(){
+  // model.addTicToConstrutor
+  addTicToConstructor: function( constructor ){
+    constructor.prototype.tic = function(){
       this.x += this.xVelocity;
       this.y += this.yVelocity;
     };
+  },
+
+  // model.calculateLongestSideOfTriangle
+  calculateLongestSideOfTriangle: function( sideOne, sideTwo ){
+    var hypotenuse = Math.sqrt(sideOne * sideOne + sideTwo * sideTwo);
+    return hypotenuse;
   },
 
   // Random number from 0 to largestNumber
@@ -184,35 +278,21 @@ var model = {
     return number;
   },
 
-  runTicOnAllAsteroids: function( asteroids ){
-    for(var i= 0; i < asteroids.length; i++) {
-      asteroids[i].tic();
+  // model.runTicOnObjects
+  runTicOnObjects: function( arrayOfObjects ){
+    for(var i = 0; i < arrayOfObjects.length; i++) {
+      arrayOfObjects[i].tic();
     };
   },
 
-  // This is a control center so I'm gonna call model methods directly from here...
+  // model.takeTurn
   takeTurn: function(){
-    model.runTicOnAllAsteroids( model.asteroids );
-    model.adjustAsteroidsPositionsIfOffScreen( model.asteroids );
-    model.ship.tic();
-    view.renderShip( model.ship );
-    view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
-  },
-
-  turnShipLeft: function(){
-    model.ship.degrees -= 1;
-    if (model.ship.degrees < 0) {
-      model.ship.degrees = 359;
-    };
-    console.log(model.ship.degrees);
-  },
-
-  turnShipRight: function(){
-    model.ship.degrees += 1;
-    if (model.ship.degrees >= 360){
-      model.ship.degrees = model.ship.degrees % 360;
-    };
-    console.log(model.ship.degrees);
+    var asteroids = model.asteroidCentre.asteroids;
+    var ship = model.shipCentre.ship;
+    model.runTicOnObjects( asteroids );
+    ship.tic();
+    model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids );
+    model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship );
   }
 };
 
@@ -223,63 +303,94 @@ var view = {
     view.listenOutForKeyPresses();
   },
 
-  listenOutForKeyPresses: function(){
-    $(window).keydown(function(event){
-      if ( event.keyCode === 37 ) {
-        model.turnShipLeft();
-      } else if ( event.keyCode === 38 ) {
-        model.increaseShipVelocity();
-      } else if ( event.keyCode === 39 ) {
-        model.turnShipRight();
-      } else if (event.keyCode === 40 ) {
-        model.decreaseShipVelocity();
+  // view.asteroidCentre
+  asteroidCentre: {
+
+    // view.asteroidCentre.clearAsteroids
+    clearAsteroids: function(){
+      $(".asteroid").remove();
+    },
+
+    // view.asteroidCentre.renderAsteroids
+    renderAsteroids: function( asteroids ){
+      for (var i = 0; i < asteroids.length; i++){
+        view.asteroidCentre.addAsteroidToBoard( i );
+        view.asteroidCentre.setCSSOfAsteroid( asteroid, i );
       };
-    });
+    },
+
+    // view.asteroidCentre.setCSSOfAsteroid
+    setCSSOfAsteroid: function( asteroid, indexOfAsteroid ){
+      view.setCSSPositionOfAsteroid( asteroids, indexOfAsteroid );
+      view.setCSSDimensionsOfAsteroid( asteroids, indexOfAsteroid );
+    },
+
+    // view.asteroidCentre.setCSSDimensionsOfAsteroid
+    setCSSDimensionsOfAsteroid: function( asteroid, indexOfAsteroid ){
+      $("#asteroid-" + indexOfAsteroid).css({ height: asteroid.height,
+                                              width: asteroid.width })
+    },
+
+    // view.asteroidCentre.setCSSPositionOfAsteroid
+    setCSSPositionOfAsteroid: function( asteroid, indexOfAsteroid ){
+      $("#asteroid-" + indexOfAsteroid).css({ top: asteroid.y,
+                                              left: asteroid.x })
+    },
+
+    // view.asteroidCentre.addAsteroidToBoard
+    addAsteroidToBoard: function( index ){
+      $("#game-board").append("<div class='asteroid' id='asteroid-"+ index + "' ></div>");
+    },
   },
 
-  // border-left: 50px solid transparent;
-  // border-right: 50px solid transparent;
-  // border-bottom: 100px solid red;
-  placeShip: function( ship ){
-    $("#game-board").prepend("<div id='ship'></div>")
-    $("#ship").css({"left": model.ship.x + "px", "top": model.ship.y + "px", "border-left": model.ship.width/3 + "px solid transparent", "border-right": model.ship.width/3 + "px solid transparent", "border-bottom": model.ship.width + "px solid white"})
+  // view.shipCentre
+  shipCentre: {
+    clearShip: function(){
+      $("#ship").remove();
+    },
+
+    // border-left: 50px solid transparent;
+    // border-right: 50px solid transparent;
+    // border-bottom: 100px solid red;
+    renderShip: function( ship ){
+      $("#game-board").prepend("<div id='ship'></div>")
+      $("#ship").css({"left": ship.x + "px",
+                      "top": ship.y + "px",
+                      "border-left": ship.borderLeft,
+                      "border-right": ship.borderRight,
+                      "border-bottom": ship.borderBottom})
+    }
   },
 
-  // let's try the easier way which is to clear the board of all asteroids
-  // then render each asteroid...
-  renderBoard: function( addAsteroidsToBoard , asteroids, clearAsteroids, setCSSOfAsteroid ){
-    clearAsteroids();
-    addAsteroidsToBoard( asteroids, setCSSOfAsteroid );
+  // view.listeners
+  listeners: {
+    listenOutForKeyPresses: function(){
+      $(window).keydown(function(event){
+        if ( event.keyCode === 37 ) {
+          model.turnShipLeft();
+        } else if ( event.keyCode === 38 ) {
+          model.increaseShipVelocity();
+        } else if ( event.keyCode === 39 ) {
+          model.turnShipRight();
+        } else if (event.keyCode === 40 ) {
+          model.decreaseShipVelocity();
+        };
+      });
+    }
   },
 
-  renderShip: function( ship ){
-    $("#ship").remove();
-    view.placeShip( ship );
+  // view.clearBoard
+  clearBoard: function(){
+    view.asteroidCentre.clearAsteroids();
+    view.shipCentre.clearShip();
   },
 
-  clearAsteroids: function(){
-    $(".asteroid").remove();
-  },
+  // view.renderBoard
+  renderBoard: function( asteroids, ship ){
+    view.clearBoard();
 
-  addAsteroidsToBoard: function( asteroids, setCSSOfAsteroid ){
-    for (var asteroidNumber = 0; asteroidNumber < asteroids.length; asteroidNumber++) {
-      $("#game-board").append("<div class='asteroid' id='asteroid-"+ asteroidNumber + "' ></div>");
-      setCSSOfAsteroid(asteroids, asteroidNumber)
-    };
-  },
-
-  // I feel like this is the hub for all css position changes so going to call view functions straight from this function.
-  setCSSOfAsteroid: function( asteroids, asteroidNumber ){
-    view.setCSSPositionOfAsteroid( asteroids, asteroidNumber );
-    view.setCSSDimensionsOfAsteroid( asteroids, asteroidNumber );
-  },
-
-  setCSSDimensionsOfAsteroid: function( asteroids, asteroidNumber ){
-    $("#asteroid-" + asteroidNumber).css({height: asteroids[asteroidNumber].height, width: asteroids[asteroidNumber].width})
-  },
-
-  setCSSPositionOfAsteroid: function( asteroids, asteroidNumber ){
-    $("#asteroid-" + asteroidNumber).css({top: asteroids[asteroidNumber].y, left: asteroids[asteroidNumber].x})
+    view.asteroidCentre.renderAsteroids( asteroids );
+    view.shipCentre.renderShip( ship );
   }
 };
 

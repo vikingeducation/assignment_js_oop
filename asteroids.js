@@ -1,9 +1,9 @@
 'use_strict;'
 
 var controller = {
-  init: function(){
-    model.init();
-    view.init();
+  init: function( boardSideLength ){
+    model.init( boardSideLength );
+    view.init( boardSideLength );
     controller.startInterval();
   },
 
@@ -17,24 +17,38 @@ var controller = {
 };
 
 var model = {
-  init: function(){
-    var asteroidConstructor = model.asteroidCentre.constructors.asteroidConstructor;
-  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 3 );
-    model.boardSideLength = 300;
+  init: function( boardSideLength ){
+
+    // Establishing Configurations
+    model.asteroidCentre.establishAsteroidConfigurations();
+    model.shipCentre.establishShipConfigurations( boardSideLength, 30, 30 );
+    model.boardSideLength = boardSideLength;
+
+    // The official constructor to build asteroids
+    var asteroidConstructor = model.asteroidCentre.asteroidConstructor;
+
     // Adding to asteroid constructor prototype.
     model.asteroidCentre.addToAsteroidsPrototype( asteroidConstructor );
+
+    // Build asteroids
+  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 3 );
+
+    // Build ship
     model.shipCentre.buildShip();
+
     // Adding tic to ship constructor prototype.
     model.addTicToConstructor( model.shipCentre.shipConstructor );
   },
 
   asteroidCentre: {
-    // model.asteroidCentre.asteroidConfiguration
-    asteroidConfiguration: {
-      maxSpeed: 6,
-      minSpeed: 30,
-      maxSize: 30,
-      minSize: 10,
+    // model.asteroidCentre.establishAsteroidConfigurations
+    establishAsteroidConfigurations: function(){
+      model.asteroidCentre.asteroidConfigurations = {
+        maxSpeed: 6,
+        minSpeed: 30,
+        maxSize: 30,
+        minSize: 10,
+      };
     },
 
     // model.asteroidCentre.startingNumberOfAsteroids
@@ -67,10 +81,10 @@ var model = {
     buildAsteroids: function( asteroidConstructor, numberOfAsteroids, builtWithTic ){
       var asteroids = []
       var boardSideLength = model.boardSideLength;
-      var maxSize = model.asteroidCentre.asteroidConfiguration.maxSize;
-      var minSize = model.asteroidCentre.asteroidConfiguration.minSize;
-      var maxSpeed = model.asteroidCentre.asteroidConfiguration.maxSpeed;
-      var minSpeed = model.asteroidCentre.asteroidConfiguration.minSpeed;
+      var maxSize = model.asteroidCentre.asteroidConfigurations.maxSize;
+      var minSize = model.asteroidCentre.asteroidConfigurations.minSize;
+      var maxSpeed = model.asteroidCentre.asteroidConfigurations.maxSpeed;
+      var minSpeed = model.asteroidCentre.asteroidConfigurations.minSpeed;
 
       for( var i = 0; i < numberOfAsteroids; i++ ) {
         var xVelocity = model.asteroidCentre.returnRandomVelocity( maxSpeed, minSpeed );
@@ -173,15 +187,17 @@ var model = {
 
   shipCentre: {
 
-    // model.shipCentre.shipConfiguration
-    shipConfiguration: {
-      height: 30,
-      width: 30,
-      x: ( model.boardSideLength / 2 - (model.shipCentre.shipConfiguration.width / 2) ),
-      y: ( model.boardSideLength / 2 - (model.shipCentre.shipConfiguration.height / 2) ),
-      borderLeft: model.shipCentre.shipConfiguration.width / 3 + "px solid transparent",
-      borderRight: model.shipCentre.shipConfiguration.width / 3 + "px solid transparent",
-      borderBottom: model.shipCentre.shipConfiguration.width + "px solid white"
+    // model.shipCentre.establishShipConfigurations
+    establishShipConfigurations: function( boardSideLength, height, width ){
+      model.shipCentre.shipConfigurations = {
+        height: height,
+        width: width,
+        x: ( boardSideLength / 2 - ( width / 2 ) ),
+        y: ( boardSideLength / 2 - ( height / 2 ) ),
+        borderLeft: width / 3 + "px solid transparent",
+        borderRight: width / 3 + "px solid transparent",
+        borderBottom: width + "px solid white"
+      };
     },
 
     // model.shipCentre.buildShip
@@ -297,7 +313,7 @@ var model = {
 };
 
 var view = {
-  init: function(){
+  init: function( boardSideLength ){
     view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
     view.placeShip( model.ship );
     view.listenOutForKeyPresses();

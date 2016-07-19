@@ -10,7 +10,7 @@ var controller = {
   // controller.startInterval
   startInterval: function(){
     gameInterval = setInterval(function(){
-      model.takeTurn();
+      model.takeTurn( model.boardSideLength );
       view.renderBoard( model.asteroidCentre.asteroids, model.shipCentre.ship );
     }, 100);
   }
@@ -31,7 +31,7 @@ var model = {
     model.asteroidCentre.addToAsteroidsPrototype( asteroidConstructor );
 
     // Build asteroids THIS IS WHERE THE ISSUES BEGIN!!!!!
-  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 1 );
+  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 4 );
 
     // Build ship
     model.shipCentre.buildShip();
@@ -112,7 +112,6 @@ var model = {
     // aka offScreen.
     // no need to return anything because it's working on the asteroid itself.
     moveAsteroidToStartingPosition: function( asteroid, boardSideLength ){
-      var answer = model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength)
       while( model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength) ){
         asteroid.x -= asteroid.xVelocity;
         asteroid.y -= asteroid.yVelocity;
@@ -131,9 +130,7 @@ var model = {
 
     // model.coordinatesCentre.moveObjectToOtherSideOfBoard
     moveObjectToOtherSideOfBoard: function( object, boardSideLength ){
-      if(model.coordinatesCentre.objectIsOnScreen(object, boardSideLength)){
-        
-      } else {
+      if( !model.coordinatesCentre.objectIsOnScreen(object, boardSideLength) ){
         object.x = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.x, object.longestDimension, boardSideLength);
         object.y = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.y, object.longestDimension, boardSideLength);
       };
@@ -142,7 +139,6 @@ var model = {
     // model.coordinatesCentre.moveCoordinateToOtherSideOfBoard
     moveCoordinateToOtherSideOfBoard: function( coordinate, objectsLongestDimension, boardSideLength ){
       var answer = model.coordinatesCentre.coordinateIsPastScreen( coordinate, boardSideLength );
-      console.log(coordinate);
       if( model.coordinatesCentre.coordinateIsPastScreen( coordinate, boardSideLength ) ) {
         coordinate = objectsLongestDimension * -1;
       } else if ( model.coordinatesCentre.objectIsBehindScreen( coordinate, objectsLongestDimension ) ) {
@@ -174,9 +170,8 @@ var model = {
       var objectInBoardsYAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.y, object.longestDimension, boardSideLength );
       if( objectInBoardsXAxis && objectInBoardsYAxis ){
         return true;
-      } else {
-        return false;
       };
+      return false;
     },
 
     // model.coordinatesCentre.objectBetweenBoardsAxis
@@ -184,9 +179,8 @@ var model = {
     objectBetweenBoardsAxis: function( objectsCoordinate, objectsLongestDimension, boardSideLength ){
       if (objectsCoordinate + objectsLongestDimension >= 0 && objectsCoordinate < boardSideLength ) {
         return true;
-      } else {
-        return false;
       };
+      return false;
     }
   },
 
@@ -307,12 +301,12 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function(  ){
+  takeTurn: function( boardSideLength ){
     var asteroids = model.asteroidCentre.asteroids;
     var ship = model.shipCentre.ship;
     model.runTicOnObjects( asteroids );
     ship.tic();
-    model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids );
+    model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids, boardSideLength );
     model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship );
   }
 };

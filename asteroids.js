@@ -30,8 +30,8 @@ var model = {
     // Adding to asteroid constructor prototype.
     model.asteroidCentre.addToAsteroidsPrototype( asteroidConstructor );
 
-    // Build asteroids
-  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 3 );
+    // Build asteroids THIS IS WHERE THE ISSUES BEGIN!!!!!
+  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 1 );
 
     // Build ship
     model.shipCentre.buildShip();
@@ -45,14 +45,11 @@ var model = {
     establishAsteroidConfigurations: function(){
       model.asteroidCentre.asteroidConfigurations = {
         maxSpeed: 6,
-        minSpeed: 30,
+        minSpeed: 2,
         maxSize: 30,
         minSize: 10,
       };
     },
-
-    // model.asteroidCentre.startingNumberOfAsteroids
-    startingNumberOfAsteroids: 3,
 
     // model.asteroidCentre.addToAsteroidsProtoype
     addToAsteroidsPrototype: function( asteroidConstructor ){
@@ -91,6 +88,7 @@ var model = {
         var yVelocity = model.asteroidCentre.returnRandomVelocity( maxSpeed, minSpeed );
         var height = model.randomNumber( maxSize, minSize );
         var width = model.randomNumber( maxSize, minSize );
+
         var x = model.randomNumber( boardSideLength );
         var y = model.randomNumber( boardSideLength );
         var asteroid = new asteroidConstructor( x, y, xVelocity, yVelocity, height, width, builtWithTic );
@@ -114,7 +112,8 @@ var model = {
     // aka offScreen.
     // no need to return anything because it's working on the asteroid itself.
     moveAsteroidToStartingPosition: function( asteroid, boardSideLength ){
-      while( model.objectIsOnScreen(asteroid, boardSideLength) ){
+      var answer = model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength)
+      while( model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength) ){
         asteroid.x -= asteroid.xVelocity;
         asteroid.y -= asteroid.yVelocity;
       };
@@ -132,7 +131,9 @@ var model = {
 
     // model.coordinatesCentre.moveObjectToOtherSideOfBoard
     moveObjectToOtherSideOfBoard: function( object, boardSideLength ){
-      if(!model.objectIsOnScreen(object, boardSideLength)){
+      if(model.coordinatesCentre.objectIsOnScreen(object, boardSideLength)){
+        
+      } else {
         object.x = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.x, object.longestDimension, boardSideLength);
         object.y = model.coordinatesCentre.moveCoordinateToOtherSideOfBoard(object.y, object.longestDimension, boardSideLength);
       };
@@ -140,6 +141,8 @@ var model = {
 
     // model.coordinatesCentre.moveCoordinateToOtherSideOfBoard
     moveCoordinateToOtherSideOfBoard: function( coordinate, objectsLongestDimension, boardSideLength ){
+      var answer = model.coordinatesCentre.coordinateIsPastScreen( coordinate, boardSideLength );
+      console.log(coordinate);
       if( model.coordinatesCentre.coordinateIsPastScreen( coordinate, boardSideLength ) ) {
         coordinate = objectsLongestDimension * -1;
       } else if ( model.coordinatesCentre.objectIsBehindScreen( coordinate, objectsLongestDimension ) ) {
@@ -168,11 +171,12 @@ var model = {
     // model.coordinatesCentre.objectIsOnScreen
     objectIsOnScreen: function( object, boardSideLength ){
       var objectInBoardsXAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.x, object.longestDimension, boardSideLength );
-      var objectInBoardsYAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.y, objectsLongestDimension, boardSideLength );
-      if( objectinBoardsXAxis && objectinBoardsYAxis ){
+      var objectInBoardsYAxis = model.coordinatesCentre.objectBetweenBoardsAxis( object.y, object.longestDimension, boardSideLength );
+      if( objectInBoardsXAxis && objectInBoardsYAxis ){
         return true;
+      } else {
+        return false;
       };
-      return false;
     },
 
     // model.coordinatesCentre.objectBetweenBoardsAxis
@@ -180,8 +184,9 @@ var model = {
     objectBetweenBoardsAxis: function( objectsCoordinate, objectsLongestDimension, boardSideLength ){
       if (objectsCoordinate + objectsLongestDimension >= 0 && objectsCoordinate < boardSideLength ) {
         return true;
+      } else {
+        return false;
       };
-      return false;
     }
   },
 
@@ -202,15 +207,15 @@ var model = {
 
     // model.shipCentre.buildShip
     buildShip: function(){
-      var height = model.shipCentre.shipConfiguration.height;
-      var width = model.shipCentre.shipConfiguration.width;
-      var x = model.shipCentre.shipConfiguration.x;
-      var y = model.shipCentre.shipConfiguration.y;
-      var borderLeft = model.shipCentre.shipConfiguration.borderLeft;
-      var borderRight = model.shipCentre.shipConfiguration.borderRight;
-      var borderBottom = model.shipCentre.shipConfiguration.borderBottom;
+      var height = model.shipCentre.shipConfigurations.height;
+      var width = model.shipCentre.shipConfigurations.width;
+      var x = model.shipCentre.shipConfigurations.x;
+      var y = model.shipCentre.shipConfigurations.y;
+      var borderLeft = model.shipCentre.shipConfigurations.borderLeft;
+      var borderRight = model.shipCentre.shipConfigurations.borderRight;
+      var borderBottom = model.shipCentre.shipConfigurations.borderBottom;
 
-      model.ship = new model.shipCentre.shipConstructor( x, y, height, width, borderLeft, borderRight, borderBottom )
+      model.shipCentre.ship = new model.shipCentre.shipConstructor( x, y, height, width, borderLeft, borderRight, borderBottom )
     },
 
     // model.shipcentre.shipConstructor
@@ -302,7 +307,7 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function(){
+  takeTurn: function(  ){
     var asteroids = model.asteroidCentre.asteroids;
     var ship = model.shipCentre.ship;
     model.runTicOnObjects( asteroids );
@@ -314,9 +319,7 @@ var model = {
 
 var view = {
   init: function( boardSideLength ){
-    view.renderBoard( view.addAsteroidsToBoard, model.asteroids, view.clearAsteroids, view.setCSSOfAsteroid );
-    view.placeShip( model.ship );
-    view.listenOutForKeyPresses();
+    view.listeners.listenOutForKeyPresses();
   },
 
   // view.asteroidCentre
@@ -331,14 +334,14 @@ var view = {
     renderAsteroids: function( asteroids ){
       for (var i = 0; i < asteroids.length; i++){
         view.asteroidCentre.addAsteroidToBoard( i );
-        view.asteroidCentre.setCSSOfAsteroid( asteroid, i );
+        view.asteroidCentre.setCSSOfAsteroid( asteroids[i], i );
       };
     },
 
     // view.asteroidCentre.setCSSOfAsteroid
     setCSSOfAsteroid: function( asteroid, indexOfAsteroid ){
-      view.setCSSPositionOfAsteroid( asteroids, indexOfAsteroid );
-      view.setCSSDimensionsOfAsteroid( asteroids, indexOfAsteroid );
+      view.asteroidCentre.setCSSPositionOfAsteroid( asteroid, indexOfAsteroid );
+      view.asteroidCentre.setCSSDimensionsOfAsteroid( asteroid, indexOfAsteroid );
     },
 
     // view.asteroidCentre.setCSSDimensionsOfAsteroid
@@ -411,7 +414,7 @@ var view = {
 };
 
 $(document).ready(function(){
-  controller.init();
+  controller.init( 300 );
 });
 
 // tester.testSpeedOfAsteroidsTicWhenPrototypeInherited( model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 1000, 1000, model.randomNumber );

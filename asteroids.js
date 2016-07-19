@@ -266,24 +266,19 @@ var model = {
     // model.shipCentre.decreaseVelocity
     decreaseVelocity: function( ship ){
       if( model.shipCentre.shipIsFacingNorthToNorthEast( ship ) ){
-        ship.yVelocity += (1 - (ship.degrees * 0.011));
-        ship.xVelocity -= (ship.degrees * 0.011);
+        ship.yVelocity += ( 1 - ( ship.degrees * 0.011 ) );
+        ship.xVelocity -= ( ship.degrees * 0.011 );
       } else if( model.shipCentre.shipIsFacingSouthToSouthEast( ship ) ){
-        ship.xVelocity -= (1 - (ship.degrees - 90) * 0.011);
-        ship.yVelocity -= (0.011 * (ship.degrees - 90));
+        ship.xVelocity -= ( 1 - ( ship.degrees - 90 ) * 0.011 );
+        ship.yVelocity -= ( 0.011 * ( ship.degrees - 90 ) );
       } else if( model.shipCentre.shipIsFacingSouthToSouthWest( ship ) ){
-        ship.yVelocity -= (1 - (ship.degrees - 180) * 0.011);
-        ship.xVelocity += (0.011 * (ship.degrees - 180));
+        ship.yVelocity -= ( 1 - (ship.degrees - 180) * 0.011 );
+        ship.xVelocity += ( 0.011 * (ship.degrees - 180) );
       } else {
-        ship.yVelocity += ((ship.degrees - 270) * 0.011);
-        ship.xVelocity += ((360 - ship.degrees) * 0.011);
+        ship.yVelocity += ( (ship.degrees - 270) * 0.011 );
+        ship.xVelocity += ( (360 - ship.degrees) * 0.011 );
       };
     },
-
-    // model.shipCentre.accelerateShipDown
-    // model.shipCentre.accelerateShipUp
-    // model.shipCentre.accelerateShipLeft
-    // model.shipCentre.accelerateShipRight
 
     // model.shipCentre.shipIsFacingNorthToNorthEast
     shipIsFacingNorthToNorthEast: function( ship ){
@@ -415,12 +410,16 @@ var view = {
     // border-right: 50px solid transparent;
     // border-bottom: 100px solid red;
     renderShip: function( ship ){
+      var cssForRotate = ("rotate(" + ship.degrees + "deg)");
       $("#game-board").prepend("<div id='ship'></div>")
-      $("#ship").css({"left": ship.x + "px",
-                      "top": ship.y + "px",
-                      "border-left": ship.borderLeft,
-                      "border-right": ship.borderRight,
-                      "border-bottom": ship.borderBottom})
+      $("#ship").css({"left"              : ship.x + "px",
+                      "top"               : ship.y + "px",
+                      "border-left"       : ship.borderLeft,
+                      "border-right"      : ship.borderRight,
+                      "border-bottom"     : ship.borderBottom,
+                      "-ms-transform"     : cssForRotate,
+                      "-webkit-transform:": cssForRotate,
+                      "transform"         : cssForRotate});
     }
   },
 
@@ -432,10 +431,14 @@ var view = {
       $(window).keydown(function(event){
         if ( event.keyCode === 37 ) {
           model.shipCentre.turnLeft( ship );
+          view.shipCentre.clearShip();
+          view.shipCentre.renderShip( ship );
         } else if ( event.keyCode === 38 ) {
           model.shipCentre.increaseVelocity( ship );
         } else if ( event.keyCode === 39 ) {
           model.shipCentre.turnRight( ship );
+          view.shipCentre.clearShip();
+          view.shipCentre.renderShip( ship );
         } else if (event.keyCode === 40 ) {
           model.shipCentre.decreaseVelocity( ship );
         };

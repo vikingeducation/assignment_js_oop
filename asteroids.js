@@ -3,7 +3,7 @@
 var controller = {
   init: function( boardSideLength ){
     model.init( boardSideLength );
-    view.init( boardSideLength );
+    view.init( boardSideLength, model.shipCentre.ship );
     controller.startInterval();
   },
 
@@ -229,44 +229,93 @@ var model = {
     },
 
     // model.shipCentre.turnLeft
-    turnLeft: function(){
-      model.ship.degrees -= 10;
-      if (model.ship.degrees < 0) {
-        model.ship.degrees = 360 + model.ship.degrees;
+    turnLeft: function( ship ){
+      ship.degrees -= 11.25;
+      if ( ship.degrees < 0 ) {
+        ship.degrees = 360 + ship.degrees;
       };
+      console.log(ship.degrees)
     },
 
     // model.shipCentre.turnRight
-    turnRight: function(){
-      model.ship.degrees += 10;
-      if (model.ship.degrees >= 360){
-        model.ship.degrees = model.ship.degrees % 360;
+    turnRight: function( ship ){
+      ship.degrees += 11.25;
+      if ( ship.degrees >= 360 ){
+        ship.degrees = ship.degrees % 360;
       };
+      console.log(ship.degrees)
     },
 
     // model.shipCentre.increaseVelocity
-    increaseVelocity: function(){
-      // model.ship.degrees
-      if(model.ship.degrees <= 90){
-        model.ship.yVelocity -= (1 - (model.ship.degrees * 0.011));
-        model.ship.xVelocity += (0.011 * model.ship.degrees);
-      } else if(model.ship.degrees > 90 && model.ship.degrees <= 180 ){
-        model.ship.yVelocity += ((model.ship.degrees - 90) * 0.011);
-        model.ship.xvelocity += (1 - ((model.ship.degrees - 90) * 0.011));
-      } else if(model.ship.degrees > 180 && model.ship.degrees <= 270){
-        model.ship.yVelocity += (1 - ((model.ship.degrees - 180) * 0.011));
-        model.ship.xVelocity += ((model.ship.degrees - 180) * 0.011);
+    increaseVelocity: function( ship ){
+      if( model.shipCentre.shipIsFacingNorthToNorthEast( ship ) ){
+        ship.yVelocity -= (1 - (ship.degrees * 0.011));
+        ship.xVelocity += (0.011 * ship.degrees);
+      } else if( model.shipCentre.shipIsFacingSouthToSouthEast( ship ) ){
+        ship.yVelocity += ((ship.degrees - 90) * 0.011);
+        ship.xVelocity += (1 - ((ship.degrees - 90) * 0.011));
+      } else if( model.shipCentre.shipIsFacingSouthToSouthWest( ship ) ){
+        ship.yVelocity += (1 - ((ship.degrees - 180) * 0.011));
+        ship.xVelocity -= ((ship.degrees - 180) * 0.011);
       } else {
-        model.ship.xVelocity -= ((model.ship.degrees - 270) * 0.011);
-        model.ship.yVelocity += (0.011 * (model.ship.degrees - 270));
+        ship.xVelocity -= ( (360 - ship.degrees) * 0.011);
+        ship.yVelocity -= (0.011 * (ship.degrees - 270));
       };
     },
 
-    // model.shipCentre.decreaseVelocity.=
-    decreaseVelocity: function(){
-      
-    }
+    // model.shipCentre.decreaseVelocity
+    decreaseVelocity: function( ship ){
+      if( model.shipCentre.shipIsFacingNorthToNorthEast( ship ) ){
+        ship.yVelocity += (1 - (ship.degrees * 0.011));
+        ship.xVelocity -= (ship.degrees * 0.011);
+      } else if( model.shipCentre.shipIsFacingSouthToSouthEast( ship ) ){
+        ship.xVelocity -= (1 - (ship.degrees - 90) * 0.011);
+        ship.yVelocity -= (0.011 * (ship.degrees - 90));
+      } else if( model.shipCentre.shipIsFacingSouthToSouthWest( ship ) ){
+        ship.yVelocity -= (1 - (ship.degrees - 180) * 0.011);
+        ship.xVelocity += (0.011 * (ship.degrees - 180));
+      } else {
+        ship.yVelocity += ((ship.degrees - 270) * 0.011);
+        ship.xVelocity += ((360 - ship.degrees) * 0.011);
+      };
+    },
 
+    // model.shipCentre.accelerateShipDown
+    // model.shipCentre.accelerateShipUp
+    // model.shipCentre.accelerateShipLeft
+    // model.shipCentre.accelerateShipRight
+
+    // model.shipCentre.shipIsFacingNorthToNorthEast
+    shipIsFacingNorthToNorthEast: function( ship ){
+      if (ship.degrees <= 90) {
+        return true;
+      };
+      return false;
+    },
+
+    // model.shipCentre.shipIsFacingSouthToSouthEast
+    shipIsFacingSouthToSouthEast: function( ship ){
+      if (ship.degrees >= 90 && ship.degrees <= 180) {
+        return true;
+      };
+      return false;
+    },
+
+    // model.shipCentre.shipisFacingNortToNorthWest
+    shipIsFacingNorthToNorthWest: function( ship ){
+      if (ship.degrees >= 270 && ship.degrees < 360){
+        return true;
+      };
+      return false;
+    },
+
+    // model.shipCentre.shipIsFacingSouthToSouthWest
+    shipIsFacingSouthToSouthWest: function( ship ){
+      if (ship.degrees >= 180 && ship.degrees <= 270){
+        return true;
+      };
+      return false;
+    }
   },
 
   // model.addTicToConstrutor
@@ -307,13 +356,13 @@ var model = {
     model.runTicOnObjects( asteroids );
     ship.tic();
     model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids, boardSideLength );
-    model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship );
+    model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship, boardSideLength );
   }
 };
 
 var view = {
-  init: function( boardSideLength ){
-    view.listeners.listenOutForKeyPresses();
+  init: function( boardSideLength, ship ){
+    view.listeners.listenOutForKeyPresses( ship );
   },
 
   // view.asteroidCentre
@@ -377,16 +426,18 @@ var view = {
 
   // view.listeners
   listeners: {
-    listenOutForKeyPresses: function(){
+
+    // view.listeners.listenOurForKeyPresses
+    listenOutForKeyPresses: function( ship ){
       $(window).keydown(function(event){
         if ( event.keyCode === 37 ) {
-          model.turnShipLeft();
+          model.shipCentre.turnLeft( ship );
         } else if ( event.keyCode === 38 ) {
-          model.increaseShipVelocity();
+          model.shipCentre.increaseVelocity( ship );
         } else if ( event.keyCode === 39 ) {
-          model.turnShipRight();
+          model.shipCentre.turnRight( ship );
         } else if (event.keyCode === 40 ) {
-          model.decreaseShipVelocity();
+          model.shipCentre.decreaseVelocity( ship );
         };
       });
     }
@@ -410,14 +461,3 @@ var view = {
 $(document).ready(function(){
   controller.init( 300 );
 });
-
-// tester.testSpeedOfAsteroidsTicWhenPrototypeInherited( model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 1000, 1000, model.randomNumber );
-
-// Testing that the tic works on asteroids that have a built in tic.
-// var a = [];
-// model.buildAsteroid( a, model.asteroidWithTicConstructor, model.randomNumber );
-// tester.verifyThatTicWorks(a[0]);
-
-// Comparing inherited vs built-in tic method speed.
-// Built in is faster...
-// tester.compareTicOnPrototypeVsBuiltIn( model.asteroidWithTicConstructor, model.asteroidConstructor, model.buildAsteroid, model.buildAsteroids, 100000, 100000, model.randomNumber, model.addTicToConstructor )

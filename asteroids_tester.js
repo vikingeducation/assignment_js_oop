@@ -1,58 +1,60 @@
 var tester = {
-
-  compareTicOnPrototypeVsBuiltIn( constructorWithBuiltIn, constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction, addTicToConstructorFunction ){
-    addTicToConstructorFunction( constructorWithoutBuiltIn );
-    timeOfBuiltIn = tester.testSpeedOfAsteroidsTic( constructorWithBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
-    timeOfInherited = tester.testSpeedOfAsteroidsTic( constructorWithoutBuiltIn, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction );
+  // tester.compareTicOnPrototypeVsBuiltIn
+  compareTicOnPrototypeVsBuiltIn: function( objectsWithBuiltInTic, objectsWithInheritedTic, numberOfTics ){
+    var timeOfBuiltIn = tester.returnTicTime( objectsWithBuiltInTic, numberOfTics );
+    var timeOfInherited = tester.returnTicTime( objectsWithInheritedTic, numberOfTics );
     console.log( "Constructor With Built In Tic" );
-    console.log( timeOfBuiltIn + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
+    console.log( timeOfBuiltIn + " seconds to run tic " + numberOfTics + " times on " + objectsWithBuiltInTic.length + " asteroids." );
     console.log( "Constructor That Inherited Tic" );
-    console.log( timeOfInherited + " seconds to run tic " + numberOfTics + " times on " + numberOfAsteroids + " asteroids." );
+    console.log( timeOfInherited + " seconds to run tic " + numberOfTics + " times on " + objectsWithInheritedTic.length + " asteroids." );
   },
 
-  verifyThatTicWorks: function( asteroid ){
-    var asteroidsInitialX = asteroid.x;
-    var asteroidsInitialY = asteroid.y;
-    asteroid.tic();
+  // tester.verifyThatTicWorks
+  verifyThatTicWorks: function( object ){
+    var objectsInitialX = object.x;
+    var objectsInitialY = object.y;
+    object.tic();
 
-    if (( asteroidsInitialX + asteroid.xVelocity) === asteroid.x && (asteroidsInitialY + asteroid.yVelocity) === asteroid.y) {
-      console.log( "asteroid.tic() works!" )
-      tester.printAsteroidsVelocity( asteroid );
-      tester.printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY );
-      tester.printAsteroidsCurrentCoordinates( asteroid );
+    if (( objectsInitialX + object.xVelocity) === object.x && (objectsInitialY + object.yVelocity) === object.y) {
+      console.log( "object.tic() works!" )
+      tester.printobjectsVelocity( object );
+      tester.printobjectsInitialCoordinates( objectsInitialX, objectsInitialY );
+      tester.printobjectsCurrentCoordinates( object );
     } else {
-      console.log( "asteroid.tic() doesn't work!" )
-      tester.printAsteroidsVelocity( asteroid );
-      tester.printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY );
-      tester.printAsteroidsCurrentCoordinates( asteroid );
+      console.log( "object.tic() doesn't work!" )
+      tester.printobjectsVelocity( object );
+      tester.printobjectsInitialCoordinates( objectsInitialX, objectsInitialY );
+      tester.printobjectsCurrentCoordinates( object );
     };
   },
 
-  printAsteroidsVelocity( asteroid ){
-    console.log( "Asteroid's Velocity" );
-    console.log( "xVelocity: " + asteroid.xVelocity );
-    console.log( "yVelocity: " + asteroid.yVelocity );
+  // tester.printObjectsVelocity
+  printObjectsVelocity( object ){
+    console.log( "Object's Velocity" );
+    console.log( "xVelocity: " + object.xVelocity );
+    console.log( "yVelocity: " + object.yVelocity );
   },
 
-  printAsteroidsInitialCoordinates( asteroidsInitialX, asteroidsInitialY ){
+  // tester.printObjectsInitialCoordinates
+  printObjectsInitialCoordinates( objectsInitialX, objectsInitialY ){
     console.log( "Initial Coordinates" );
-    console.log( "x: " + asteroidsInitialX );
-    console.log( "y: " + asteroidsInitialY );
+    console.log( "x: " + objectsInitialX );
+    console.log( "y: " + objectsInitialY );
   },
 
-  printAsteroidsCurrentCoordinates( asteroid ){
+  // tester.printObjectsCurrentCoordinates
+  printObjectsCurrentCoordinates( object ){
     console.log( "Current Coordinates" );
-    console.log( "x: " + asteroid.x );
-    console.log( "y: " + asteroid.y );
+    console.log( "x: " + object.x );
+    console.log( "y: " + object.y );
   },
 
-  testSpeedOfAsteroidsTic( asteroidConstructor, buildAsteroidFunction, buildAsteroidsFunction, numberOfAsteroids, numberOfTics, randomNumberFunction ){
-    var asteroids = [];
-    buildAsteroidsFunction( numberOfAsteroids, asteroids, buildAsteroidFunction, asteroidConstructor, randomNumberFunction );
+  // tester.returnTicTime
+  returnTicTime( objects, numberOfTics ){
     var timeBeforeTic = new Date();
-    for(var asteroid = 0; asteroid < model.asteroids.length; asteroid++){
+    for(var i = 0; i < objects.length; i++){
       for(var tic = 0; tic < numberOfTics; tic++){
-        model.asteroids[asteroid].tic();
+        objects[i].tic();
       };
     };
     var timeAfterTic = new Date();

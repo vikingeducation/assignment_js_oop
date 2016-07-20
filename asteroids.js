@@ -2,6 +2,9 @@
 
 var controller = {
   init: function( boardSideLength ){
+
+    controller.gameOver = false;
+
     model.init( boardSideLength );
 
     view.init( boardSideLength,
@@ -23,8 +26,9 @@ var controller = {
                       asteroidConstructor,
                       boardSideLength, 
                       bullets, 
-                      ship );
-      view.renderBoard( asteroids, bullets, ship );
+                      ship, 
+                      controller.gameOver );
+      view.renderBoard( asteroids, boardSideLength, bullets, ship, controller.gameOver, model.counter );
     }, 100);
   }
 };
@@ -151,7 +155,7 @@ var model = {
     figureOutCollisions: function( asteroids, bullets, ship ){
       for( i = 0; i < asteroids.length; i++ ){
         var asteroid = asteroids[i];
-        model.asteroidCentre.processAsteroidAndShipCollision( asteroid, ship );
+        model.asteroidCentre.processAsteroidAndShipCollision( asteroid, asteroids, i, ship );
         for( b = 0; b < bullets.length; b++ ){
           var bullet = bullets[b];
           model.asteroidCentre.processAsteroidAndBulletCollision( asteroid, 
@@ -180,9 +184,12 @@ var model = {
     // With an asteroid, I might make that whole asteroid div a hittable area 
 
     // model.asteroidCentre.processAsteroidAndShipCollision
-    processAsteroidAndShipCollision: function( asteroid, ship ){
-      asteroid.x
-      asteroid.x
+    processAsteroidAndShipCollision: function( asteroid, asteroids, asteroidIndex, ship ){
+      if ( model.coordinatesCentre.objectsOverlapping( asteroid, ship ) ) {
+        model.asteroidCentre.splitAsteroid(asteroid, asteroids, 2);
+        model.removeObjectFromArray( asteroids, asteroidIndex );
+        controller.gameOver = true;
+      };
     },
 
     // model.asteroidCentre.processAsteroidAndBulletCollision
@@ -530,6 +537,11 @@ var model = {
     return lengthOfSideOppositeAngle;
   },
 
+  // model.calculateCoordinateToCenterObjectOnBoard
+  calculateCoordinateToCenterObjectOnBoard: function( boardSideLength, lengthOfDimension ){
+    return ( boardSideLength / 2 - ( lengthOfDimension / 2 ) )
+  },
+
   // model.convertAngleToRadian
   convertAngleToRadian: function( angle ){
     return angle * Math.PI / 180.0
@@ -577,15 +589,25 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function( asteroids, asteroidConstructor, boardSideLength, bullets, ship ){
+  takeTurn: function( asteroids, asteroidConstructor, boardSideLength, bullets, ship, gameOver ){
 
     model.counter++;
 
-    if (model.counter % 150 === 0){
-      model.asteroidCentre.buildAsteroids( asteroidConstructor, 
-                                           asteroids, 
-                                           boardSideLength,
-                                           2 );
+    // Might try to hack this
+    // If the game is over send the ship well off the map
+    // so it can't crash into any thing.
+
+    // Also
+    if (gameOver === true){
+      ship.x = -500;
+      ship.y = -500;
+    } else { 
+      if (model.counter % 150 === 0){
+        model.asteroidCentre.buildAsteroids( asteroidConstructor, 
+                                             asteroids, 
+                                             boardSideLength,
+                                             10 );
+      };
     };
 
     // Slowing down the ship's velocity if too high
@@ -741,13 +763,34 @@ var view = {
     view.shipCentre.clearShip();
   },
 
+  // view.displayGameOver
+  displayGameOver: function( boardSideLength, counter ){
+    if ( counter % 15 === 0) {
+      if ($("#game-over").length > 0){
+        $("#game-over").remove();
+      } else {
+        $("#game-board").append("<div id='game-over'>Game Over</div>")
+        var width = $("#game-over").width();
+        var height = $("#game-over").height();
+        var left = model.calculateCoordinateToCenterObjectOnBoard( boardSideLength, width );
+        var top = model.calculateCoordinateToCenterObjectOnBoard( boardSideLength, height );
+        $("#game-over").css({"top": top,
+                            "left": left});
+      };
+    };
+  },
+
   // view.renderBoard
-  renderBoard: function( asteroids, bullets, ship ){
+  renderBoard: function( asteroids, boardSideLength, bullets, ship, gameOver, counter ){
     view.clearBoard();
 
     view.asteroidCentre.renderAsteroids( asteroids );
     view.bulletCentre.renderBullets( bullets );
-    view.shipCentre.renderShip( ship );
+    if (!gameOver) {
+      view.shipCentre.renderShip( ship );
+    } else {
+      view.displayGameOver( boardSideLength, counter );
+    };
   }
 };
 

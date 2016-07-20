@@ -33,6 +33,11 @@
     position: absolute;
     width: 0;
     height: 0; }
+  #game-board #game-over {
+    position: absolute;
+    font-size: 30px;
+    font-weight: bold;
+    color: red; }
 
 .top-scores-and-header .top-scores ol {
   font-weight: bold;

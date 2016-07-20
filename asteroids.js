@@ -346,7 +346,23 @@ var model = {
       model.shipCentre.ship = new model.shipCentre.shipConstructor( x, y, height, width, borderLeft, borderRight, borderBottom )
     },
 
-    // model.shipcentre.shipConstructor
+    // model.shipCentre.reduceVelocitiesToMaximum
+    reduceVelocitiesToMaximum: function( bulletSpeed, ship ){
+      var negativeBulletSpeed = -1 * bulletSpeed;
+      if (ship.xVelocity < negativeBulletSpeed) {
+        ship.xVelocity = negativeBulletSpeed + 1;
+      } else if (ship.xVelocity > bulletSpeed) {
+        ship.xVelocity = bulletSpeed - 1;
+      };
+
+      if (ship.yVelocity < negativeBulletSpeed) {
+        ship.yVelocity = negativeBulletSpeed + 1;
+      } else if (ship.yVelocity > bulletSpeed) {
+        ship.xVelocity = bulletSpeed - 1;
+      };
+    },
+
+    // model.shipCentre.shipConstructor
     shipConstructor: function( x, y, height, width, borderLeft, borderRight, borderBottom ){
       this.degrees = 0;
       this.x = x;
@@ -377,6 +393,9 @@ var model = {
         ship.degrees = ship.degrees % 360;
       };
     },
+
+    // I don't think the ship should be able to travel as fast as it's weapon...
+    // I'll max it out ONE below the bullet speed.
 
     // model.shipCentre.increaseVelocity
     increaseVelocity: function( ship ){
@@ -617,6 +636,7 @@ var view = {
         // up key
         } else if ( event.keyCode === 38 ) {
           model.shipCentre.increaseVelocity( ship );
+          model.shipCentre.reduceVelocitiesToMaximum( bulletSpeed, ship );
         // right key
         } else if ( event.keyCode === 39 ) {
           model.shipCentre.turnRight( ship );
@@ -625,6 +645,7 @@ var view = {
         // down key
         } else if (event.keyCode === 40 ) {
           model.shipCentre.decreaseVelocity( ship );
+          model.shipCentre.reduceVelocitiesToMaximum( bulletSpeed, ship );
         } else if (event.keyCode === 32) {
           model.bulletCentre.shootBullet( bulletsArray, bulletSpeed, ship );
         };

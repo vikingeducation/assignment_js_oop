@@ -34,8 +34,7 @@ var model = {
 
     // Establishing Configurations
     model.asteroidCentre.establishAsteroidConfigurations();
-    model.shipCentre.establishShipConfigurations( boardSideLength, 
-                                                  model.bulletCentre.bulletConfigurations.speed, 
+    model.shipCentre.establishShipConfigurations( boardSideLength,
                                                   30, 
                                                   30 );
     model.boardSideLength = boardSideLength;
@@ -53,7 +52,13 @@ var model = {
                                          4 );
 
     // Build ship
-    model.shipCentre.buildShip();
+    model.shipCentre.ship = new model.shipCentre.shipConstructor( model.shipCentre.shipConfigurations.x, 
+                                                                  model.shipCentre.shipConfigurations.y, 
+                                                                  model.shipCentre.shipConfigurations.height, 
+                                                                  model.shipCentre.shipConfigurations.width, 
+                                                                  model.shipCentre.shipConfigurations.borderLeft, 
+                                                                  model.shipCentre.shipConfigurations.borderRight, 
+                                                                  model.shipCentre.shipConfigurations.borderBottom )
 
     // Adding tic to ship constructor prototype.
     model.addTicToConstructor( model.shipCentre.shipConstructor );
@@ -119,6 +124,18 @@ var model = {
       return asteroids;
     },
 
+    // model.asteroidCentre.calculateVelocityForSplitAsteroid
+    // I'm just gonna change up the speed a wee bit
+    calculateVelocityForSplitAsteroid( previousVelocity, maxSpeed ){
+      var randomNumber = model.randomNumber(3);
+
+      // 50 / 50 on whether it goes up or down
+      if ( model.randomNumber(1) === 1 ) {
+        randomNumber * -1;
+      };
+      return previousVelocity + randomNumber;
+    },
+
     // model.asteroidCentre.figureOutCollisions
     figureOutCollisions: function( asteroids, bullets, ship ){
       for( i = 0; i < asteroids.length; i++ ){
@@ -126,8 +143,23 @@ var model = {
         model.asteroidCentre.processAsteroidAndShipCollision( asteroid, ship );
         for( b = 0; b < bullets.length; b++ ){
           var bullet = bullets[b];
-          model.asteroidCentre.processAsteroidAndBulletCollision( asteroid, bullet );
+          model.asteroidCentre.processAsteroidAndBulletCollision( asteroid, 
+                                                                  asteroids, 
+                                                                  i, 
+                                                                  bullet, 
+                                                                  bullets, 
+                                                                  b );
         };
+      };
+    },
+
+    // model.asteroidCentre.moveAsteroidToStartingPosition
+    // aka offScreen.
+    // no need to return anything because it's working on the asteroid itself.
+    moveAsteroidToStartingPosition: function( asteroid, boardSideLength ){
+      while( model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength) ){
+        asteroid.x -= asteroid.xVelocity;
+        asteroid.y -= asteroid.yVelocity;
       };
     },
 
@@ -144,9 +176,11 @@ var model = {
 
     // model.asteroidCentre.processAsteroidAndBulletCollision
     // This should be alot easier than figuring out asteroids and ship collision because the bullet and the asteroid don't rotate.
-    processAsteroidAndBulletCollision: function( asteroid, bullet ){
+    processAsteroidAndBulletCollision: function( asteroid, asteroids, asteroidIndex, bullet, bullets, bulletIndex ){
       if ( model.coordinatesCentre.objectsOverlapping( asteroid, bullet ) ) {
-
+        model.asteroidCentre.splitAsteroid(asteroid, asteroids);
+        model.asteroidCentre.removeAsteroid( asteroids, asteroidIndex );
+        model.bulletCentre.removeBullet( bullets, bulletIndex );
       };
     },
 
@@ -160,15 +194,23 @@ var model = {
       return randomNumber;
     },
 
-    // model.asteroidCentre.moveAsteroidToStartingPosition
-    // aka offScreen.
-    // no need to return anything because it's working on the asteroid itself.
-    moveAsteroidToStartingPosition: function( asteroid, boardSideLength ){
-      while( model.coordinatesCentre.objectIsOnScreen(asteroid, boardSideLength) ){
-        asteroid.x -= asteroid.xVelocity;
-        asteroid.y -= asteroid.yVelocity;
+    // model.asteroidCentre.splitAsteroid
+    splitAsteroid: function( asteroid, asteroids, minSize, maxSpeed, splitNumber ){
+      if ( asteroid.height / splitNumber > minSize && asteroid.width / splitNumber > minSize ) {
+        for(var i = 0; i < splitNumber; i++) {
+          var newXVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.xVelocity, maxSpeed);
+          var newYVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.yVelocity, maxSpeed);
+          var newAsteroid = new asteroidConstructor( asteroid.x, 
+                                                     asteroid.y, 
+                                                     newXVelocity, 
+                                                     newYVelocity, 
+                                                     (asteroid.height / splitNumber),
+                                                     (asteroid.width / splitNumber) );
+          asteroids.push( newAsteroid );
+        };
       };
     }
+
   },
 
   // model.bulletCentre
@@ -176,7 +218,7 @@ var model = {
 
     // model.bulletCentre.bulletConfigurations
     bulletConfigurations: {
-      speed: 12
+      speed: 16
     },
 
     bullets: [],
@@ -329,7 +371,7 @@ var model = {
   shipCentre: {
 
     // model.shipCentre.establishShipConfigurations
-    establishShipConfigurations: function( boardSideLength, bulletSpeed, height, width ){
+    establishShipConfigurations: function( boardSideLength, height, width ){
       model.shipCentre.shipConfigurations = {
         height: height,
         width: width,
@@ -338,37 +380,7 @@ var model = {
         borderLeft: width / 2 + "px solid transparent",
         borderRight: width / 2 + "px solid transparent",
         borderBottom: width + "px solid white",
-        maxSpeed: bulletSpeed - 3
-      };
-    },
-
-    // model.shipCentre.buildShip
-    buildShip: function(){
-      var height = model.shipCentre.shipConfigurations.height;
-      var width = model.shipCentre.shipConfigurations.width;
-      var x = model.shipCentre.shipConfigurations.x;
-      var y = model.shipCentre.shipConfigurations.y;
-      var borderLeft = model.shipCentre.shipConfigurations.borderLeft;
-      var borderRight = model.shipCentre.shipConfigurations.borderRight;
-      var borderBottom = model.shipCentre.shipConfigurations.borderBottom;
-
-      model.shipCentre.ship = new model.shipCentre.shipConstructor( x, y, height, width, borderLeft, borderRight, borderBottom )
-    },
-
-    // model.shipCentre.reduceVelocitiesToMaximum
-    reduceVelocitiesToMaximum: function( maxSpeed, ship ){
-      var negativeMaxSpeed = -1 * maxSpeed;
-
-      if (ship.xVelocity < negativeMaxSpeed) {
-        ship.xVelocity = negativeMaxSpeed;
-      } else if (ship.xVelocity > maxSpeed) {
-        ship.xVelocity = maxSpeed;
-      };
-
-      if (ship.yVelocity < negativeMaxSpeed) {
-        ship.yVelocity = negativeMaxSpeed;
-      } else if (ship.yVelocity > maxSpeed) {
-        ship.yVelocity = maxSpeed;
+        maxSpeed: 8
       };
     },
 
@@ -511,6 +523,25 @@ var model = {
     return number;
   },
 
+  // model.reduceVelocitiesToMaximum
+  reduceVelocitiesToMaximum: function( maxSpeed, object ){
+    object.xVelocity = model.reduceVelocityToMaximum( maxSpeed, object.xVelocity );
+    object.yVelocity = model.reduceVelocityToMaximum( maxSpeed, object.yVelocity );
+  },
+
+  // model.reduceVelocityToMaximum
+  reduceVelocityToMaximum: function( maxSpeed, velocity ){
+    var negativeMaxSpeed = -1 * maxSpeed;
+
+    if (velocity < negativeMaxSpeed) {
+      velocity = negativeMaxSpeed;
+    } else if (velocity > maxSpeed) {
+      velocity = maxSpeed;
+    };
+
+    return velocity
+  },
+
   // model.runTicOnObjects
   runTicOnObjects: function( arrayOfObjects ){
     for(var i = 0; i < arrayOfObjects.length; i++) {
@@ -521,7 +552,7 @@ var model = {
   // model.takeTurn
   takeTurn: function( asteroids, boardSideLength, bullets, shipMaxSpeed, ship ){
     // Slowing down the ship's velocity if too high
-    model.shipCentre.reduceVelocitiesToMaximum( shipMaxSpeed, ship );
+    model.reduceVelocitiesToMaximum( shipMaxSpeed, ship );
 
     // Running tic on all objects that tic
     model.runTicOnObjects( asteroids );

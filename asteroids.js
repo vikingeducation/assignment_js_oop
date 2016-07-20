@@ -20,7 +20,7 @@ var controller = {
     gameInterval = setInterval(function(){
       model.takeTurn( asteroids, boardSideLength, bullets, ship );
       view.renderBoard( asteroids, bullets, ship );
-    }, 60000);
+    }, 100);
   }
 };
 
@@ -235,12 +235,24 @@ var model = {
 
     // model.coordinatesCentre.objectsOverlapping
     objectsOverlapping( objectOne, objectTwo ){
-      // objectOne.x to (objectOne.x + width)
-      // objectOne.y to (objectOne.y + height)
+      xAxisOverlap = model.coordinatesCentre.twoObjectsAxisOverlapping( objectOne.x, 
+                                                                        objectOne.width, 
+                                                                        objectTwo.x, 
+                                                                        objectTwo.width );
+      yAxisOverlap = model.coordinatesCentre.twoObjectsAxisOverlapping( objectOne.y,
+                                                                        objectOne.height,
+                                                                        objectTwo.y,
+                                                                        objectTwo.height );
 
-      // objectTwo.x to (objectTwo.x + width)
-      // objectTwo.y to (objectTwo.y + height)
+    },
 
+    // model.coordinatesCentre.twoObjectsAxisOverlapping
+    // Name could be clearer but it's all my caffeine addled mind can conjure up right now
+    twoObjectsAxisOverlapping: function( objectOneCoordinate, objectOneDimension, objectTwoCoordinate, objectTwoDimension ) {
+      if (objectOneCoordinate + objectOneDimension >= objectTwoCoordinate && objectOneCoordinate < objectTwoCoordinate + objectTwoDimension ) {
+        return true;
+      };
+      return false;
     },
 
     // model.coordinatesCentre.moveObjectsToOtherSideOfBoard( objectsArray, boardSideLength ){
@@ -299,10 +311,10 @@ var model = {
     // model.coordinatesCentre.objectBetweenBoardsAxis
     // A function which takes a coordinate of an object, it's longest dimension the boardSideLength and figures out whether the object is in range of the board axis.
     objectBetweenBoardsAxis: function( objectsCoordinate, objectsLongestDimension, boardSideLength ){
-      if (objectsCoordinate + objectsLongestDimension >= 0 && objectsCoordinate < boardSideLength ) {
-        return true;
-      };
-      return false;
+      return model.coordinatesCentre.twoObjectsAxisOverlapping( objectsCoordinate, 
+                                                                objectsLongestDimension, 
+                                                                0,
+                                                                boardSideLength )
     }
   },
 

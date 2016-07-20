@@ -6,19 +6,24 @@ var controller = {
 
     view.init( boardSideLength,
                model.bulletCentre.bullets,
-               model.bulletCentre.bulletConfigurations.bulletSpeed,
+               model.bulletCentre.bulletConfigurations.speed,
                model.shipCentre.ship );
 
     controller.startInterval( model.asteroidCentre.asteroids,
                               boardSideLength,
                               model.bulletCentre.bullets,
+                              model.shipCentre.shipConfigurations.maxSpeed,
                               model.shipCentre.ship );
   },
 
   // controller.startInterval
-  startInterval: function( asteroids, boardSideLength, bullets, ship ){
+  startInterval: function( asteroids, boardSideLength, bullets, shipMaxSpeed, ship ){
     gameInterval = setInterval(function(){
-      model.takeTurn( asteroids, boardSideLength, bullets, ship );
+      model.takeTurn( asteroids, 
+                      boardSideLength, 
+                      bullets, 
+                      shipMaxSpeed, 
+                      ship );
       view.renderBoard( asteroids, bullets, ship );
     }, 100);
   }
@@ -29,7 +34,10 @@ var model = {
 
     // Establishing Configurations
     model.asteroidCentre.establishAsteroidConfigurations();
-    model.shipCentre.establishShipConfigurations( boardSideLength, 30, 30 );
+    model.shipCentre.establishShipConfigurations( boardSideLength, 
+                                                  model.bulletCentre.bulletConfigurations.speed, 
+                                                  30, 
+                                                  30 );
     model.boardSideLength = boardSideLength;
 
     // The official constructor to build asteroids
@@ -168,7 +176,7 @@ var model = {
 
     // model.bulletCentre.bulletConfigurations
     bulletConfigurations: {
-      bulletSpeed: 8
+      speed: 12
     },
 
     bullets: [],
@@ -321,7 +329,7 @@ var model = {
   shipCentre: {
 
     // model.shipCentre.establishShipConfigurations
-    establishShipConfigurations: function( boardSideLength, height, width ){
+    establishShipConfigurations: function( boardSideLength, bulletSpeed, height, width ){
       model.shipCentre.shipConfigurations = {
         height: height,
         width: width,
@@ -329,7 +337,8 @@ var model = {
         y: ( boardSideLength / 2 - ( height / 2 ) ),
         borderLeft: width / 2 + "px solid transparent",
         borderRight: width / 2 + "px solid transparent",
-        borderBottom: width + "px solid white"
+        borderBottom: width + "px solid white",
+        maxSpeed: bulletSpeed - 3
       };
     },
 
@@ -347,18 +356,19 @@ var model = {
     },
 
     // model.shipCentre.reduceVelocitiesToMaximum
-    reduceVelocitiesToMaximum: function( bulletSpeed, ship ){
-      var negativeBulletSpeed = -1 * bulletSpeed;
-      if (ship.xVelocity < negativeBulletSpeed) {
-        ship.xVelocity = negativeBulletSpeed + 1;
-      } else if (ship.xVelocity > bulletSpeed) {
-        ship.xVelocity = bulletSpeed - 1;
+    reduceVelocitiesToMaximum: function( maxSpeed, ship ){
+      var negativeMaxSpeed = -1 * maxSpeed;
+
+      if (ship.xVelocity < negativeMaxSpeed) {
+        ship.xVelocity = negativeMaxSpeed;
+      } else if (ship.xVelocity > maxSpeed) {
+        ship.xVelocity = maxSpeed;
       };
 
-      if (ship.yVelocity < negativeBulletSpeed) {
-        ship.yVelocity = negativeBulletSpeed + 1;
-      } else if (ship.yVelocity > bulletSpeed) {
-        ship.xVelocity = bulletSpeed - 1;
+      if (ship.yVelocity < negativeMaxSpeed) {
+        ship.yVelocity = negativeMaxSpeed;
+      } else if (ship.yVelocity > maxSpeed) {
+        ship.yVelocity = maxSpeed;
       };
     },
 
@@ -509,7 +519,10 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function( asteroids, boardSideLength, bullets, ship ){
+  takeTurn: function( asteroids, boardSideLength, bullets, shipMaxSpeed, ship ){
+    // Slowing down the ship's velocity if too high
+    model.shipCentre.reduceVelocitiesToMaximum( shipMaxSpeed, ship );
+
     // Running tic on all objects that tic
     model.runTicOnObjects( asteroids );
     model.runTicOnObjects( bullets );
@@ -527,7 +540,9 @@ var model = {
 
 var view = {
   init: function( boardSideLength, bulletsArray, bulletSpeed, ship ){
-    view.listeners.actionKeyPresses( bulletsArray, bulletSpeed, ship );
+    view.listeners.actionKeyPresses( bulletsArray, 
+                                     bulletSpeed, 
+                                     ship );
   },
 
   // view.asteroidCentre
@@ -636,7 +651,6 @@ var view = {
         // up key
         } else if ( event.keyCode === 38 ) {
           model.shipCentre.increaseVelocity( ship );
-          model.shipCentre.reduceVelocitiesToMaximum( bulletSpeed, ship );
         // right key
         } else if ( event.keyCode === 39 ) {
           model.shipCentre.turnRight( ship );
@@ -645,7 +659,6 @@ var view = {
         // down key
         } else if (event.keyCode === 40 ) {
           model.shipCentre.decreaseVelocity( ship );
-          model.shipCentre.reduceVelocitiesToMaximum( bulletSpeed, ship );
         } else if (event.keyCode === 32) {
           model.bulletCentre.shootBullet( bulletsArray, bulletSpeed, ship );
         };

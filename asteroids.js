@@ -5,6 +5,9 @@ var controller = {
 
     controller.gameOver = false;
 
+    // Gotta remove all those listeners that hold onto objects...
+    $(window).off();
+
     model.init( boardSideLength );
 
     view.init( boardSideLength,
@@ -602,11 +605,11 @@ var model = {
       ship.x = -500;
       ship.y = -500;
     } else { 
-      if (model.counter % 150 === 0){
+      if (model.counter % 75 === 0){
         model.asteroidCentre.buildAsteroids( asteroidConstructor, 
                                              asteroids, 
                                              boardSideLength,
-                                             10 );
+                                             2 );
       };
     };
 
@@ -732,12 +735,10 @@ var view = {
   // view.listeners
   listeners: {
 
-    // view.listeners.actionClicks
+    // view.listeners.actionClicksf
     actionClicks: function(){
       $("#new-game").click(function(){
         clearInterval(gameInterval);
-        // Gotta remove all those listeners that hold onto objects...
-        $(window).off();
         controller.init( 300 );
         $("#game-over").remove();
       });

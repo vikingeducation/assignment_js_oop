@@ -5,9 +5,6 @@ var controller = {
 
     controller.gameOver = false;
 
-    // Gotta remove all those listeners that hold onto objects...
-    $(window).off();
-
     model.init( boardSideLength );
 
     view.init( boardSideLength,
@@ -738,9 +735,11 @@ var view = {
     // view.listeners.actionClicksf
     actionClicks: function(){
       $("#new-game").click(function(){
+        // Gotta remove all those listeners that hold onto objects...
+        $("#game-over").remove();
+        $(window).off();
         clearInterval(gameInterval);
         controller.init( 300 );
-        $("#game-over").remove();
       });
     },
 

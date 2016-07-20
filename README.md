@@ -1,5 +1,7 @@
 # assignment_js_oop
 by Steven Chang.
+preview at 
+http://htmlpreview.github.io/?https://github.com/Steven-Chang/assignment_js_oop/blob/master/asteroids.html
 
 
 Objectify! Construct! Prototype!  Win.

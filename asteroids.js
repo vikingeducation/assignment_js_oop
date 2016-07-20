@@ -142,6 +142,15 @@ var model = {
 
     bullets: [],
 
+    // model.bulletCentre.destroyBulletsThatGoOffScreen
+    destroyBulletsThatGoOffScreen: function( boardSideLength, bullets ){
+      for (var i = 0; i < bullets.length; i++){
+        if ( !model.coordinatesCentre.objectIsOnScreen( bullets[i], boardSideLength ) ){
+          bullets.splice( i, 1 );
+        };
+      };
+    },
+
     // model.bulletCentre.shootBullet
     shootBullet: function( bullets, bulletSpeed, ship ){
       var bullet = new model.bulletCentre.bulletConstructor( bulletSpeed, ship );
@@ -153,6 +162,7 @@ var model = {
       var velocities = model.bulletCentre.calculateBulletVelocities( bulletSpeed, ship )
       this.x = ship.x + ( ship.width / 2 );
       this.y = ship.y + ( ship.width / 2 );
+      this.longestDimension = 2;
       this.xVelocity = velocities[0];
       this.yVelocity = velocities[1];
     },
@@ -303,7 +313,6 @@ var model = {
       if ( ship.degrees < 0 ) {
         ship.degrees = 360 + ship.degrees;
       };
-      console.log(ship.degrees)
     },
 
     // model.shipCentre.turnRight
@@ -312,7 +321,6 @@ var model = {
       if ( ship.degrees >= 360 ){
         ship.degrees = ship.degrees % 360;
       };
-      console.log(ship.degrees)
     },
 
     // model.shipCentre.increaseVelocity
@@ -432,6 +440,7 @@ var model = {
     model.runTicOnObjects( bullets );
     ship.tic();
 
+    model.bulletCentre.destroyBulletsThatGoOffScreen( boardSideLength, bullets );
     model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids, boardSideLength );
     model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship, boardSideLength );
   }

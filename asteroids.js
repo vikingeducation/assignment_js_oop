@@ -3,15 +3,22 @@
 var controller = {
   init: function( boardSideLength ){
     model.init( boardSideLength );
-    view.init( boardSideLength, model.shipCentre.ship );
-    controller.startInterval();
+
+    view.init( boardSideLength,
+               model.bulletCentre.bullets,
+               model.bulletCentre.bulletConfigurations.bulletSpeed,
+               model.shipCentre.ship );
+
+    controller.startInterval( model.asteroidCentre.asteroids,
+                              boardSideLength,
+                              model.shipCentre.ship );
   },
 
   // controller.startInterval
-  startInterval: function(){
+  startInterval: function( asteroids, boardSideLength, ship ){
     gameInterval = setInterval(function(){
-      model.takeTurn( model.boardSideLength );
-      view.renderBoard( model.asteroidCentre.asteroids, model.shipCentre.ship );
+      model.takeTurn( boardSideLength );
+      view.renderBoard( asteroids, ship );
     }, 100);
   }
 };
@@ -30,14 +37,20 @@ var model = {
     // Adding to asteroid constructor prototype.
     model.asteroidCentre.addToAsteroidsPrototype( asteroidConstructor );
 
-    // Build asteroids THIS IS WHERE THE ISSUES BEGIN!!!!!
-  	model.asteroidCentre.asteroids = model.asteroidCentre.buildAsteroids( asteroidConstructor, 4 );
+    // Build asteroids
+  	model.asteroidCentre.asteroids = [];
+    model.asteroidCentre.buildAsteroids( asteroidConstructor, 
+                                         model.asteroidCentre.asteroids, 
+                                         4 );
 
     // Build ship
     model.shipCentre.buildShip();
 
     // Adding tic to ship constructor prototype.
     model.addTicToConstructor( model.shipCentre.shipConstructor );
+
+    // Adding tic to bullet constructor prototype.
+    model.addTicToConstructor( model.bulletCentre.bulletConstructor );
   },
 
   asteroidCentre: {
@@ -75,8 +88,7 @@ var model = {
 
     // model.asteroidCentre.buildAsteroids
     // I think it should just take a number of asteroids and then return an array of asteroids...
-    buildAsteroids: function( asteroidConstructor, numberOfAsteroids, builtWithTic ){
-      var asteroids = []
+    buildAsteroids: function( asteroidConstructor, asteroids, numberOfAsteroids, builtWithTic ){
       var boardSideLength = model.boardSideLength;
       var maxSize = model.asteroidCentre.asteroidConfigurations.maxSize;
       var minSize = model.asteroidCentre.asteroidConfigurations.minSize;
@@ -116,6 +128,62 @@ var model = {
         asteroid.x -= asteroid.xVelocity;
         asteroid.y -= asteroid.yVelocity;
       };
+    }
+  },
+
+  // model.bulletCentre
+  bulletCentre: {
+
+    // model.bulletCentre.bulletConfigurations
+    bulletConfigurations: {
+      bulletSpeed: 8
+    },
+
+    bullets: [],
+
+    // model.bulletCentre.shootBullet
+    shootBullet: function( bullets, bulletSpeed, ship ){
+      var bullet = new model.bulletCentre.bulletConstructor( bulletSpeed, ship );
+      bullets.push( bullet );
+    },
+
+    // model.bulletCentre.bulletConstructor
+    bulletConstructor: function( bulletSpeed, ship ){
+      var velocities = model.bulletCentre.calculateBulletVelocities( bulletSpeed, ship )
+      this.x = ship.x;
+      this.y = ship.y;
+      this.xVelocity = velocities[0];
+      this.yVelocity = velocities[1];
+    },
+
+    // I'm gonna shoot the bullet based on the ship's degree rather than the x and y velocity of the ship
+    // First off How quick is a bullet going to travel if it travels too many pixels per seconds per tick, it could easily miss smaller asteroids by skipping over them. 
+    // The smallest asteroid is 10px
+    // let's make the bullet's speed 8 px and we can adjust later on...
+
+    // Both of these depend on the the formulas to find the sides of a right triangle when you have the hypotenuise and one other angle...
+
+    // model.bulletCentre.calculateBulletVelocities
+    calculateBulletVelocities: function( bulletSpeed, ship ){
+      var degrees = ship.degrees;
+      var xVelocity, yVelocity;
+      if ( model.shipCentre.shipIsFacingNorthToNorthEast( ship ) ) {
+        xVelocity = model.calculateSideOfRightTriangle(degrees, bulletSpeed);
+        yVelocity = -1 * model.calculateSideOfRightTriangle(90 - degrees, bulletSpeed);
+      } else if ( model.shipCentre.shipIsFacingSouthToSouthEast( ship ) ) {
+        degrees = degrees - 90;
+        xVelocity = model.calculateSideOfRightTriangle(90 - degrees, bulletSpeed);
+        yVelocity = model.calculateSideOfRightTriangle(degrees, bulletSpeed);
+      } else if ( model.shipCentre.shipIsFacingSouthToSouthWest( ship ) ) {
+        degrees = degrees - 180;
+        xVelocity = -1 * model.calculateSideOfRightTriangle(degrees, bulletSpeed);
+        yVelocity = model.calculateSideOfRightTriangle(90 - degrees, bulletSpeed);
+      } else {
+        degrees = degrees - 270;
+        xVelocity = -1 * model.calculateSideOfRightTriangle(90 - degrees, bulletSpeed);
+        yVelocity = -1 * model.calculateSideOfRightTriangle(degrees, bulletSpeed);
+      };
+      return [xVelocity, yVelocity]
     }
   },
 
@@ -327,6 +395,13 @@ var model = {
     return hypotenuse;
   },
 
+  // model.calculateSideOfRightTriangle
+  // calculates the length of the opposite leg of a given angle of a right triangle
+  calculateSideOfRightTriangle: function( angle, hypotenuse ){
+    var lengthOfSideOppositeAngle = Math.sin( angle ) * hypotenuse;
+    return lengthOfSideOppositeAngle;
+  },
+
   // Random number from 0 to largestNumber
   randomNumber: function( largestNumber, smallestNumber ){
     var smallest = smallestNumber || 0;
@@ -356,8 +431,8 @@ var model = {
 };
 
 var view = {
-  init: function( boardSideLength, ship ){
-    view.listeners.listenOutForKeyPresses( ship );
+  init: function( boardSideLength, bulletsArray, bulletSpeed, ship ){
+    view.listeners.actionKeyPresses( bulletsArray, bulletSpeed, ship );
   },
 
   // view.asteroidCentre
@@ -426,21 +501,27 @@ var view = {
   // view.listeners
   listeners: {
 
-    // view.listeners.listenOurForKeyPresses
-    listenOutForKeyPresses: function( ship ){
+    // view.listeners.actionKeyPresses
+    actionKeyPresses: function( bulletsArray, bulletSpeed, ship ){
       $(window).keydown(function(event){
+        // left key
         if ( event.keyCode === 37 ) {
           model.shipCentre.turnLeft( ship );
           view.shipCentre.clearShip();
           view.shipCentre.renderShip( ship );
+        // up key
         } else if ( event.keyCode === 38 ) {
           model.shipCentre.increaseVelocity( ship );
+        // right key
         } else if ( event.keyCode === 39 ) {
           model.shipCentre.turnRight( ship );
           view.shipCentre.clearShip();
           view.shipCentre.renderShip( ship );
+        // down key
         } else if (event.keyCode === 40 ) {
           model.shipCentre.decreaseVelocity( ship );
+        } else if (event.keyCode === 32) {
+          model.bulletCentre.shootBullet( bulletsArray, bulletSpeed, ship );
         };
       });
     }

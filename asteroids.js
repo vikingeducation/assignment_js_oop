@@ -630,6 +630,8 @@ var model = {
 
 var view = {
   init: function( boardSideLength, bulletsArray, bulletSpeed, ship ){
+    view.listeners.actionClicks();
+
     view.listeners.actionKeyPresses( bulletsArray, 
                                      bulletSpeed, 
                                      ship );
@@ -729,6 +731,17 @@ var view = {
 
   // view.listeners
   listeners: {
+
+    // view.listeners.actionClicks
+    actionClicks: function(){
+      $("#new-game").click(function(){
+        clearInterval(gameInterval);
+        // Gotta remove all those listeners that hold onto objects...
+        $(window).off();
+        controller.init( 300 );
+        $("#game-over").remove();
+      });
+    },
 
     // view.listeners.actionKeyPresses
     actionKeyPresses: function( bulletsArray, bulletSpeed, ship ){

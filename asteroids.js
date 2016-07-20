@@ -20,7 +20,7 @@ var controller = {
     gameInterval = setInterval(function(){
       model.takeTurn( asteroids, boardSideLength, bullets, ship );
       view.renderBoard( asteroids, bullets, ship );
-    }, 100);
+    }, 60000);
   }
 };
 
@@ -111,6 +111,37 @@ var model = {
       return asteroids;
     },
 
+    // model.asteroidCentre.figureOutCollisions
+    figureOutCollisions: function( asteroids, bullets, ship ){
+      for( i = 0; i < asteroids.length; i++ ){
+        var asteroid = asteroids[i];
+        model.asteroidCentre.processAsteroidAndShipCollision( asteroid, ship );
+        for( b = 0; b < bullets.length; b++ ){
+          var bullet = bullets[b];
+          model.asteroidCentre.processAsteroidAndBulletCollision( asteroid, bullet );
+        };
+      };
+    },
+
+    // Going to do this very rough for the meanwhile...
+    // No matter how you rotate a div, the center spot is always going to be the same.
+    // I might just make that circle around that area the hittable area.
+    // With an asteroid, I might make that whole asteroid div a hittable area 
+
+    // model.asteroidCentre.processAsteroidAndShipCollision
+    processAsteroidAndShipCollision: function( asteroid, ship ){
+      asteroid.x
+      asteroid.x
+    },
+
+    // model.asteroidCentre.processAsteroidAndBulletCollision
+    // This should be alot easier than figuring out asteroids and ship collision because the bullet and the asteroid don't rotate.
+    processAsteroidAndBulletCollision: function( asteroid, bullet ){
+      if ( model.coordinatesCentre.objectsOverlapping( asteroid, bullet ) ) {
+
+      };
+    },
+
     // model.asteroidCentre.returnRandomVelocity
     returnRandomVelocity: function( maxSpeed, minSpeed ){
       var randomNumber = model.randomNumber( maxSpeed, minSpeed );
@@ -160,9 +191,11 @@ var model = {
     // model.bulletCentre.bulletConstructor
     bulletConstructor: function( bulletSpeed, ship ){
       var velocities = model.bulletCentre.calculateBulletVelocities( bulletSpeed, ship )
+      this.height = 1;
+      this.width = 1;
       this.x = ship.x + ( ship.width / 2 );
       this.y = ship.y + ( ship.width / 2 );
-      this.longestDimension = 2;
+      this.longestDimension = model.calculateLongestSideOfTriangle(this.height, this.width);
       this.xVelocity = velocities[0];
       this.yVelocity = velocities[1];
     },
@@ -199,6 +232,16 @@ var model = {
   },
 
   coordinatesCentre: {
+
+    // model.coordinatesCentre.objectsOverlapping
+    objectsOverlapping( objectOne, objectTwo ){
+      // objectOne.x to (objectOne.x + width)
+      // objectOne.y to (objectOne.y + height)
+
+      // objectTwo.x to (objectTwo.x + width)
+      // objectTwo.y to (objectTwo.y + height)
+
+    },
 
     // model.coordinatesCentre.moveObjectsToOtherSideOfBoard( objectsArray, boardSideLength ){
     moveObjectsToOtherSideOfBoard( objectsArray, boardSideLength ){
@@ -436,13 +479,18 @@ var model = {
 
   // model.takeTurn
   takeTurn: function( asteroids, boardSideLength, bullets, ship ){
+    // Running tic on all objects that tic
     model.runTicOnObjects( asteroids );
     model.runTicOnObjects( bullets );
     ship.tic();
 
+    // Offscreen processing
     model.bulletCentre.destroyBulletsThatGoOffScreen( boardSideLength, bullets );
     model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids, boardSideLength );
     model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship, boardSideLength );
+
+    // Collision processing
+    model.asteroidCentre.figureOutCollisions( asteroids, bullets, ship );
   }
 };
 

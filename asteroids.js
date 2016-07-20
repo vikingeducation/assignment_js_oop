@@ -11,14 +11,15 @@ var controller = {
 
     controller.startInterval( model.asteroidCentre.asteroids,
                               boardSideLength,
+                              model.bulletCentre.bullets,
                               model.shipCentre.ship );
   },
 
   // controller.startInterval
-  startInterval: function( asteroids, boardSideLength, ship ){
+  startInterval: function( asteroids, boardSideLength, bullets, ship ){
     gameInterval = setInterval(function(){
-      model.takeTurn( boardSideLength );
-      view.renderBoard( asteroids, ship );
+      model.takeTurn( asteroids, boardSideLength, bullets, ship );
+      view.renderBoard( asteroids, bullets, ship );
     }, 100);
   }
 };
@@ -150,8 +151,8 @@ var model = {
     // model.bulletCentre.bulletConstructor
     bulletConstructor: function( bulletSpeed, ship ){
       var velocities = model.bulletCentre.calculateBulletVelocities( bulletSpeed, ship )
-      this.x = ship.x;
-      this.y = ship.y;
+      this.x = ship.x + ( ship.width / 2 );
+      this.y = ship.y + ( ship.width / 2 );
       this.xVelocity = velocities[0];
       this.yVelocity = velocities[1];
     },
@@ -261,8 +262,8 @@ var model = {
         width: width,
         x: ( boardSideLength / 2 - ( width / 2 ) ),
         y: ( boardSideLength / 2 - ( height / 2 ) ),
-        borderLeft: width / 3 + "px solid transparent",
-        borderRight: width / 3 + "px solid transparent",
+        borderLeft: width / 2 + "px solid transparent",
+        borderRight: width / 2 + "px solid transparent",
         borderBottom: width + "px solid white"
       };
     },
@@ -398,8 +399,14 @@ var model = {
   // model.calculateSideOfRightTriangle
   // calculates the length of the opposite leg of a given angle of a right triangle
   calculateSideOfRightTriangle: function( angle, hypotenuse ){
-    var lengthOfSideOppositeAngle = Math.sin( angle ) * hypotenuse;
+    var radian = model.convertAngleToRadian( angle );
+    var lengthOfSideOppositeAngle = Math.sin( radian ) * hypotenuse;
     return lengthOfSideOppositeAngle;
+  },
+
+  // model.convertAngleToRadian
+  convertAngleToRadian: function( angle ){
+    return angle * Math.PI / 180.0
   },
 
   // Random number from 0 to largestNumber
@@ -420,11 +427,11 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function( boardSideLength ){
-    var asteroids = model.asteroidCentre.asteroids;
-    var ship = model.shipCentre.ship;
+  takeTurn: function( asteroids, boardSideLength, bullets, ship ){
     model.runTicOnObjects( asteroids );
+    model.runTicOnObjects( bullets );
     ship.tic();
+
     model.coordinatesCentre.moveObjectsToOtherSideOfBoard( asteroids, boardSideLength );
     model.coordinatesCentre.moveObjectToOtherSideOfBoard( ship, boardSideLength );
   }
@@ -437,6 +444,11 @@ var view = {
 
   // view.asteroidCentre
   asteroidCentre: {
+
+    // view.asteroidCentre.addAsteroidToBoard
+    addAsteroidToBoard: function( index ){
+      $("#game-board").append("<div class='asteroid' id='asteroid-" + index + "'></div>");
+    },
 
     // view.asteroidCentre.clearAsteroids
     clearAsteroids: function(){
@@ -459,20 +471,44 @@ var view = {
 
     // view.asteroidCentre.setCSSDimensionsOfAsteroid
     setCSSDimensionsOfAsteroid: function( asteroid, indexOfAsteroid ){
-      $("#asteroid-" + indexOfAsteroid).css({ height: asteroid.height,
-                                              width: asteroid.width })
+      $("#asteroid-" + indexOfAsteroid).css({ height : asteroid.height,
+                                              width  : asteroid.width })
     },
 
     // view.asteroidCentre.setCSSPositionOfAsteroid
     setCSSPositionOfAsteroid: function( asteroid, indexOfAsteroid ){
-      $("#asteroid-" + indexOfAsteroid).css({ top: asteroid.y,
-                                              left: asteroid.x })
+      $("#asteroid-" + indexOfAsteroid).css({ top  : asteroid.y,
+                                              left : asteroid.x })
+    }
+  },
+
+  // view.bulletCentre
+  bulletCentre: {
+
+    // view.bulletCentre.addBulletToBoard
+    addBulletToBoard: function( index ){
+      $("#game-board").append("<div class='bullet' id='bullet-" + index + "' ></div>");
     },
 
-    // view.asteroidCentre.addAsteroidToBoard
-    addAsteroidToBoard: function( index ){
-      $("#game-board").append("<div class='asteroid' id='asteroid-"+ index + "' ></div>");
+    // view.bulletCentre.clearBullets
+    clearBullets: function(){
+      $(".bullet").remove();
     },
+
+    // view.bulletCentre.renderBullets
+    renderBullets: function( bullets ){
+      for (var i = 0; i < bullets.length; i++){
+        view.bulletCentre.addBulletToBoard( i );
+        view.bulletCentre.setCSSPositionOfBullet( bullets[i], i );
+      };
+    },
+
+    // view.setCSSPositionOfBullet
+    setCSSPositionOfBullet: function( bullet, indexOfBullet ){
+      $("#bullet-" + indexOfBullet).css({ top  : bullet.y,
+                                          left : bullet.x });
+    }
+
   },
 
   // view.shipCentre
@@ -530,14 +566,16 @@ var view = {
   // view.clearBoard
   clearBoard: function(){
     view.asteroidCentre.clearAsteroids();
+    view.bulletCentre.clearBullets();
     view.shipCentre.clearShip();
   },
 
   // view.renderBoard
-  renderBoard: function( asteroids, ship ){
+  renderBoard: function( asteroids, bullets, ship ){
     view.clearBoard();
 
     view.asteroidCentre.renderAsteroids( asteroids );
+    view.bulletCentre.renderBullets( bullets );
     view.shipCentre.renderShip( ship );
   }
 };

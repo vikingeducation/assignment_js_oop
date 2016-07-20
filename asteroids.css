@@ -22,6 +22,12 @@
     border: 1px solid white;
     border-radius: 25px;
     position: absolute; }
+  #game-board .bullet {
+    background-color: white;
+    border: 1px solid white;
+    position: absolute;
+    height: 1px;
+    width: 1px; }
   #game-board #ship {
     background-color: black;
     position: absolute;

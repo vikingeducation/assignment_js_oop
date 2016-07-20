@@ -10,15 +10,17 @@ var controller = {
                model.shipCentre.ship );
 
     controller.startInterval( model.asteroidCentre.asteroids,
+                              model.asteroidCentre.asteroidConstructor,
                               boardSideLength,
                               model.bulletCentre.bullets,
                               model.shipCentre.ship );
   },
 
   // controller.startInterval
-  startInterval: function( asteroids, boardSideLength, bullets, ship ){
+  startInterval: function( asteroids, asteroidConstructor, boardSideLength, bullets, ship ){
     gameInterval = setInterval(function(){
       model.takeTurn( asteroids, 
+                      asteroidConstructor,
                       boardSideLength, 
                       bullets, 
                       ship );
@@ -29,11 +31,13 @@ var controller = {
 
 var model = {
   init: function( boardSideLength ){
+    // Counter to figure out when to add more asteroids
+    model.counter = 0;
 
     // Establishing Configurations
     model.asteroidCentre.establishAsteroidConfigurations();
     model.shipCentre.establishShipConfigurations( boardSideLength,
-                                                  30, 
+                                                  50, 
                                                   30 );
     model.boardSideLength = boardSideLength;
 
@@ -55,6 +59,7 @@ var model = {
   	model.asteroidCentre.asteroids = [];
     model.asteroidCentre.buildAsteroids( asteroidConstructor, 
                                          model.asteroidCentre.asteroids, 
+                                         boardSideLength,
                                          4 );
 
     // Build ship
@@ -74,7 +79,7 @@ var model = {
     // model.asteroidCentre.establishAsteroidConfigurations
     establishAsteroidConfigurations: function(){
       model.asteroidCentre.asteroidConfigurations = {
-        maxSize: 30,
+        maxSize: 60,
         minSize: 10,
         maxSpeed: 6,
         minSpeed: 2
@@ -109,8 +114,7 @@ var model = {
 
     // model.asteroidCentre.buildAsteroids
     // I think it should just take a number of asteroids and then return an array of asteroids...
-    buildAsteroids: function( asteroidConstructor, asteroids, numberOfAsteroids, builtWithTic ){
-      var boardSideLength = model.boardSideLength;
+    buildAsteroids: function( asteroidConstructor, asteroids, boardSideLength, numberOfAsteroids, builtWithTic ){
       var maxSize = model.asteroidCentre.asteroidConfigurations.maxSize;
       var minSize = model.asteroidCentre.asteroidConfigurations.minSize;
       var maxSpeed = model.asteroidCentre.asteroidConfigurations.maxSpeed;
@@ -185,9 +189,9 @@ var model = {
     // This should be alot easier than figuring out asteroids and ship collision because the bullet and the asteroid don't rotate.
     processAsteroidAndBulletCollision: function( asteroid, asteroids, asteroidIndex, bullet, bullets, bulletIndex, minSpeed, maxSpeed, splitNumber ){
       if ( model.coordinatesCentre.objectsOverlapping( asteroid, bullet ) ) {
-        model.asteroidCentre.splitAsteroid(asteroid, asteroids);
-        model.asteroidCentre.removeAsteroid( asteroids, asteroidIndex );
-        model.bulletCentre.removeBullet( bullets, bulletIndex );
+        model.asteroidCentre.splitAsteroid(asteroid, asteroids, 2);
+        model.removeObjectFromArray( asteroids, asteroidIndex );
+        model.removeObjectFromArray( bullets, bulletIndex );
       };
     },
 
@@ -202,17 +206,17 @@ var model = {
     },
 
     // model.asteroidCentre.splitAsteroid
-    splitAsteroid: function( asteroid, asteroids, minSize, maxSpeed, splitNumber ){
-      if ( asteroid.height / splitNumber > minSize && asteroid.width / splitNumber > minSize ) {
+    splitAsteroid: function( asteroid, asteroids, splitNumber ){
+      if ( asteroid.height / splitNumber > asteroid.minSize && asteroid.width / splitNumber > asteroid.minSize ) {
         for(var i = 0; i < splitNumber; i++) {
-          var newXVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.xVelocity, maxSpeed);
-          var newYVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.yVelocity, maxSpeed);
-          var newAsteroid = new asteroidConstructor( asteroid.x, 
-                                                     asteroid.y, 
-                                                     newXVelocity, 
-                                                     newYVelocity, 
-                                                     (asteroid.height / splitNumber),
-                                                     (asteroid.width / splitNumber) );
+          var newXVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.xVelocity, asteroid.maxSpeed);
+          var newYVelocity = model.asteroidCentre.calculateVelocityForSplitAsteroid( asteroid.yVelocity, asteroid.maxSpeed);
+          var newAsteroid = new model.asteroidCentre.asteroidConstructor( asteroid.x, 
+                                                                          asteroid.y, 
+                                                                          newXVelocity, 
+                                                                          newYVelocity, 
+                                                                          (asteroid.height / splitNumber),
+                                                                          (asteroid.width / splitNumber) );
           asteroids.push( newAsteroid );
         };
       };
@@ -234,7 +238,7 @@ var model = {
     destroyBulletsThatGoOffScreen: function( boardSideLength, bullets ){
       for (var i = 0; i < bullets.length; i++){
         if ( !model.coordinatesCentre.objectIsOnScreen( bullets[i], boardSideLength ) ){
-          bullets.splice( i, 1 );
+          model.removeObjectFromArray(bullets, i);
         };
       };
     },
@@ -300,6 +304,11 @@ var model = {
                                                                         objectOne.height,
                                                                         objectTwo.y,
                                                                         objectTwo.height );
+      if (xAxisOverlap && yAxisOverlap){
+        return true;
+      } else {
+        return false;
+      }; 
 
     },
 
@@ -555,6 +564,11 @@ var model = {
     return velocity
   },
 
+  // model.removeObjectFromArray
+  removeObjectFromArray: function( array, objectIndex ){
+    array.splice( objectIndex, 1 );
+  },
+
   // model.runTicOnObjects
   runTicOnObjects: function( arrayOfObjects ){
     for(var i = 0; i < arrayOfObjects.length; i++) {
@@ -563,7 +577,17 @@ var model = {
   },
 
   // model.takeTurn
-  takeTurn: function( asteroids, boardSideLength, bullets, ship ){
+  takeTurn: function( asteroids, asteroidConstructor, boardSideLength, bullets, ship ){
+
+    model.counter++;
+
+    if (model.counter % 150 === 0){
+      model.asteroidCentre.buildAsteroids( asteroidConstructor, 
+                                           asteroids, 
+                                           boardSideLength,
+                                           2 );
+    };
+
     // Slowing down the ship's velocity if too high
     model.reduceVelocitiesToMaximum( ship.maxSpeed, ship );
 

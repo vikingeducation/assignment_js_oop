@@ -32,7 +32,11 @@ GAME.controller.refreshScreen = function() {
 		GAME.view.printBullet();
 	}
 
-	GAME.model.bullet.checkCollision();
+	if (GAME.model.bullet.wait > 0) {
+		GAME.model.bullet.wait--;
+	}
+
+	GAME.model.checkCollision();
 }
 
 GAME.controller.keyInput = function() {
@@ -66,7 +70,10 @@ GAME.controller.playerControl = function() {
 
 	if (keyNames.SPACE) {
 		var player = GAME.model.player;
-		GAME.model.bullet.createBullet(player.px - 15, player.py - 5, 10, player.rotation);
+		if (GAME.model.bullet.wait === 0) {
+			GAME.model.bullet.createBullet(player.px - 15, player.py - 5, 10, player.rotation);
+			GAME.model.bullet.wait += 15;
+		}
 	}
 
 	if (!keyNames.UP && !keyNames.DOWN) {

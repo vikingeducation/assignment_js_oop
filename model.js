@@ -9,6 +9,14 @@ GAME.heightSize  = 480;
 
 GAME.model = {};
 
+
+GAME.model.as = {};
+
+GAME.model.player = {};
+
+GAME.model.bullet = {};
+
+
 GAME.model.updatePosition = function(object) {
 	if ( object.px < 0 ) {
 		object.px = GAME.widthSize;
@@ -27,194 +35,8 @@ GAME.model.updatePosition = function(object) {
 	}
 }
 
-GAME.model.as = {
-	asteroidArray: []
-}
 
-
-GAME.model.as.BuildAsteroid = function(px, py, vx, vy, aSize) {
-	this.px = px;
-	this.py = py;
-	this.vx = vx;
-	this.vy = vy;
-	this.aSize = aSize;
-	this.next = null;
-}
-
-GAME.model.as.createAsteroid = function(positionX, positionY, aSize) {
-
-	var position = [];
-	if (positionX && positionY) {
-		position.push(positionX, positionY);
-	} else {
-
-		var choice = rand(4,0);
-
-		switch(choice) {
-			case 0:
-				var px = rand(GAME.widthSize,0);
-				var py = 0;
-				break;
-			case 1:
-				var px = GAME.widthSize;
-				var py = rand(GAME.heightSize,0);
-				break;
-			case 2:
-				var px = rand(GAME.widthSize,0);
-				var py = GAME.heightSize;
-				break;
-			case 3:
-				var px = 0;
-				var py = rand(GAME.heightSize,0);			
-				break;
-		}
-		position.push(px);
-		position.push(py);
-	}
-	
-	var velocity =  GAME.model.as.createVelocity();
-	var vx = velocity[0];
-	var vy = velocity[1];
-
-	if (aSize) {
-		aSize = aSize;
-	} else {
-		aSize = rand(40,10);
-	}
-
-
-	var asteroid = new GAME.model.as.BuildAsteroid( position[0], position[1], vx, vy, aSize );
-	GAME.model.as.asteroidList.add(asteroid);
-}
-
-GAME.model.as.createVelocity = function() {
-	var vx = rand(15,3) / 10;
-	var vy = rand(15,3) / 10;
-	if ( rand(2,0) === 1) {
-		vx = -vx;
-	}
-
-	if ( rand(2,0) === 1) {
-		vy = -vy;
-	}
-
-	return [vx, vy];
-}
-
-GAME.model.as.BuildAsteroid.prototype.tic = function() {
-	this.px += this.vx;
-	this.py += this.vy;
-}
-
-
-GAME.model.as.refresh = function() {
-	var asteroids = GAME.model.as.asteroidList;
-	var currentNode = asteroids.head;
-	var count = 0;
-
-	while (count < asteroids._length) {
-		var asteroid = currentNode;
-
-		asteroid.tic();
-		GAME.model.updatePosition(asteroid);
-
-		currentNode = currentNode.next;
-		count++;
-	}
-}
-
-
-// Player declaration
-
-
-
-GAME.model.player = {
-	px: GAME.widthSize / 2,
-	py: GAME.heightSize / 2,
-	rotation: Math.PI / 2,
-	velocity: 0
-}
-
-GAME.model.player.updateRotation = function(left, right) {
-	if (left) {
-		GAME.model.player.rotation -= 0.07;
-
-		if (GAME.model.player.rotation < 0) {
-			GAME.model.player.rotation = 2 * Math.PI;
-		}
-	} else {
-		GAME.model.player.rotation += 0.07;
-
-		if (GAME.model.player.rotation > 2 * Math.PI) {
-			GAME.model.player.rotation = 0;
-		}
-	}
-}
-
-
-GAME.model.player.updateVelocity = function(up, down) {
-	if (up) {
-		if (GAME.model.player.velocity < 4) {
-			GAME.model.player.velocity += 1;
-		}
-	} else {
-		if (GAME.model.player.velocity > -4) {
-			GAME.model.player.velocity -= 1;
-		}
-	}
-}
-
-// Bullet declaration
-
-GAME.model.bullet = {};
-
-GAME.model.bullet.Constructor = function(px, py, velocity, angle) {
-	this.px = px;
-	this.py = py;
-	this.velocity = velocity;
-	this.angle = angle;
-	this.next = null;
-}
-
-GAME.model.bullet.createBullet = function(px, py, velocity, angle) {
-	var bullet = new GAME.model.bullet.Constructor(px, py, velocity, angle);
-	GAME.model.bullet.bulletList.add(bullet);
-}
-
-GAME.model.bullet.refresh = function() {
-	var bullets = GAME.model.bullet.bulletList;
-	var currentNode = bullets.head;
-	var count = 0;
-	while (count < bullets._length) {
-		var bullet = currentNode;
-		
-		GAME.model.bullet.updatePosition(bullet);
-
-		if ( !GAME.model.bullet.destroy(bullet, count) ) {
-			count += 1;
-		}
-
-		currentNode = currentNode.next;
-	}
-}
-
-GAME.model.bullet.updatePosition = function(bullet) {
-
-	bullet.px -= bullet.velocity * Math.cos(bullet.angle);
-	bullet.py -= bullet.velocity * Math.sin(bullet.angle);
-
-}
-
-GAME.model.bullet.destroy = function(bullet, position) {
-	
-	if (bullet.px < 0 || bullet.px > GAME.widthSize || bullet.py < 0 || bullet.py > GAME.heightSize) {
-		GAME.model.bullet.bulletList.remove(position);
-		return true;
-	}
-	return false;
-}
-
-GAME.model.bullet.checkCollision = function() {
+GAME.model.checkCollision = function() {
 	var bullets = GAME.model.bullet.bulletList;
 
 	var asteroids = GAME.model.as.asteroidList;
@@ -254,18 +76,6 @@ GAME.model.bullet.checkCollision = function() {
 	}
 }
 
-GAME.model.bullet.collision = function(bulletCount, asteroid, asteroidCount) {
-	GAME.model.bullet.bulletList.remove(bulletCount);
-
-	var aSize = asteroid.aSize;
-	GAME.model.as.asteroidList.remove(asteroidCount);
-	if (aSize > 20) {
-		for (var i = 0; i < 3; i++) {
-			GAME.model.as.createAsteroid(asteroid.px, asteroid.py, aSize / 2);
-		}
-	}
-}
-
 
 // LinkedList Declaration, add function, remove function
 
@@ -281,7 +91,6 @@ GAME.model.SinglyList.prototype.add = function(value) {
 
 	if (!currentNode) {
 		this.head = node;
-		//node.previous = this.head;
 		this._length++;
 
 		return node;
@@ -292,7 +101,6 @@ GAME.model.SinglyList.prototype.add = function(value) {
 	}
 
 	currentNode.next = node;
-	//node.previous = currentNode;
 
 	this._length++;
 

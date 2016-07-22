@@ -69,7 +69,7 @@ GAME.view.printBullet = function() {
 
 	while (count < bullets._length) {
 		var bullet = currentNode;
-		canvas.fillRect(bullet.px, bullet.py, 3, 3);
+		canvas.fillRect(bullet.px, bullet.py, 5, 5);
 
 		currentNode = currentNode.next;
 		count++;

@@ -2,6 +2,8 @@ GAME.model.player = {
 	px: GAME.widthSize / 2,
 	py: GAME.heightSize / 2,
 	rotation: Math.PI / 2,
+	life: 3,
+	reborn: 0,
 	velocity: 0
 }
 
@@ -31,5 +33,11 @@ GAME.model.player.updateVelocity = function(up, down) {
 		if (GAME.model.player.velocity > -4) {
 			GAME.model.player.velocity -= 1;
 		}
+	}
+}
+
+GAME.model.player.checkHit = function() {
+	if (GAME.model.player.reborn > 0) {
+		GAME.model.player.reborn--;
 	}
 }

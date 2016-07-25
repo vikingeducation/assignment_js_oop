@@ -47,8 +47,7 @@ GAME.model.bullet.destroy = function(bullet, position) {
 }
 
 
-GAME.model.bullet.collision = function(bulletCount, asteroid, asteroidCount) {
-	GAME.model.bullet.bulletList.remove(bulletCount);
+GAME.model.bullet.collision = function(asteroid, asteroidCount) {
 
 	var aSize = asteroid.aSize;
 	GAME.model.as.asteroidList.remove(asteroidCount);

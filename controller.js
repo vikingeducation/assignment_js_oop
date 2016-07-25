@@ -15,7 +15,7 @@ GAME.controller.init = function() {
 }
 
 GAME.controller.gameLoop = function() {
-	setInterval(function() {
+	GAME_LOOP = setInterval(function() {
 		GAME.controller.refreshScreen();
 	}, GAME.speed);
 }
@@ -25,6 +25,8 @@ GAME.controller.refreshScreen = function() {
 	GAME.view.updateAsteroid();
 	GAME.model.updatePosition( GAME.model.player );
 	GAME.view.printPlayer();
+	GAME.view.printLife();
+	GAME.model.player.checkHit();
 	GAME.controller.playerControl();
 
 	if (GAME.model.bullet.bulletList._length > 0) {
@@ -35,6 +37,7 @@ GAME.controller.refreshScreen = function() {
 	if (GAME.model.bullet.wait > 0) {
 		GAME.model.bullet.wait--;
 	}
+	GAME.model.updateBackground();
 
 	GAME.model.checkCollision();
 }

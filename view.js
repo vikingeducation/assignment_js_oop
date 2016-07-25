@@ -17,6 +17,20 @@ GAME.view.updateAsteroid = function() {
 	}
 }
 
+GAME.view.printLife = function() {
+	var lifes  = GAME.model.player.life;
+	var canvas = GAME.view.getCanvas();
+	var posX = 10;
+	var posY = 10;
+	for (var i = 0; i < lifes; i++) {
+		canvas.fillStyle = "Crimson";
+
+		canvas.fillRect(posX + i * 30, posY, 10, 10);
+
+	}
+	canvas.fillStyle = "black";
+}
+
 GAME.view.getCanvas = function() {
 	return document.getElementById("game").getContext("2d");
 }
@@ -34,6 +48,7 @@ GAME.view.printAsteroid = function(asteroid) {
 	canvas.lineWidth = 3;
 	canvas.arc(asteroid.px, asteroid.py, asteroid.aSize, 0, 2*Math.PI);
 	canvas.stroke();
+	canvas.closePath();
 
 }
 
@@ -56,6 +71,7 @@ GAME.view.printPlayer = function() {
 	canvas.lineTo(player.px + 30, player.py + 20);
 	canvas.lineTo(player.px, player.py + 20);
 	canvas.fill();
+	canvas.closePath();
 
 	// canvas.fillRect(player.px, player.py, 50, 20);
 	canvas.restore();

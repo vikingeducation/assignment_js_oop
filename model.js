@@ -7,7 +7,9 @@ rand = function(max, min) {
 GAME.widthSize = 640;
 GAME.heightSize  = 480;
 
-GAME.model = {};
+GAME.model = {
+	hitTimer: 0
+};
 
 
 GAME.model.as = {};
@@ -15,6 +17,16 @@ GAME.model.as = {};
 GAME.model.player = {};
 
 GAME.model.bullet = {};
+
+GAME.model.updateBackground = function() {
+	if (GAME.model.hitTimer > 0) {
+		GAME.model.hitTimer--;
+
+		if (GAME.model.hitTimer === 0) {
+			$("#game").removeClass("been-hit");
+		}
+	}
+}
 
 
 GAME.model.updatePosition = function(object) {
@@ -52,7 +64,18 @@ GAME.model.checkCollision = function() {
 
 		if (player.px > asteroid.px - asteroid.aSize && player.px < asteroid.px + asteroid.aSize
 		&& player.py > asteroid.py - asteroid.aSize && player.py < asteroid.py + asteroid.aSize) {
-			console.log("collision with player !");
+			if (player.reborn === 0) {
+				if (player.life === 1) {
+					clearInterval(GAME_LOOP);
+				} else {
+					GAME.model.bullet.collision(asteroid, asteroidCount);
+					$("#game").addClass("been-hit");
+					player.reborn = 100;
+					player.life--;
+					GAME.model.hitTimer = 100;
+				}
+
+			}
 		}
 		// end of try
 
@@ -64,7 +87,9 @@ GAME.model.checkCollision = function() {
 
 			if (bullet.px > asteroid.px - asteroid.aSize && bullet.px < asteroid.px + asteroid.aSize
 			&& bullet.py > asteroid.py - asteroid.aSize && bullet.py < asteroid.py + asteroid.aSize) {
-				GAME.model.bullet.collision(bulletCount, asteroid, asteroidCount);
+
+				GAME.model.bullet.bulletList.remove(bulletCount);
+				GAME.model.bullet.collision(asteroid, asteroidCount);
 				return true;
 			}
 			currentBullet = currentBullet.next;

@@ -751,19 +751,24 @@ var view = {
           model.shipCentre.turnLeft( ship );
           view.shipCentre.clearShip();
           view.shipCentre.renderShip( ship );
+          event.preventDefault();
         // up key
         } else if ( event.keyCode === 38 ) {
           model.shipCentre.increaseVelocity( ship );
+          event.preventDefault();
         // right key
         } else if ( event.keyCode === 39 ) {
           model.shipCentre.turnRight( ship );
           view.shipCentre.clearShip();
           view.shipCentre.renderShip( ship );
+          event.preventDefault();
         // down key
         } else if (event.keyCode === 40 ) {
           model.shipCentre.decreaseVelocity( ship );
+          event.preventDefault();
         } else if (event.keyCode === 32) {
           model.bulletCentre.shootBullet( bulletsArray, bulletSpeed, ship );
+          event.preventDefault();
         };
       });
     }

@@ -1,0 +1,13 @@
+h1 {
+	text-align: center;
+}
+
+#game {
+	display: block;
+	margin: 10px auto;
+	border: 1px solid #aeaeae;
+}
+
+.been-hit {
+	background-color: #000000;
+}

@@ -1,0 +1,50 @@
+.page-header {
+  margin-bottom: 0px;
+  padding-bottom: 0px; }
+
+.new-game-and-current-score {
+  width: 300px; }
+  .new-game-and-current-score #new-game {
+    color: #337ab7;
+    cursor: pointer;
+    display: inline-block; }
+  .new-game-and-current-score .score-board {
+    float: right; }
+
+#game-board {
+  background-color: black;
+  overflow: hidden;
+  position: relative;
+  height: 300px;
+  width: 300px; }
+  #game-board .asteroid {
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 25px;
+    position: absolute; }
+  #game-board .bullet {
+    background-color: white;
+    border: 1px solid white;
+    position: absolute;
+    height: 1px;
+    width: 1px; }
+  #game-board #ship {
+    background-color: black;
+    position: absolute;
+    width: 0;
+    height: 0; }
+  #game-board #game-over {
+    position: absolute;
+    font-size: 30px;
+    font-weight: bold;
+    color: red; }
+
+.top-scores-and-header .top-scores ol {
+  font-weight: bold;
+  padding-left: 15px; }
+  .top-scores-and-header .top-scores ol #list-two {
+    opacity: 0.85; }
+  .top-scores-and-header .top-scores ol #list-three {
+    opacity: 0.7; }
+
+/*# sourceMappingURL=asteroids.css.map */

@@ -28,8 +28,9 @@
   };
  }
 
-function Asteroid (x, y) {
+function Asteroid (x, y, radius) {
   SpaceObject.call(this, x, y);
+  this.radius = radius;
 }
 Asteroid.prototype = new SpaceObject();
 // will new Asteroid(4, 4) work??
@@ -63,7 +64,8 @@ var model = {
     for(var i = 0; i < 10; i++) {
       var x = Math.floor(Math.random()* 500) ;
       var y = Math.floor(Math.random()* 500) ;
-      var a = new Asteroid(x,y);
+      var radius = Math.floor(Math.random() * 20) + 10;
+      var a = new Asteroid(x,y, radius);
       this.asteroids.push(a);
     }
   }
@@ -88,9 +90,25 @@ var view = {
 
   placeAsteroid: function(a) {
     console.log("dsads")
-    //ctx.beginPath();
-    view.ctx.arc(a.xPos, a.yPos, 5, 0, 2 * Math.PI);
+    view.ctx.beginPath();
+    view.ctx.arc(a.xPos, a.yPos, a.radius, 0, 2 * Math.PI);
+    view.ctx.fillStyle = 'grey';
+    view.ctx.fill();
     view.ctx.stroke();
+    view.ctx.closePath();
+
+      // var context = view.ctx;
+      // var centerX = view.canvas.width / 2;
+      // var centerY = view.canvas.height / 2;
+      // var radius = a.radius;
+
+      // context.beginPath();
+      // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      // context.fillStyle = 'grey'; 
+      // context.fill();
+      // context.lineWidth = 5;
+      // context.strokeStyle = '#003300';
+      // context.stroke();
   }
 }
 
@@ -109,7 +127,6 @@ var controller = {
   getAsteroids: function() {
     return model.asteroids;
   }
-
 
 }
 

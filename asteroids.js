@@ -1,9 +1,10 @@
-function Asteroid() {
+function Asteroid(options) {
   var randNum = function() {return Math.floor(Math.random() * 100)};
-  this.xCoord = randNum();
-  this.yCoord = randNum();
-  this.xVel = randNum();
-  this.yVel = randNum();
+  this.xCoord = options.entryPoint[0];
+  this.yCoord = options.entryPoint[0];
+  this.xVel = options.getVelocity[0];
+  this.yVel = options.getVelocity[1];
+  this.radius = options.radius
 };
 
 Asteroid.prototype.tic = function() {
@@ -11,25 +12,31 @@ Asteroid.prototype.tic = function() {
   this.yCoord += this.yVel;
 };
 
-var model = {
+var Model = {
+  init: function() {
+    this.astrArray = [];
+    this.createAsteroid();
+  },
+
   createAsteroid: function(){
-    //size
     var radius = this.randNum(100);
-    //entry point
-    var randNum = this.randNum(4);
-    var entryPoint = this.getRandomEntryPoint(randNum);
-    //direction
-    //velocity
+    var entryPoint = this.getRandomEntryPoint(this.randNum(4));
     var getVelocity = this.getVelocity(entryPoint);
+    var options = {
+      radius: radius,
+      entryPoint: entryPoint,
+      getVelocity: getVelocity
+    }
+    this.astrArray.push(new Asteroid(options));
   },
 
   randNum: function(multiplier){
     return Math.floor(Math.random() * multiplier);
   },
 
-  getRandomEntryPoint: function(randNum){
+  getRandomEntryPoint: function(random){
     var x, y;
-    switch(randNum){
+    switch(random){
       //enters from left
       case 0:
         x = 0;
@@ -68,7 +75,7 @@ var model = {
 
     return [xVelocity, yVelocity];
   }
-}
+};
 
 // astrArray = [];
 

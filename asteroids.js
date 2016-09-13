@@ -20,6 +20,3 @@ APP.buildAsteroid = function () {
   return new APP.Asteroid(randX, randY, randVelocityX, randVelocityY);
 };
 
-APP.Model = {
-  
-};

@@ -16,7 +16,7 @@ APP.View = {
     this.$document.on("keydown", function(e) {
         APP.View.keypress = e.which;
     });
-  }
+  },
 
   drawAsteroids: function(asteroids, size) {
     asteroids.forEach( function(el) {

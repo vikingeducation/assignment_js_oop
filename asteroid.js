@@ -40,7 +40,6 @@ function Ship(options) {
     var radians = (this.direction / 180) * Math.PI;
     if (positive) {
       this.xVel += Math.sin(radians) * 1;
-      console.log(this.xVel);
       this.yVel -= Math.cos(radians) * 1;
     } else {
       this.xVel -= Math.sin(radians) * 1;
@@ -166,6 +165,7 @@ var MODEL = {
   },
 
   updateGame: function() {
+    this.checkCollision();
     var asteroids = this.asteroids;
     var beams = this.beams;
     for (var i = 0; i < asteroids.length; i++) {
@@ -175,6 +175,25 @@ var MODEL = {
       beams[i].tic();
     }
     this.ships[0].tic();
+  },
+
+  checkCollision: function() {
+    var asteroids = this.asteroids;
+    var beams = this.beams;
+    for (var i = asteroids.length-1; i >= 0; i--) {
+      for (var j = beams.length-1; j >= 0; j--) {
+        // x and y for center. and a size.
+        if((asteroids[i].x + asteroids[i].size > beams[j].x)
+        && (asteroids[i].y + asteroids[i].size > beams[j].y)
+        && (asteroids[i].x - asteroids[i].size < beams[j].x)
+        && (asteroids[i].y - asteroids[i].size < beams[j].y) ) {
+
+          console.log("x: " + asteroids[i].x + "y: " + asteroids[i].y + " beam x: " + beams[j].x + "beam y:" + beams[j].y);
+          asteroids.splice(i, 1);
+          beams.splice(j, 1);
+        }
+      }
+    }
   }
 
 };

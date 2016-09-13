@@ -141,6 +141,24 @@ var Model = {
     }
   },
 
+  shipCollide: function(ship, ast) {
+    var dx = ast.xCoord - ship.xCoord;
+    var dy = ast.yCoord - ship.yCoord;
+    var rad = ast.radius
+    return (dx*dx + dy*dy <= rad*rad)
+  },
+
+  shipCheck: function() {
+    for (var i = 0; i < this.astrArray.length; i++) {
+      if (this.shipCollide(this.ship, this.astrArray[i]))
+        if (confirm("You are hit. Game over. Play again?")) {
+          location.reload();
+        } else {
+          clearInterval(interval);
+        }
+    }
+  },
+
   astrBoom: function(astr, index) {
     if (astr.radius > 30) {
       this.createAsteroid();

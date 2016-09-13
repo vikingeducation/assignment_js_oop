@@ -21,9 +21,11 @@ APP.Game = {
     setInterval(function() {
       APP.Game.moveSpaceShip();
       APP.View.clearCanvas();
+      APP.View.drawImageRot();
+      // APP.View.rotateSpaceShip(APP.Model.spaceship.degrees);
       APP.View.drawSpaceShip(APP.Model.spaceship);
       APP.View.drawAsteroids(APP.Model.asteroids, 3);
     },200);
-  }
+  },
 
 };

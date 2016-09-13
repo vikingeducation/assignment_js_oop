@@ -29,7 +29,6 @@ APP.Model = {
         this.spaceship.move(keyPress);
         break;
       case 39:
-        debugger
         this.spaceship.turn(keyPress);
         break;
       case 40:

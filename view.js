@@ -2,6 +2,7 @@ var APP = APP || {};
 
 APP.View = {
   cacheDOM: function() {
+    this.$document = $(document);
     this.gameBox = $('#game-box')[0];
     this.gameBox.width = 300;
     this.gameBox.height = 200;
@@ -10,6 +11,12 @@ APP.View = {
     //.getContext('2d');
     // this.context.stroke();
   },
+
+  handleMovement: function() {
+    this.$document.on("keydown", function(e) {
+        APP.View.keypress = e.which;
+    });
+  }
 
   drawAsteroids: function(asteroids, size) {
     asteroids.forEach( function(el) {

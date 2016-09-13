@@ -5,6 +5,11 @@ APP.Game = {
   getAsteroids: function() {
     APP.Model.init();
     APP.View.drawAsteroids(APP.Model.asteroids, 3);
+  },
+
+  moveSpaceShip: function() {
+    var button = APP.View.keypress;
+    APP.Model.moveSpaceShip(button);
   }
 
 };

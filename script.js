@@ -70,16 +70,30 @@ var model = {
 
   moveAsteroids: function() {
     for(var i = 0; i < this.asteroids.length; i++) {
+      this.keepAsteroidInBounds(this.asteroids[i]);
       this.asteroids[i].tic();
     }
   },
 
   randomVelocity: function() {
     return this.velocities[Math.floor(Math.random() * (this.velocities.length - 1))]
+  },
+
+  keepAsteroidInBounds: function(asteroid) {
+    var x = asteroid.xPos;
+    var y = asteroid.yPos;
+    if (x > 500) {
+      asteroid.xPos = 0;
+    } else if (y > 500) {
+      asteroid.yPos = 0;
+    } else if (x < 0) {
+      asteroid.xPos = 500;
+    } else if (y < 0) {
+      asteroid.yPos = 500;
+    }
   }
 }
 
-var a = new Asteroid(75, 75);
 
 var view = {
   init: function() {
@@ -90,6 +104,7 @@ var view = {
   ctx: canvas.getContext("2d"),
 
   render: function() {
+    this.ctx.clearRect(0, 0, 500, 500);
     var asteroids = controller.getAsteroids();
     for(var i = 0; i < asteroids.length; i++) {
       view.placeAsteroid(asteroids[i]);

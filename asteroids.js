@@ -1,5 +1,4 @@
 function Asteroid(options) {
-  var randNum = function() {return Math.floor(Math.random() * 100)};
   this.xCoord = options.entryPoint[0];
   this.yCoord = options.entryPoint[1];
   this.xVel = options.getVelocity[0];
@@ -12,17 +11,41 @@ Asteroid.prototype.tic = function() {
   this.yCoord += this.yVel;
 };
 
+function Ship(options) {
+  this.height = 100;
+  this.width = 80;
+  this.xCoord = View.c.width / 2;
+  this.yCoord = View.c.height / 2;
+  this.xVel = 0;
+  this.yVel = 0;
+  this.tic = function() {
+  this.xCoord += this.xVel;
+  this.yCoord += this.yVel;
+  }
+};
+
 var Model = {
   init: function() {
     this.astrArray = [];
     for(var i = 0; i < 5; i++){
       this.createAsteroid();
     }
+    this.astrCount = function() {
+      return this.astrArray.length;
+    }
+    this.createShip();
   },
 
   moveAsteroids: function(){
     for(var i = 0; i < this.astrArray.length; i++){
       this.astrArray[i].tic();
+    }
+  },
+
+  countCheck: function(num) {
+    console.log(this.astrCount());
+    while (this.astrCount() < num) {
+      this.createAsteroid();
     }
   },
 
@@ -44,6 +67,10 @@ var Model = {
       getVelocity: getVelocity
     }
     this.astrArray.push(new Asteroid(options));
+  },
+
+  createShip: function(){
+    this.ship = new Ship();
   },
 
   randNum: function(multiplier){

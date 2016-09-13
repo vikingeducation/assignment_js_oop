@@ -1,7 +1,7 @@
 function Asteroid(options) {
   var randNum = function() {return Math.floor(Math.random() * 100)};
   this.xCoord = options.entryPoint[0];
-  this.yCoord = options.entryPoint[0];
+  this.yCoord = options.entryPoint[1];
   this.xVel = options.getVelocity[0];
   this.yVel = options.getVelocity[1];
   this.radius = options.radius
@@ -15,7 +15,23 @@ Asteroid.prototype.tic = function() {
 var Model = {
   init: function() {
     this.astrArray = [];
-    this.createAsteroid();
+    for(var i = 0; i < 5; i++){
+      this.createAsteroid();
+    }
+  },
+
+  moveAsteroids: function(){
+    for(var i = 0; i < this.astrArray.length; i++){
+      this.astrArray[i].tic();
+    }
+  },
+
+  removeAsteroids: function(){
+    for(var i = 0; i < this.astrArray.length; i++){
+      if(this.astrArray[i].xCoord < 0 || this.astrArray[i].xCoord > View.c.width || this.astrArray[i].yCoord < 0 || this.astrArray[i].yCoord > View.c.height){
+        this.astrArray.splice(i,1);
+      }
+    }
   },
 
   createAsteroid: function(){
@@ -40,22 +56,22 @@ var Model = {
       //enters from left
       case 0:
         x = 0;
-        y = this.randNum(225);
+        y = this.randNum(View.c.height);
         break;
       //enters from top
       case 1:
         y = 0;
-        x = this.randNum(300);
+        x = this.randNum(View.c.width);
         break;
       //enters from right
       case 2:
-        x = 300;
-        y = this.randNum(225);
+        x = View.c.width;
+        y = this.randNum(View.c.height);
         break;
       //enters from bottom
       case 3:
-        y = 225;
-        x = this.randNum(300);
+        y = View.c.height;
+        x = this.randNum(View.c.width);
         break;
     }
     return [x,y];

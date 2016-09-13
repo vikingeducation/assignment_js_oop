@@ -9,21 +9,22 @@ $(document).ready(function(){
 
 var View = {
 
+  init: function(){
+    this.c = document.getElementById("grid");
+    this.ctx= this.c.getContext("2d");
+  },
+
   render: function(array) {
-    var c = document.getElementById("grid");
-    var ctx= c.getContext("2d");
-    ctx.clearRect(0, 0, c.width, c.height);
+    this.ctx.clearRect(0, 0, this.c.width, this.c.height);
     for (var i = 0; i < array.length; i++) {
       this.buildAstr(array[i])
     }
   },
 
   buildAstr: function(asteroid) {
-    var c = document.getElementById("grid");
-    var ctx= c.getContext("2d");
-    ctx.beginPath();
-    ctx.arc(asteroid.xCoord,asteroid.yCoord,asteroid.radius,0,2*Math.PI);
-    ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.arc(asteroid.xCoord,asteroid.yCoord,asteroid.radius,0,2*Math.PI);
+    this.ctx.stroke();
   },
 
 };
@@ -31,8 +32,13 @@ var View = {
 var Controller = {
 
   init: function() {
+    View.init();
     Model.init();
     View.render(Model.astrArray);
+    setInterval(function(){
+      Model.moveAsteroids();
+      View.render(Model.astrArray);
+    }, 1000);
   }
 
 };

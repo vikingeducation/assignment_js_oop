@@ -24,8 +24,9 @@ var View = {
       this.buildAstr(array[i])
     }
     this.ctx.save();
-    this.ctx.rotate(12);
-    this.buildPShip();
+    this.ctx.translate(ship.xCoord, ship.yCoord);
+    this.ctx.rotate(Model.rotation);
+    this.buildShip(ship);
 
     this.ctx.restore();
 
@@ -41,19 +42,19 @@ var View = {
 
   buildShip: function(ship) {
     this.ctx.beginPath();
-    this.ctx.moveTo(ship.xCoord, ship.yCoord);
-    this.ctx.lineTo(ship.xCoord+50, ship.yCoord+100);
-    this.ctx.lineTo(ship.xCoord-50, ship.yCoord+100);
-    this.ctx.fill();
-  },
-
-  buildPShip: function() {
-    this.ctx.beginPath();
     this.ctx.moveTo(0, 0);
     this.ctx.lineTo(50, 100);
     this.ctx.lineTo(-50, +100);
     this.ctx.fill();
   },
+
+  // buildPShip: function() {
+  //   this.ctx.beginPath();
+  //   this.ctx.moveTo(ship.xCoord, ship.yCoord);
+  //   this.ctx.lineTo(ship.xCoord+50, ship.yCoord+100);
+  //   this.ctx.lineTo(ship.xCoord-50, ship.yCoord+100);
+  //   this.ctx.fill();
+  // },
 };
 
 var Controller = {
@@ -67,6 +68,7 @@ var Controller = {
       Model.removeAsteroids();
       View.render(Model.astrArray, Model.ship);
       Model.countCheck(5);
+      Model.ship.tic();
     }, 40);
   },
 

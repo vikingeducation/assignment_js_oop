@@ -19,8 +19,8 @@ function Ship(options) {
   this.xVel = 0;
   this.yVel = 0;
   this.tic = function() {
-  this.xCoord += this.xVel;
-  this.yCoord += this.yVel;
+  this.xCoord += this.xVel * Math.sin(Model.rotation);
+  this.yCoord += this.yVel * Math.cos(Model.rotation);
   }
 };
 
@@ -34,6 +34,7 @@ var Model = {
       return this.astrArray.length;
     }
     this.createShip();
+    this.rotation = 0;
   },
 
   moveAsteroids: function(){
@@ -73,7 +74,17 @@ var Model = {
   },
 
   rotateShip: function(key){
-    
+    if (key === 37) {
+      this.rotation -= (2 * 3.14)/10;
+    } else if (key === 39) {
+      this.rotation += (2 * 3.14)/10;
+    } else if (key === 38) {
+      this.ship.yVel += 1;
+      this.ship.xVel += 1;
+    } else if (key === 40) {
+      this.ship.yVel -= 1;
+      this.ship.yVel -= 1;
+    }
   },
 
   randNum: function(multiplier){

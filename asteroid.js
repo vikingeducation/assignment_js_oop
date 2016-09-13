@@ -88,6 +88,17 @@ var MODEL = {
     this.buildShip(2);
   },
 
+  handleKeyCodes: function(keyCodes) {
+    for(var i = 0 in keyCodes) {
+      console.log(i);
+      if (i == 32 && keyCodes[i]) {
+        MODEL.buildBeam();
+      } else if (keyCodes[i]) {
+        MODEL.updateShip(parseInt(i));
+      }
+    }
+  },
+
   buildShip: function(num) {
     for (var i = 0; i < num; i++) {
       var ship = new Ship();
@@ -269,12 +280,16 @@ var VIEW = {
   },
 
   keyPressListener: function() {
-    var vals = [32, 37, 38, 39, 40];
+    var map = {32: false, 37: false, 38: false, 39: false, 40: false};
     $(document).keydown(function(e) {
-      var keyCode = e.keyCode;
-      if (vals.includes(keyCode)) {
+      if (e.keyCode in map) {
+        map[e.keyCode] = true;
         e.preventDefault();
-        CONTROLLER.rotateShip(keyCode);
+        CONTROLLER.rotateShip(map);
+      }
+    }).keyup(function(e) {
+      if (e.keyCode in map) {
+        map[e.keyCode] = false;
       }
     });
   },
@@ -366,12 +381,8 @@ var CONTROLLER = {
     }
   },
 
-  rotateShip: function(keyCode) {
-    if (keyCode === 32) {
-      MODEL.buildBeam();
-    } else {
-      MODEL.updateShip(keyCode);
-    }
+  rotateShip: function(keyCodes) {
+    MODEL.handleKeyCodes(keyCodes);
   },
 
   stopLoop: function() {

@@ -8,6 +8,17 @@ function Asteroid(options) {
   this.size = options.size || 10;
 }
 
+function Beam(options) {
+  options = options || {};
+
+  this.x = options.x || 1;
+  this.y = options.y || 1;
+  this.xVel = options.xVel || 1;
+  this.yVel = options.yVel || 1;
+  this.size = options.size || 10;
+  this.direction = options.direction || 360;
+}
+
 function Ship(options) {
   options = options || {};
 
@@ -15,7 +26,7 @@ function Ship(options) {
   this.y = options.y || 300;
   this.xVel = options.xVel || 0;
   this.yVel = options.yVel || 0;
-  this.direction = options.direction || 0;
+  this.direction = options.direction || 360;
   this.rotate = function(direction) {
     if (direction === 'left'){
       this.direction -= 5;
@@ -56,10 +67,16 @@ Asteroid.prototype.tic = function() {
 Ship.prototype = Object.create(Asteroid.prototype);
 Ship.prototype.constructor = Ship;
 
+Beam.prototype = Object.create(Asteroid.prototype);
+Beam.prototype.constructor = Beam;
+
+
+
 var MODEL = {
 
   asteroids: [],
   ships: [],
+  beams: [],
 
   init: function(num) {
     this.buildAsteroids(num);
@@ -69,6 +86,19 @@ var MODEL = {
   buildShip: function(options) {
     var ship = new Ship(options);
     this.ships.push(ship);
+  },
+
+  buildBeam: function() {
+    var ship = MODEL.ships[0]
+    var options = {
+      x: ship.x,
+      y: ship.y,
+      xVel: Math.sin(ship.direction / 180 * Math.PI) * 5,
+      yVel: Math.cos(ship.direction / 180 * Math.PI) * -5,
+      direction: ship.direction
+    }
+    var beam = new Beam(options);
+    this.beams.push(beam);
   },
 
   buildAsteroids: function(num) {
@@ -137,8 +167,12 @@ var MODEL = {
 
   updateGame: function() {
     var asteroids = this.asteroids;
+    var beams = this.beams;
     for (var i = 0; i < asteroids.length; i++) {
       asteroids[i].tic();
+    }
+    for (var i = 0; i < beams.length; i++) {
+      beams[i].tic();
     }
     this.ships[0].tic();
   }
@@ -150,7 +184,7 @@ var VIEW = {
     VIEW.keyPressListener();
   },
 
-  render: function(asteroids, ships) {
+  render: function(asteroids, ships, beams) {
     var canvas = $('#canvas').get(0);
     canvas.width = 600;
     canvas.height = 600;
@@ -158,11 +192,14 @@ var VIEW = {
     for (var i = 0; i < asteroids.length; i++) {
       VIEW.drawAsteroid(asteroids[i], canvas);
     }
+    for (var i = 0; i < beams.length; i++) {
+      VIEW.drawBeam(beams[i], canvas);
+    }
     VIEW.drawShip(ships, canvas);
   },
 
   keyPressListener: function() {
-    var vals = [37, 38, 39, 40];
+    var vals = [32, 37, 38, 39, 40];
     $(document).keydown(function(e) {
       var keyCode = e.keyCode;
       if(vals.includes(keyCode)) {
@@ -205,6 +242,22 @@ var VIEW = {
     context.fillStyle = 'white';
     context.fill();
     context.closePath();
+  },
+
+  drawBeam: function(beam, canvas) {
+    var context = canvas.getContext("2d");
+    var startX = beam.x;
+    var startY = beam.y;
+    var length = beam.size;
+    var rotation = beam.direction / 180 * Math.PI;
+
+    context.beginPath();
+    context.moveTo(startX, startY);
+    context.lineWidth = 3;
+    context.lineTo(startX + Math.sin(rotation) * length, startY - Math.cos(rotation) * length);
+    context.strokeStyle = '#FFF';
+    context.stroke();
+    //context.endPath();
   }
 };
 
@@ -216,13 +269,17 @@ var CONTROLLER = {
 
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
-      VIEW.render(MODEL.asteroids, MODEL.ships);
+      VIEW.render(MODEL.asteroids, MODEL.ships, MODEL.beams);
       MODEL.updateGame();
     }, 50);
   },
 
   rotateShip: function(keyCode) {
-    MODEL.updateShip(keyCode);
+    if (keyCode === 32) {
+      MODEL.buildBeam();
+    } else {
+      MODEL.updateShip(keyCode);
+    }
   },
 
   stopLoop: function() {

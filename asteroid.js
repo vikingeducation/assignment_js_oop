@@ -27,6 +27,7 @@ function Ship(options) {
   this.xVel = options.xVel || 0;
   this.yVel = options.yVel || 0;
   this.direction = options.direction || 360;
+  this.size = options.size || 10;
   this.rotate = function(direction) {
     if (direction === 'left'){
       this.direction -= 5;
@@ -79,23 +80,25 @@ var MODEL = {
 
   init: function(num) {
     this.buildAsteroids(num);
-    this.buildShip();
+    this.buildShip(5);
   },
 
-  buildShip: function(options) {
-    var ship = new Ship(options);
-    this.ships.push(ship);
+  buildShip: function(num) {
+    for (var i = 0; i < num; i++) {
+      var ship = new Ship();
+      this.ships.push(ship);
+    }
   },
 
   buildBeam: function() {
-    var ship = MODEL.ships[0]
+    var ship = MODEL.ships[0];
     var options = {
       x: ship.x,
       y: ship.y,
       xVel: Math.sin(ship.direction / 180 * Math.PI) * 5,
       yVel: Math.cos(ship.direction / 180 * Math.PI) * -5,
       direction: ship.direction
-    }
+    };
     var beam = new Beam(options);
     this.beams.push(beam);
   },
@@ -166,6 +169,7 @@ var MODEL = {
 
   updateGame: function() {
     this.checkCollision();
+    this.checkForDeath();
     var asteroids = this.asteroids;
     var beams = this.beams;
     for (var i = 0; i < asteroids.length; i++) {
@@ -175,6 +179,21 @@ var MODEL = {
       beams[i].tic();
     }
     this.ships[0].tic();
+  },
+
+  checkForDeath: function() {
+    var asteroids = this.asteroids;
+    var ship = this.ships[0];
+    console.log(ship.size);
+    for (var i = asteroids.length - 1; i >= 0; i--) {
+      if((asteroids[i].x + asteroids[i].size + ship.size > ship.x) &&
+         (asteroids[i].y + asteroids[i].size + ship.size > ship.y) &&
+         (asteroids[i].x - asteroids[i].size - ship.size < ship.x) &&
+         (asteroids[i].y - asteroids[i].size - ship.size < ship.y) ) {
+        asteroids.splice(i, 1);
+        MODEL.ships.shift();
+      }
+    }
   },
 
   checkCollision: function() {
@@ -288,9 +307,17 @@ var CONTROLLER = {
 
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
+      CONTROLLER.checkGameOver();
       VIEW.render(MODEL.asteroids, MODEL.ships, MODEL.beams);
       MODEL.updateGame();
     }, 50);
+  },
+
+  checkGameOver: function() {
+    if (MODEL.ships.length === 0) {
+      CONTROLLER.stopLoop();
+      VIEW.renderEndGame();
+    }
   },
 
   rotateShip: function(keyCode) {

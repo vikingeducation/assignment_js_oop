@@ -10,7 +10,7 @@ function Asteroid(options) {
 Asteroid.prototype.tic = function() {
   this.x += this.xVel;
   this.y += this.yVel;
-}
+};
 
 function Asteroid2(options) {
   options = options || {};
@@ -42,7 +42,7 @@ var benchmark = function(num) {
   var endTime = new Date();
   var diffTime = endTime.getTime() - startTime.getTime();
   return diffTime + " ms";
-}
+};
 
 var benchmark2 = function(num) {
   var startTime = new Date();
@@ -60,7 +60,7 @@ var benchmark2 = function(num) {
   var endTime = new Date();
   var diffTime = endTime.getTime() - startTime.getTime();
   return diffTime + " ms";
-}
+};
 
 
 

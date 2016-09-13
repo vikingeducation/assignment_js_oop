@@ -8,20 +8,20 @@
  * @param isCentred True if the locations refer to the centre of 'first' and 'other', false to specify the top left corner.
  */
 
- $(document).ready(function() {
-  var canvas = document.getElementById('canvas');
-  var context = canvas.getContext('2d');
-  var asteroidImg = document.getElementByClassName('asteroid');
-  var spaceshipImg = document.getElementById('spaceship');
-  context.drawImage(asteroidImg, 10, 10);
-  context.drawImage(spaceshipImg, 100, 100);
- })
+ // $(document).ready(function() {
+ //  var canvas = document.getElementById('canvas');
+ //  var context = canvas.getContext('2d');
+ //  var asteroidImg = document.getElementByClassName('asteroid');
+ //  var spaceshipImg = document.getElementById('spaceship');
+ //  context.drawImage(asteroidImg, 10, 10);
+ //  context.drawImage(spaceshipImg, 100, 100);
+ // })
 
  function SpaceObject(x, y) {
   this.xPos = x;
   this.yPos = y;
-  this.xVelocity = undefined;
-  this.yVelocity = undefined;
+  this.xVelocity = 1;
+  this.yVelocity = 1;
   this.tic = function () {
     this.x += this.xVelocity;
     this.y += this.yVelocity;
@@ -44,37 +44,30 @@ function LaserBeam (x, y) {
 }
 LaserBeam.prototype = new SpaceObject();
 
-var view = {
-
-}
 
 
-var controller = {
-  init: function() {
-    model.init();
-    // set event listeners
-    this.interval = setInterval(this.playGame, 100);
-    view.render();
-  }
-}
+
+
+
 
 
 var model = {
-  asteroids: [],
+  init: function() {
+    this.createAsteroids();
+  },
 
+  asteroids: [],
   shipCoords: [],
 
+  createAsteroids: function() {
+    for(var i = 0; i < 10; i++) {
+      var x = Math.floor(Math.random()* 500) ;
+      var y = Math.floor(Math.random()* 500) ;
+      var a = new Asteroid(x,y);
+      this.asteroids.push(a);
+    }
+  }
 }
-
-
-var canvas = document.getElementById("canvas");
-console.log(canvas);
-var ctx = canvas.getContext("2d");
-
-
-// ctx.beginPath();
-// ctx.arc(xpos, ypos, 5, 0, 2 * Math.PI);
-// ctx.stroke();
 
 var a = new Asteroid(75, 75);
 
@@ -83,17 +76,41 @@ var view = {
 
   },
 
+  canvas: document.getElementById("canvas"),
+  ctx: canvas.getContext("2d"),
+
   render: function() {
-    setInterval(view.moveAsteroid(a), 100);
+    var asteroids = controller.getAsteroids();
+    for(var i = 0; i < asteroids.length; i++) {
+      view.placeAsteroid(asteroids[i]);
+    }
   },
 
-  moveAsteroid: function(a) {
+  placeAsteroid: function(a) {
     console.log("dsads")
-    a.tic();
-    ctx.beginPath();
-    ctx.arc(a.xPos, a.yPos, 5, 0, 2 * Math.PI);
-    ctx.stroke();
+    //ctx.beginPath();
+    view.ctx.arc(a.xPos, a.yPos, 5, 0, 2 * Math.PI);
+    view.ctx.stroke();
   }
 }
 
-view.render();
+
+var controller = {
+  init: function() {
+    model.init();
+    // set event listeners
+    this.interval = setInterval(this.playGame, 1000);
+  },
+
+  playGame: function(){
+    view.render();
+  },
+
+  getAsteroids: function() {
+    return model.asteroids;
+  }
+
+
+}
+
+controller.init();

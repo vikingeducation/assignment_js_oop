@@ -11,6 +11,10 @@ var View = {
   init: function(){
     this.c = document.getElementById("grid");
     this.ctx= this.c.getContext("2d");
+
+    $(document).on("keydown", function(e){
+      Controller.rotateShip(e.which);
+    });
   },
 
   render: function(array, ship) {
@@ -29,7 +33,11 @@ var View = {
   },
 
   buildShip: function(ship) {
-    this.ctx.fillRect(ship.xCoord, ship.yCoord, ship.width, ship.height);
+    this.ctx.beginPath();
+    this.ctx.moveTo(ship.xCoord, ship.yCoord);
+    this.ctx.lineTo(ship.xCoord+50, ship.yCoord+100);
+    this.ctx.lineTo(ship.xCoord-50, ship.yCoord+100);
+    this.ctx.fill();
   },
 };
 
@@ -45,6 +53,10 @@ var Controller = {
       View.render(Model.astrArray, Model.ship);
       Model.countCheck(5);
     }, 1000);
+  },
+
+  rotateShip: function(key){
+    Model.rotateShip(key);
   }
 
 };

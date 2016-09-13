@@ -12,8 +12,8 @@ Asteroid.prototype.tic = function() {
 };
 
 function Ship(options) {
-  this.height = 100;
-  this.width = 80;
+  // this.height = 100;
+  // this.width = 80;
   this.xCoord = View.c.width / 2;
   this.yCoord = View.c.height / 2;
   this.xVel = 0;
@@ -71,6 +71,10 @@ var Model = {
 
   createShip: function(){
     this.ship = new Ship();
+  },
+
+  rotateShip: function(key){
+    
   },
 
   randNum: function(multiplier){

@@ -6,8 +6,7 @@
 }
 
 .asteroid {
-  height: 30px;
-  width: 30px;
+
   border: 1px solid black;
   position: absolute;
   border-radius: 50%;

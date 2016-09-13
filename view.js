@@ -6,6 +6,5 @@ APP.View = {
     this.$context = this.$gameBox.getContext('2d');
   },
   drawAsteroid: function(asteroid) {
-
   }
 };

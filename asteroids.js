@@ -19,3 +19,7 @@ APP.buildAsteroid = function () {
   var randVelocityY = Math.floor(Math.random() * 3) + 1;
   return new APP.Asteroid(randX, randY, randVelocityX, randVelocityY);
 };
+
+APP.Model = {
+  
+};

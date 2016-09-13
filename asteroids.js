@@ -119,8 +119,8 @@ var Model = {
     var options = {
       xCoord: this.ship.xCoord,
       yCoord: this.ship.yCoord,
-      xVel: 2 * Math.sin(this.rotation),
-      yVel: 2 * Math.cos(this.rotation)
+      xVel: 10 * Math.sin(this.rotation),
+      yVel: -10 * Math.cos(this.rotation)
     }
     this.bulletsArray.push(new Bullet(options));
   },

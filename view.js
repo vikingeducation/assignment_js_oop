@@ -40,13 +40,14 @@ APP.View = {
 
       // the triangle
       APP.View.context.beginPath();
-      APP.View.context.moveTo(x - 10, y + 10);
-      APP.View.context.lineTo(x + 10, y + 10);
-      APP.View.context.lineTo(x, y - 10);
+      // size of spaceship
+      APP.View.context.moveTo(x - 4, y + 4);
+      APP.View.context.lineTo(x + 4, y + 4);
+      APP.View.context.lineTo(x, y - 7);
       APP.View.context.closePath();
 
       // the outline
-      APP.View.context.lineWidth = 10;
+      APP.View.context.lineWidth = 1;
       APP.View.context.strokeStyle = '#666666';
       APP.View.context.stroke();
 

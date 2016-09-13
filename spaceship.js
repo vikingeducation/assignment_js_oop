@@ -18,7 +18,7 @@ APP.Spaceship.prototype.move = function (keyPress) {
   if (keyPress === 38) {//up
     this.coordX += moveArr[0];
     this.coordY += moveArr[1];
-  } 
+  }
   else if (keyPress === 40) {//down
     this.coordX -= moveArr[0];
     this.coordY -= moveArr[1];
@@ -29,7 +29,7 @@ APP.Spaceship.prototype.turn = function (keyPress) {
   // degrees starts off at 3 o clock and moves counterclickwise
   if (keyPress === 37) {
     this.degrees += 1;
-  } 
+  }
   else if (keyPress === 39) {
     this.degrees -= 1;
   } else {
@@ -55,7 +55,7 @@ function calcVelocity(angle, velocity) {
   // v/ | y
   // /o |
   // ____
-  //  x      
+  //  x
   // x = cos (o) * v
   // y = sin (o) * v
 
@@ -64,7 +64,3 @@ function calcVelocity(angle, velocity) {
   var y = Math.sin(angle) * velocity;
   return [x,y];
 };
-
-
-
-

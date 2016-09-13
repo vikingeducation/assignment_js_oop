@@ -23,8 +23,8 @@
   this.xVelocity = 1;
   this.yVelocity = 1;
   this.tic = function () {
-    this.x += this.xVelocity;
-    this.y += this.yVelocity;
+    this.xPos += this.xVelocity;
+    this.yPos += this.yVelocity;
   };
  }
 
@@ -47,11 +47,6 @@ LaserBeam.prototype = new SpaceObject();
 
 
 
-
-
-
-
-
 var model = {
   init: function() {
     this.createAsteroids();
@@ -59,6 +54,7 @@ var model = {
 
   asteroids: [],
   shipCoords: [],
+  velocities: [1, 2, -1, -2],
 
   createAsteroids: function() {
     for(var i = 0; i < 10; i++) {
@@ -66,8 +62,20 @@ var model = {
       var y = Math.floor(Math.random()* 500) ;
       var radius = Math.floor(Math.random() * 20) + 10;
       var a = new Asteroid(x,y, radius);
+      a.xVelocity = this.randomVelocity();
+      a.yVelocity = this.randomVelocity();
       this.asteroids.push(a);
     }
+  },
+
+  moveAsteroids: function() {
+    for(var i = 0; i < this.asteroids.length; i++) {
+      this.asteroids[i].tic();
+    }
+  },
+
+  randomVelocity: function() {
+    return this.velocities[Math.floor(Math.random() * (this.velocities.length - 1))]
   }
 }
 
@@ -96,19 +104,6 @@ var view = {
     view.ctx.fill();
     view.ctx.stroke();
     view.ctx.closePath();
-
-      // var context = view.ctx;
-      // var centerX = view.canvas.width / 2;
-      // var centerY = view.canvas.height / 2;
-      // var radius = a.radius;
-
-      // context.beginPath();
-      // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-      // context.fillStyle = 'grey'; 
-      // context.fill();
-      // context.lineWidth = 5;
-      // context.strokeStyle = '#003300';
-      // context.stroke();
   }
 }
 
@@ -117,10 +112,11 @@ var controller = {
   init: function() {
     model.init();
     // set event listeners
-    this.interval = setInterval(this.playGame, 1000);
+    this.interval = setInterval(this.playGame, 100);
   },
 
   playGame: function(){
+    model.moveAsteroids();
     view.render();
   },
 

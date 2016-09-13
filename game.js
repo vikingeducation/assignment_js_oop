@@ -7,4 +7,4 @@ APP.Game = {
     APP.View.drawAsteroids(APP.Model.asteroids, 3);
   }
 
-}
+};

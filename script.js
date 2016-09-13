@@ -13,11 +13,12 @@ var View = {
     this.ctx= this.c.getContext("2d");
 
     $(document).on("keydown", function(e){
-      Controller.rotateShip(e.which);
+      var keyCode = e.which
+      Controller.handleKey(keyCode);
     });
   },
 
-  render: function(array, ship) {
+  render: function(array, ship, bullets) {
     this.ctx.fillStyle = "#3370d4";
     this.ctx.clearRect(0, 0, this.c.width, this.c.height);
     for (var i = 0; i < array.length; i++) {
@@ -29,7 +30,10 @@ var View = {
     this.buildShip(ship);
 
     this.ctx.restore();
-
+    for(var i = 0; i < bullets.length; i++){
+      this.buildBullet(bullets[i]);
+    }
+    
     // this.ctx.translate(this.c.width / 2, this.c.height / 2);
     // this.ctx.rotate(20*Math.PI/180);
   },
@@ -48,6 +52,12 @@ var View = {
     this.ctx.fill();
   },
 
+  buildBullet: function(bullet){
+    this.ctx.beginPath();
+    this.ctx.arc(bullet.xCoord,bullet.yCoord, 2,0,2*Math.PI);
+    this.ctx.fill();
+  }
+
   // buildPShip: function() {
   //   this.ctx.beginPath();
   //   this.ctx.moveTo(ship.xCoord, ship.yCoord);
@@ -62,18 +72,19 @@ var Controller = {
   init: function() {
     View.init();
     Model.init();
-    View.render(Model.astrArray, Model.ship);
+    View.render(Model.astrArray, Model.ship, Model.bulletsArray);
     setInterval(function(){
       Model.moveAsteroids();
       Model.removeAsteroids();
-      View.render(Model.astrArray, Model.ship);
+      Model.moveBullets();
+      View.render(Model.astrArray, Model.ship, Model.bulletsArray);
       Model.countCheck(5);
       Model.ship.tic();
     }, 40);
   },
 
-  rotateShip: function(key){
-    Model.rotateShip(key);
+  handleKey: function(key){
+    Model.handleKey(key);
   }
 
 };

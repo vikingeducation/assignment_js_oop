@@ -11,7 +11,7 @@ Asteroid.prototype.tic = function() {
   this.yCoord += this.yVel;
 };
 
-function Ship(options) {
+function Ship() {
   // this.height = 100;
   // this.width = 80;
   this.xCoord = View.c.width / 2;
@@ -19,14 +19,27 @@ function Ship(options) {
   this.xVel = 0;
   this.yVel = 0;
   this.tic = function() {
-  this.xCoord += this.xVel * Math.sin(Model.rotation);
-  this.yCoord += this.yVel * Math.cos(Model.rotation);
+    this.xCoord += this.xVel;
+    this.yCoord -= this.yVel;
   }
 };
+
+function Bullet(options){
+  this.xCoord = options.xCoord;
+  this.yCoord = options.yCoord;
+  this.xVel = options.xVel;
+  this.yVel = options.yVel;
+};
+
+Bullet.prototype.tic = function(){
+  this.xCoord += this.xVel;
+  this.yCoord += this.yVel;
+}
 
 var Model = {
   init: function() {
     this.astrArray = [];
+    this.bulletsArray = [];
     for(var i = 0; i < 5; i++){
       this.createAsteroid();
     }
@@ -40,6 +53,12 @@ var Model = {
   moveAsteroids: function(){
     for(var i = 0; i < this.astrArray.length; i++){
       this.astrArray[i].tic();
+    }
+  },
+
+  moveBullets: function(){
+    for(var i = 0; i< this.bulletsArray.length; i++){
+      this.bulletsArray[i].tic();
     }
   },
 
@@ -73,18 +92,37 @@ var Model = {
     this.ship = new Ship();
   },
 
+  handleKey: function(key){
+    if(key === 32){
+      this.fireBullet();
+    }
+    else{
+      this.rotateShip(key);
+    }
+  },
+
   rotateShip: function(key){
     if (key === 37) {
       this.rotation -= (2 * 3.14)/10;
     } else if (key === 39) {
       this.rotation += (2 * 3.14)/10;
     } else if (key === 38) {
-      this.ship.yVel += 1;
-      this.ship.xVel += 1;
+      this.ship.yVel = (this.ship.yVel + 1)*Math.cos(this.rotation);
+      this.ship.xVel = (this.ship.xVel + 1)*Math.sin(this.rotation);
     } else if (key === 40) {
-      this.ship.yVel -= 1;
-      this.ship.yVel -= 1;
+      this.ship.yVel = (this.ship.yVel - 1)*Math.cos(this.rotation);
+      this.ship.yVel = (this.ship.xVel - 1)*Math.sin(this.rotation);
     }
+  },
+
+  fireBullet: function(){
+    var options = {
+      xCoord: this.ship.xCoord,
+      yCoord: this.ship.yCoord,
+      xVel: 2 * Math.sin(this.rotation),
+      yVel: 2 * Math.cos(this.rotation)
+    }
+    this.bulletsArray.push(new Bullet(options));
   },
 
   randNum: function(multiplier){

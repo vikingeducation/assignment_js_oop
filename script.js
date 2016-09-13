@@ -46,9 +46,9 @@ var View = {
 
   buildShip: function(ship) {
     this.ctx.beginPath();
-    this.ctx.moveTo(0, 0);
-    this.ctx.lineTo(50, 100);
-    this.ctx.lineTo(-50, +100);
+    this.ctx.moveTo(0, -30);
+    this.ctx.lineTo(20, 30);
+    this.ctx.lineTo(-20, 30);
     this.ctx.fill();
   },
 
@@ -73,7 +73,7 @@ var Controller = {
     View.init();
     Model.init();
     View.render(Model.astrArray, Model.ship, Model.bulletsArray);
-    setInterval(function(){
+    interval = setInterval(function(){
       Model.moveAsteroids();
       Model.removeAsteroids();
       Model.moveBullets();
@@ -81,6 +81,7 @@ var Controller = {
       Model.countCheck(5);
       Model.ship.tic();
       Model.bulletCheck();
+      Model.shipCheck();
     }, 40);
   },
 

@@ -119,8 +119,8 @@ var Model = {
     var options = {
       xCoord: this.ship.xCoord,
       yCoord: this.ship.yCoord,
-      xVel: 2 * Math.sin(this.rotation),
-      yVel: -2 * Math.cos(this.rotation)
+      xVel: 10 * Math.sin(this.rotation),
+      yVel: -10 * Math.cos(this.rotation)
     }
     this.bulletsArray.push(new Bullet(options));
   },
@@ -138,6 +138,24 @@ var Model = {
         if (this.bulletCollide(this.bulletsArray[i], this.astrArray[j]))
           this.astrBoom(this.astrArray[j], j);
       }
+    }
+  },
+
+  shipCollide: function(ship, ast) {
+    var dx = ast.xCoord - ship.xCoord;
+    var dy = ast.yCoord - ship.yCoord;
+    var rad = ast.radius
+    return (dx*dx + dy*dy <= rad*rad)
+  },
+
+  shipCheck: function() {
+    for (var i = 0; i < this.astrArray.length; i++) {
+      if (this.shipCollide(this.ship, this.astrArray[i]))
+        if (confirm("You are hit. Game over. Play again?")) {
+          location.reload();
+        } else {
+          clearInterval(interval);
+        }
     }
   },
 

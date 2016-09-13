@@ -8,9 +8,27 @@ function Asteroid(options) {
   this.size = options.size || 10;
 }
 
+function Ship(options) {
+  this.x = options.x || 300
+  this.y = options.y || 300;
+  this.xVel = options.xVel || 0;
+  this.yVel = options.yVel || 0;
+  this.direction = options.direction || 0;
+}
+
 Asteroid.prototype.tic = function() {
   this.x += this.xVel;
   this.y += this.yVel;
+  if (this.x > 600) {
+    this.x = 0;
+  } else if (this.x < 0) {
+    this.x = 600;
+  }
+  if (this.y > 600) {
+    this.y = 0;
+  } else if (this.y < 0) {
+    this.y = 600;
+  }
 };
 
 var MODEL = {
@@ -19,60 +37,79 @@ var MODEL = {
 
   init: function(num) {
     this.buildAsteroids(num);
+    this.buildShip();
+  },
+
+  buildShip: function(options) {
+    var ship = new Ship(options);
   },
 
   buildAsteroids: function(num) {
     for (var i = 0; i < num; i++) {
       var side = this.getSide();
       var coords = this.calculateSide(side);
-      // console.log(coords);
-      coords.xVel = i;
-      coords.yVel = i;
+      var velocity = this.getVelocity();
+      coords.xVel = velocity[0];
+      coords.yVel = velocity[1];
       var ast = new Asteroid(coords);
       this.asteroids.push(ast);
     }
-    // this.asteroids.push(new Asteroid({x: 300, y: 300}));
+  },
+
+  getVelocity: function() {
+    var xVel = Math.floor(Math.random() * 3) + 1;
+    var yVel = Math.floor(Math.random() * 3) + 1;
+    if (Math.random() > 0.5) {
+      xVel *= -1;
+    }
+    if (Math.random() > 0.5) {
+      yVel *= -1;
+    }
+    return [xVel, yVel];
   },
 
   getSide: function() {
     var side = Math.floor(Math.random() * 4) + 1;
-    var position = Math.floor(Math.random() * 500) + 1;
+    var position = Math.floor(Math.random() * 600) + 1;
     return [side, position];
   },
 
   calculateSide: function(side) {
-    // console.log(side);
     switch(side[0]) {
       case 1:
         return { x: 0, y: side[1] };
       case 2:
         return { x: side[1], y: 0 };
       case 3:
-        return { x: 500, y: side[1] };
+        return { x: 600, y: side[1] };
       case 4:
-        return { x: side[1], y: 500 };
+        return { x: side[1], y: 600 };
       default:
         return "Nothing Here!";
     }
+  },
+
+  moveAsteroids: function() {
+    var asteroids = this.asteroids
+    for (var i = 0; i < asteroids.length; i++) {
+      asteroids[i].tic();
+    };
   }
-
-
 
 };
 
 var VIEW = {
   render: function(asteroids) {
-    var canvas = $('#canvas');
-    console.log(canvas.offset());
-    canvas.get(0).width = canvas.get(0).width;
+    var canvas = $('#canvas').get(0);
+    canvas.width = 600;
+    canvas.height = 600;
+    canvas.width = canvas.width;
     for (var i = 0; i < asteroids.length; i++) {
-      VIEW.drawAsteroid(asteroids[i], canvas.get(0));
+      VIEW.drawAsteroid(asteroids[i], canvas);
     }
-    // VIEW.drawAsteroid({x: 300, y: 300, size: 10}, canvas.get(0));
   },
 
   drawAsteroid: function(asteroid, canvas) {
-    // console.log([asteroid.x, asteroid.y]);
     var context = canvas.getContext("2d");
     var centerX = asteroid.x;
     var centerY = asteroid.y;
@@ -95,7 +132,8 @@ var CONTROLLER = {
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
       VIEW.render(MODEL.asteroids);
-    }, 1000);
+      MODEL.moveAsteroids();
+    }, 50);
   },
 
   stopLoop: function() {
@@ -104,6 +142,6 @@ var CONTROLLER = {
 };
 
 $(document).ready(function() {
-  CONTROLLER.init(100);
+  CONTROLLER.init(20);
   CONTROLLER.gameLoop();
 });

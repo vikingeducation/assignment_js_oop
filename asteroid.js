@@ -27,13 +27,13 @@ function Ship(options) {
   };
   this.accelerate = function(positive) {
     var radians = (this.direction / 180) * Math.PI;
-    console.log(radians);
     if (positive) {
       this.xVel += Math.sin(radians) * 1;
-      this.yVel += Math.cos(radians) * 1;
+      console.log(this.xVel);
+      this.yVel -= Math.cos(radians) * 1;
     } else {
       this.xVel -= Math.sin(radians) * 1;
-      this.yVel -= Math.cos(radians) * 1;
+      this.yVel += Math.cos(radians) * 1;
     }
   };
 }

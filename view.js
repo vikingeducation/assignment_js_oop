@@ -15,6 +15,7 @@ APP.View = {
   handleMovement: function() {
     this.$document.on("keydown", function(e) {
         APP.View.keypress = e.which;
+        console.log(e.which);
     });
   },
 

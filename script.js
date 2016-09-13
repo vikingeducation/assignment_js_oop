@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * @param first An ImageData object from the first image we are colliding with.
  * @param x The x location of 'first'.
@@ -36,7 +37,8 @@ function isPixelCollision( first, x, y, other, x2, y2, isCentred ) {
     y  -= ( h/2 + 0.5) << 0
     x2 -= (w2/2 + 0.5) << 0
     y2 -= (h2/2 + 0.5) << 0
-  }
+
+
 
   // Next we need to work out the area within the two images that overlaps. To do this we work out the top-left corner, held in xMin and yMin, and the bottom right corner, held in xMax and yMax. If xMin is greater then xMax, or yMin is greater then yMax, then there is not an overlapping area and no collision has occurred. This means we can leave the function early.
 
@@ -77,4 +79,54 @@ function isPixelCollision( first, x, y, other, x2, y2, isCentred ) {
 }
 
 
+function Asteroid (x, y) {
+  this.xPos = x;
+  this.yPos = y;
+  this.xVelocity = 1;
+  this.yVelocity = 1;
+  this.tic = function () {
+    this.x += this.xVelocity;
+    this.y += this.yVelocity;
+  }
 
+
+
+var AsteroidField = {}
+
+for(var i = 0; i < 1000; i++) {
+  var xPos = Math.floor(Math.random() * 100);
+  var yPos = Math.floor(Math.random() * 100);
+  AsteroidField["asteroid" + i] = new Asteroid(xPos, yPos);
+  var asteroid = AsteroidField["asteroid" + i];
+}
+
+var canvas = document.getElementById("canvas");
+console.log(canvas);
+var ctx = canvas.getContext("2d");
+
+
+// ctx.beginPath();
+// ctx.arc(xpos, ypos, 5, 0, 2 * Math.PI);
+// ctx.stroke();
+
+var a = new Asteroid(75, 75);
+
+var view = {
+  init: function() {
+
+  },
+
+  render: function() {
+    setInterval(view.moveAsteroid(a), 100);
+  },
+
+  moveAsteroid: function(a) {
+    console.log("dsads")
+    a.tic();
+    ctx.beginPath();
+    ctx.arc(a.xPos, a.yPos, 5, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+}
+
+view.render();

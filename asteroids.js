@@ -13,8 +13,8 @@ APP.Asteroid.prototype.tic = function() {
 };
 
 APP.buildAsteroid = function () {
-  var randX = Math.floor(Math.random() * 10) + 1;
-  var randY = Math.floor(Math.random() * 10) + 1;
+  var randX = Math.floor(Math.random() * 300) + 1;
+  var randY = Math.floor(Math.random() * 200) + 1;
   var randVelocityX = Math.floor(Math.random() * 3) + 1;
   var randVelocityY = Math.floor(Math.random() * 3) + 1;
   return new APP.Asteroid(randX, randY, randVelocityX, randVelocityY);

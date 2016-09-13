@@ -35,7 +35,7 @@ APP.buildManyAsteroids = function (numOfAsteroids, numOfTics) {
 
   //do this tic times
   for (var i=0; i < numOfTics; i++) {
-    asteroids.forEach(function(el) { 
+    asteroids.forEach(function(el) {
       el.tic();
     });
   }

@@ -4,6 +4,7 @@ APP.Model = {
   init: function() {
     //create 30 asteroids
     this.asteroids = [];
+    this.bullets = [];
 
     for (var i = 0; i < 30; i++) {
       this.asteroids.push(APP.buildAsteroid());
@@ -33,6 +34,10 @@ APP.Model = {
         break;
       case 40:
         this.spaceship.move(keyPress);
+        break;
+      case 32:
+        // debugger
+        this.spaceship.shoot(keyPress);
         break;
       default:
         break;

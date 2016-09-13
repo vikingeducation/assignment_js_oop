@@ -7,9 +7,19 @@ APP.Asteroid = function Asteroid (x,y,velocityX,velocityY) {
   this.velocityY = velocityY || 1;
 };
 
-APP.Asteroid.prototype.tic = function() {
+APP.Asteroid.prototype.tic = function(width, height) {
   this.coordX += this.velocityX;
   this.coordY += this.velocityY;
+  if (this.coordX > width) {
+    this.coordX -= width;
+  } else if (this.coordX < 0) {
+    this.coordX += width;
+  }
+  if (this.coordY > height) {
+    this.coordY -= height;
+  } else if (this.coordY < 0) {
+    this.coordY += height;
+  }
 };
 
 APP.buildAsteroid = function () {

@@ -43,6 +43,21 @@ APP.View = {
     });
   },
 
+  drawBullets: function(bullets) {
+    bullets.forEach( function(el) {
+      var size = 1;
+      var x = el.coordX;
+      var y = el.coordY;
+      APP.View.context.beginPath();
+      // APP.View.context.fillRect(10,10,100,100);
+      // APP.View.context.fillStyle = 'green';
+      APP.View.context.arc(x, y, size, 0, Math.PI * 2, false);
+      // APP.View.context.closePath();
+      APP.View.context.strokeStyle = "#ff0000";
+      APP.View.context.stroke();
+    });
+  },
+
   drawSpaceShip: function(spaceship) {
       var x = spaceship.coordX;
       var y = spaceship.coordY;
@@ -75,12 +90,17 @@ APP.View = {
 
       //Rotate the canvas around the origin
       APP.View.context.rotate(rad);
-
+// save context()
+// draw image
+//
       //draw the image
       APP.View.context.drawImage(img,width / 2 * (-1),height / 2 * (-1),width,height);
 
       //reset the canvas
       APP.View.context.rotate(rad * ( -1 ) );
       APP.View.context.translate((x + width / 2) * (-1), (y + height / 2) * (-1));
+    },
+    clearKeyPress: function () {
+      APP.View.keyPress = null;
     }
 };

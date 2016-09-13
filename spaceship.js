@@ -8,13 +8,15 @@ APP.Spaceship = function Spaceship (x,y,degrees, velocity) {
 };
 
 APP.Spaceship.prototype.shoot = function (keyPress) {
-  if (keyPress === 40) {
-
+  if (keyPress === 32) {
+    var bulletArray = calcVelocity(this.degrees, this.velocity);
+    var bullet = new APP.Bullet(this.coordX, this.coordY, bulletArray[0], bulletArray[1]);
+    APP.Model.bullets.push(bullet);
   }
 };
 
-APP.Spaceship.prototype.move = function (keyPress) {
-  moveArr = calcVelocity(this.degrees, this.velocity);
+APP.Spaceship.prototype.move = function (keyPress, width, height) {
+  var moveArr = calcVelocity(this.degrees, this.velocity);
   if (keyPress === 38) {//up
     this.coordX += moveArr[0];
     this.coordY += moveArr[1];
@@ -22,6 +24,17 @@ APP.Spaceship.prototype.move = function (keyPress) {
   else if (keyPress === 40) {//down
     this.coordX -= moveArr[0];
     this.coordY -= moveArr[1];
+  }
+  // Appearing on other side of the screen.
+  if (this.coordX > width) {
+    this.coordX -= width;
+  } else if (this.coordX < 0) {
+    this.coordX += width;
+  }
+  if (this.coordY > height) {
+    this.coordY -= height;
+  } else if (this.coordY < 0) {
+    this.coordY += height;
   }
 };
 

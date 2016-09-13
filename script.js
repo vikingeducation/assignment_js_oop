@@ -80,7 +80,8 @@ var Controller = {
       View.render(Model.astrArray, Model.ship, Model.bulletsArray);
       Model.countCheck(5);
       Model.ship.tic();
-    }, 40);
+      Model.bulletCheck();
+    }, 100);
   },
 
   handleKey: function(key){

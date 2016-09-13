@@ -125,6 +125,36 @@ var Model = {
     this.bulletsArray.push(new Bullet(options));
   },
 
+  bulletCollide: function(bul, ast) {
+    var dx = ast.xCoord - bul.xCoord;
+    var dy = ast.yCoord - bul.yCoord;
+    var rSum = ast.radius + 2;
+    return (dx*dx + dy*dy <= rSum*rSum);
+  },
+
+  bulletCheck: function() {
+    for (var i = 0; i < this.bulletsArray.length; i++) {
+      for (var j = 0; j < this.astrArray.length; j++) {
+        if (this.bulletCollide(this.bulletsArray[i], this.astrArray[j]))
+          this.astrBoom(this.astrArray[j], j);
+      }
+    }
+  },
+
+  astrBoom: function(astr, index) {
+    if (astr.radius > 30) {
+      this.createAsteroid();
+      this.astrArray[this.astrArray.length - 1].xCoord = astr.xCoord;
+      this.astrArray[this.astrArray.length - 1].yCoord = astr.yCoord;
+      this.astrArray[this.astrArray.length - 1].radius = astr.radius / 2;
+      this.createAsteroid();
+      this.astrArray[this.astrArray.length - 1].xCoord = astr.xCoord;
+      this.astrArray[this.astrArray.length - 1].yCoord = astr.yCoord;
+      this.astrArray[this.astrArray.length - 1].radius = astr.radius / 2;
+    }
+    this.astrArray.splice(index, 1);
+  },
+
   randNum: function(multiplier){
     return Math.floor(Math.random() * multiplier);
   },

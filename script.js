@@ -1,10 +1,11 @@
 CANVAS_WIDTH = 800;
 CANVAS_HEIGHT = 600;
+//var ASTEROIDS = ASTEROIDS || {}
 
 model = {
 
-  init: function() {
-    this.asteroids = buildAsteroids(1000);
+  init: function(num) {
+    this.asteroids = model.buildAsteroids(num);
   },
 
   buildAsteroids: function(num) {
@@ -40,7 +41,7 @@ model = {
         xPos = Math.floor(Math.random() * CANVAS_WIDTH)
         yPos = 0
         xVel = Math.floor(Math.random() * 5) * velocityDir;
-        yVel = Math.floor(Math.random() * 5) 
+        yVel = Math.floor(Math.random() * 5)
       } else if(enterEdge === 1) { // enter right
         xPos = CANVAS_WIDTH
         yPos = Math.floor(Math.random() * CANVAS_HEIGHT)
@@ -69,19 +70,32 @@ model = {
     this.yVel = yVel;
   },
 
-  
+  moveAsteroids: function() {
+        console.log(model.asteroids)
+
+    for(var a in model.asteroids){
+      console.log(a)
+
+      model.asteroids[a].tic()
+    }
+  }
+
 };
 
 controller = {
 
   init: function(){
     this.play
+  },
+
+  play: function() {
+    model.init(5)
+
+    view.render(model.asteroids)
+    setInterval(function() {
+      model.moveAsteroids()
+      view.render(model.asteroids)}, 1000);
   }
-  // play: function() {
-  //   setInterval(function(){
-  //     a.tic.apply(a);
-  //   }, 1000);
-  // }
 
 
 };
@@ -89,6 +103,7 @@ controller = {
 view = {
   render: function(asteroids) {
     var $canvas = $('#canvas');
+    $canvas.empty();
     for (var asteroid in asteroids) {
       $canvas.append('<div></div>')
       $('div').last().css('top', asteroids[asteroid].yPos)
@@ -98,4 +113,4 @@ view = {
   }
 };
 
-$(document).ready(controller.benchmark);
+$(document).ready(controller.play());

@@ -12,10 +12,13 @@ APP.View = {
     // this.context.stroke();
   },
 
+  clearCanvas: function() {
+    this.context.clearRect(0,0,APP.View.gameBox.width,APP.View.gameBox.height);
+  },
+
   handleMovement: function() {
     this.$document.on("keydown", function(e) {
         APP.View.keypress = e.which;
-        console.log(e.which);
     });
   },
 
@@ -35,7 +38,7 @@ APP.View = {
 
   drawSpaceShip: function(spaceship) {
       var x = spaceship.coordX;
-      var y = spaceship.coordX;
+      var y = spaceship.coordY;
       var deg = spaceship.degrees;
 
       // the triangle

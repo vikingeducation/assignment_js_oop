@@ -28,10 +28,10 @@ APP.Spaceship.prototype.move = function (keyPress) {
 APP.Spaceship.prototype.turn = function (keyPress) {
   // degrees starts off at 3 o clock and moves counterclickwise
   if (keyPress === 37) {
-    this.degrees += 1;
+    this.degrees += 20;
   }
   else if (keyPress === 39) {
-    this.degrees -= 1;
+    this.degrees -= 20;
   } else {
   }
   // validations
@@ -42,10 +42,10 @@ APP.Spaceship.prototype.turn = function (keyPress) {
 
 function toDegrees (angle) {
   return angle * (180 / Math.PI);
-};
+}
 function toRadians (angle) {
   return angle * (Math.PI / 180);
-};
+}
 
 // calculates how many x units and y units u
 // need to move if you are moving in 0-360 degrees direction
@@ -59,8 +59,9 @@ function calcVelocity(angle, velocity) {
   // x = cos (o) * v
   // y = sin (o) * v
 
-  var angle = toRadians(angle);
-  var x = Math.cos(angle) * velocity;
-  var y = Math.sin(angle) * velocity;
+  var newAngle = toRadians(angle);
+  console.log(newAngle);
+  var x = Math.cos(newAngle) * velocity;
+  var y = Math.sin(newAngle) * velocity;
   return [x,y];
-};
+}

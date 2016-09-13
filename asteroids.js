@@ -3,8 +3,8 @@ var APP = APP || {};
 APP.Asteroid = function Asteroid (x,y,velocityX,velocityY) {
   this.coordX = x;
   this.coordY = y;
-  this.velocityX = velocityX;
-  this.velocityY = velocityY;
+  this.velocityX = velocityX || 1;
+  this.velocityY = velocityY || 1;
 };
 
 APP.Asteroid.prototype.tic = function() {

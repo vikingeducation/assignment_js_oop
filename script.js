@@ -8,8 +8,6 @@ model = {
   init: function(num) {
     this.asteroids = model.buildAsteroids(num);
     this.rocket = new model.Rocket();
-    this.Rocket.__proto__ = model.spaceObject
-
   },
 
   buildAsteroids: function(num) {
@@ -18,7 +16,6 @@ model = {
     for (var i = 0; i < num; i++) {
       asteroids.push(model.createAsteroid());
     }
-    model.Asteroid.__proto__ = model.spaceObject
 
     model.Asteroid.prototype.tic = function() {
       this.xPos += this.xVel;
@@ -72,20 +69,21 @@ model = {
   },
 
   Asteroid: function(xPos, yPos, xVel, yVel, size) {
-    this.xPos = xPos;
-    this.yPos = yPos;
     this.xVel = xVel;
     this.yVel = yVel;
-    this.size = size
+    this.size = size;
+    this.xPos = xPos - this.size / 2;
+    this.yPos = yPos - this.size / 2;
+    model.spaceObject.call(this)
   },
 
-  Rocket = Object.create(spaceObject)
   Rocket: function() {
     this.size = 50;
     this.xPos = CANVAS_WIDTH / 2 - this.size / 2;
     this.yPos = CANVAS_HEIGHT / 2 - this.size / 2;
     this.velocity = 0;
     this.direction = 0;
+    model.spaceObject.call(this)
   },
 
   spaceObject: function() {
@@ -100,25 +98,13 @@ model = {
         this.yPos = 0
       }
     }
-
-
-  }
+  },
 
   updateAsteroids: function() {
     var updatedAsteroids = []
     for (var a in model.asteroids) {
       var asteroid = model.asteroids[a];
-      if (asteroid.xPos < 0) {
-         asteroid.xPos = CANVAS_WIDTH - asteroid.size
-      } else if(asteroid.xPos + asteroid.size > CANVAS_WIDTH) {
-        asteroid.xPos = 0
-      } else if(asteroid.yPos < 0){
-        asteroid.yPos = CANVAS_HEIGHT - asteroid.size
-      } else if(asteroid.yPos + asteroid.size > CANVAS_HEIGHT) {
-        asteroid.yPos = 0
-      }
-
-
+      asteroid.wrapObject();
       updatedAsteroids.push(asteroid);
 
     }
@@ -135,17 +121,7 @@ model = {
 
   moveRocket: function() {
       var velocity = model.rocket.velocity
-
-      if (model.rocket.xPos < 0) {
-         model.rocket.xPos = CANVAS_WIDTH - model.rocket.size
-      } else if(model.rocket.xPos + ROCKET_SIZE > CANVAS_WIDTH) {
-        model.rocket.xPos = 0
-      } else if(model.rocket.yPos < 0){
-        model.rocket.yPos = CANVAS_HEIGHT - ROCKET_SIZE
-      } else if(model.rocket.yPos + ROCKET_SIZE > CANVAS_HEIGHT) {
-        model.rocket.yPos = 0
-      }
-
+      model.rocket.wrapObject();
       model.rocket.xPos += velocity * Math.sin(model.rocket.direction * Math.PI / 180);
       model.rocket.yPos -= velocity * Math.cos(model.rocket.direction * Math.PI / 180);
 
@@ -162,6 +138,21 @@ model = {
     } else if (keycode === 38) {
       model.rocket.velocity += 1.5
     }
+  },
+
+  checkForCollisions: function() {
+    var rocketXMax = model.rocket.xPos + model.rocket.size;
+    var rocketXMin = model.rocket.xPos - model.rocket.size;
+    var rocketYMax = model.rocket.yPos + model.rocket.size;
+    var rocketYMin = model.rocket.yPos - model.rocket.size;
+    for (var i in model.asteroids) {
+      var astX = model.asteroids[i].xPos;
+      var astY = model.asteroids[i].yPos;
+      if (astX > rocketXMin && astX < rocketXMax && astY > rocketYMin && astY < rocketYMax) {
+        return true;
+      }
+    }
+    return false;
   }
 
 };
@@ -173,13 +164,18 @@ controller = {
   },
 
   play: function() {
-    model.init(12)
+    model.init(4)
     view.addArrowKeyEventListener();
 
     view.render(model.asteroids, model.rocket)
-    setInterval(function() {
+    this.gameLoop = setInterval(function() {
       model.moveAsteroids()
       model.moveRocket()
+      var gameOver = model.checkForCollisions();
+      if (gameOver) {
+        clearInterval(gameLoop);
+        alert("You lose!!")
+      }
       view.render(model.asteroids, model.rocket)}, 100);
   },
 

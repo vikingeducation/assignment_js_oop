@@ -19,8 +19,5 @@
    border-right: 25px solid transparent;
    border-bottom: 50px solid red;
    position: absolute;
-   -ms-transform: rotate(-20deg); 
-   -webkit-transform: rotate(-20deg); 
-   transform: rotate(-20deg);
 }
   

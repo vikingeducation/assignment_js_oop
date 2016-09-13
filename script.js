@@ -40,23 +40,23 @@ model = {
       if(enterEdge === 0) {
         xPos = Math.floor(Math.random() * CANVAS_WIDTH)
         yPos = 0
-        xVel = Math.floor(Math.random() * 5) * velocityDir;
-        yVel = Math.floor(Math.random() * 5)
+        xVel = Math.ceil(Math.random() * 5 + 1) * velocityDir;
+        yVel = Math.ceil(Math.random() * 5)
       } else if(enterEdge === 1) { // enter right
         xPos = CANVAS_WIDTH
         yPos = Math.floor(Math.random() * CANVAS_HEIGHT)
-        xVel = Math.floor(Math.random() * 5) * -1
-        yVel = Math.floor(Math.random() * 5) * velocityDir;
+        xVel = Math.ceil(Math.random() * 5) * -1
+        yVel = Math.ceil(Math.random() * 5 + 1) * velocityDir;
       } else if(enterEdge === 2) { // enter bottom
         xPos = Math.floor(Math.random() * CANVAS_WIDTH)
         yPos = CANVAS_HEIGHT
-        xVel = Math.floor(Math.random() * 5) * velocityDir;
-        yVel = Math.floor(Math.random() * 5) * -1
+        xVel = Math.ceil(Math.random() * 5 + 1) * velocityDir;
+        yVel = Math.ceil(Math.random() * 5) * -1
       } else { // enter left
         xPos = 0
         yPos = Math.floor(Math.random() * CANVAS_HEIGHT)
-        xVel = Math.floor(Math.random() * 5)
-        yVel = Math.floor(Math.random() * 5) * velocityDir;
+        xVel = Math.ceil(Math.random() * 5)
+        yVel = Math.ceil(Math.random() * 5 + 1) * velocityDir;
       }
 
       return new model.Asteroid(xPos,yPos,xVel,yVel);
@@ -70,12 +70,24 @@ model = {
     this.yVel = yVel;
   },
 
+  updateAsteroids: function() {
+    var updatedAsteroids = []
+    for (var a in model.asteroids) {
+      var asteroid = model.asteroids[a];
+      if (asteroid.xPos >= 0 && asteroid.xPos <= 800 && asteroid.yPos >= 0 && asteroid.yPos <= 600) {
+        updatedAsteroids.push(asteroid);
+      }
+    }
+    var toBuild = model.asteroids.length - updatedAsteroids.length;
+    for (var i = 0; i < toBuild; i++) {
+      updatedAsteroids.push(model.createAsteroid())
+    }
+    model.asteroids = updatedAsteroids;
+  },
+
   moveAsteroids: function() {
-        console.log(model.asteroids)
-
+    model.updateAsteroids();
     for(var a in model.asteroids){
-      console.log(a)
-
       model.asteroids[a].tic()
     }
   }
@@ -89,12 +101,12 @@ controller = {
   },
 
   play: function() {
-    model.init(5)
+    model.init(10)
 
     view.render(model.asteroids)
     setInterval(function() {
       model.moveAsteroids()
-      view.render(model.asteroids)}, 1000);
+      view.render(model.asteroids)}, 100);
   }
 
 

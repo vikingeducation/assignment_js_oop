@@ -1,23 +1,4 @@
-/**
- * @param first An ImageData object from the first image we are colliding with.
- * @param x The x location of 'first'.
- * @param y The y location of 'first'.
- * @param other An ImageData object from the second image involved in the collision check.
- * @param x2 The x location of 'other'.
- * @param y2 The y location of 'other'.
- * @param isCentred True if the locations refer to the centre of 'first' and 'other', false to specify the top left corner.
- */
-
- // $(document).ready(function() {
- //  var canvas = document.getElementById('canvas');
- //  var context = canvas.getContext('2d');
- //  var asteroidImg = document.getElementByClassName('asteroid');
- //  var spaceshipImg = document.getElementById('spaceship');
- //  context.drawImage(asteroidImg, 10, 10);
- //  context.drawImage(spaceshipImg, 100, 100);
- // })
-
- function SpaceObject(x, y) {
+function SpaceObject(x, y) {
   this.xPos = x;
   this.yPos = y;
   this.xVelocity = 1;
@@ -26,7 +7,7 @@
     this.xPos += this.xVelocity;
     this.yPos += this.yVelocity;
   };
- }
+}
 
 function Asteroid (x, y, radius) {
   SpaceObject.call(this, x, y);
@@ -130,36 +111,17 @@ var view = {
     var ship = controller.getShip();
     var x = ship.xPos;
     var y = ship.yPos;
-    // view.ctx.beginPath();
-    // view.ctx.moveTo(x, y);
-    // view.ctx.lineTo(x + 12, y + 12);
-    // view.ctx.lineTo(x + 28, y - 18);
-    // view.ctx.fillStyle = 'black';
-    // view.ctx.fill();
+    view.ctx.beginPath();
+    view.ctx.moveTo(x, y);
+    view.ctx.lineTo(x + 12, y + 12);
+    view.ctx.lineTo(x + 28, y - 18);
+    view.ctx.fillStyle = 'black';
+    view.ctx.fill();
     view.rotateShip(ship)
   },
 
   rotateShip: function(ship) {
-    var angle = 0;
-    angle = (angle + 1) % 360;
 
-    view.ctx.save();
-    view.ctx.fillStyle = "#FF0000";
-
-    view.ctx.translate(150,200);
-    view.ctx.rotate( angle*Math.PI/180 ); 
-    view.ctx.translate(-150,-200);
-
-    view.ctx.beginPath();
-    view.ctx.moveTo(100, 100);
-    view.ctx.lineTo(200, 100);
-    view.ctx.lineTo(200,300);
-    view.ctx.lineTo(100,300);
-    view.ctx.closePath();
-    view.ctx.fill();
-
-    view.ctx.restore();
-}, 5);
   }
 }
 
@@ -167,13 +129,22 @@ var view = {
 var controller = {
   init: function() {
     model.init();
-    // set event listeners
+    view.init();
     this.interval = setInterval(this.playGame, 100);
+    this.setEventListeners();
   },
 
   playGame: function(){
     model.moveAsteroids();
     view.render();
+  },
+
+  setEventListeners: function() {
+    $(document).keydown(function(e) {
+      if(e.which === 38) {
+
+      }
+    }
   },
 
   getAsteroids: function() {
@@ -187,3 +158,18 @@ var controller = {
 }
 
 controller.init();
+
+
+
+// function(degrees) {
+//   return degrees * (Math.PI / 180);
+// };
+
+// ASTEROIDS.utils.Math.toDegrees = function(radians) {
+//   return radians * (180 / Math.PI);
+// };
+// ASTEROIDS.display.Ship.prototype._throttle = function(direction) {
+//   var radians = ASTEROIDS.utils.Math.toRadians(this.rotation);
+//   this.velocity.x += direction * (Math.cos(radians) * ASTEROIDS.display.Ship.SPEED);
+//   this.velocity.y += direction * (Math.sin(radians) * ASTEROIDS.display.Ship.SPEED);
+// };

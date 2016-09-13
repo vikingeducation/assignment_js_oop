@@ -50,11 +50,16 @@ LaserBeam.prototype = new SpaceObject();
 var model = {
   init: function() {
     this.createAsteroids();
+    this.createShip();
   },
 
   asteroids: [],
-  shipCoords: [],
-  velocities: [1, 2, -1, -2],
+  ship: null,
+  velocities: [2, 4, -2, -4],
+
+  createShip: function() {
+    this.ship = new Ship(250, 250);
+  },
 
   createAsteroids: function() {
     for(var i = 0; i < 10; i++) {
@@ -104,21 +109,57 @@ var view = {
   ctx: canvas.getContext("2d"),
 
   render: function() {
-    this.ctx.clearRect(0, 0, 500, 500);
+    view.ctx.clearRect(0, 0, 500, 500);
     var asteroids = controller.getAsteroids();
     for(var i = 0; i < asteroids.length; i++) {
       view.placeAsteroid(asteroids[i]);
     }
+    view.placeShip();
   },
 
   placeAsteroid: function(a) {
-    console.log("dsads")
     view.ctx.beginPath();
     view.ctx.arc(a.xPos, a.yPos, a.radius, 0, 2 * Math.PI);
     view.ctx.fillStyle = 'grey';
     view.ctx.fill();
     view.ctx.stroke();
     view.ctx.closePath();
+  },
+
+  placeShip: function(ship) {
+    var ship = controller.getShip();
+    var x = ship.xPos;
+    var y = ship.yPos;
+    // view.ctx.beginPath();
+    // view.ctx.moveTo(x, y);
+    // view.ctx.lineTo(x + 12, y + 12);
+    // view.ctx.lineTo(x + 28, y - 18);
+    // view.ctx.fillStyle = 'black';
+    // view.ctx.fill();
+    view.rotateShip(ship)
+  },
+
+  rotateShip: function(ship) {
+    var angle = 0;
+    angle = (angle + 1) % 360;
+
+    view.ctx.save();
+    view.ctx.fillStyle = "#FF0000";
+
+    view.ctx.translate(150,200);
+    view.ctx.rotate( angle*Math.PI/180 ); 
+    view.ctx.translate(-150,-200);
+
+    view.ctx.beginPath();
+    view.ctx.moveTo(100, 100);
+    view.ctx.lineTo(200, 100);
+    view.ctx.lineTo(200,300);
+    view.ctx.lineTo(100,300);
+    view.ctx.closePath();
+    view.ctx.fill();
+
+    view.ctx.restore();
+}, 5);
   }
 }
 
@@ -137,6 +178,10 @@ var controller = {
 
   getAsteroids: function() {
     return model.asteroids;
+  },
+
+  getShip: function() {
+    return model.ship;
   }
 
 }

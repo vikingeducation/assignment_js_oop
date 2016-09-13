@@ -1,12 +1,13 @@
 CANVAS_WIDTH = 800;
 CANVAS_HEIGHT = 600;
+ROCKET_SIZE = 50;
 //var ASTEROIDS = ASTEROIDS || {}
 
 model = {
 
   init: function(num) {
     this.asteroids = model.buildAsteroids(num);
-    this.rocket = new model.Rocket
+    this.rocket = new model.Rocket();
   },
 
   buildAsteroids: function(num) {
@@ -74,9 +75,11 @@ model = {
     this.size = size
   },
 
-  Rocket: function(xPos, yPos) {
-    this.xPos = xPos;
-    this.yPos = yPos;
+  Rocket: function() {
+    this.xPos = CANVAS_WIDTH / 2 - ROCKET_SIZE/2;
+    this.yPos = CANVAS_HEIGHT / 2 - ROCKET_SIZE/2;
+    this.velocity = 0;
+    this.direction = 0;
   },
 
   updateAsteroids: function() {
@@ -109,6 +112,19 @@ model = {
     for(var a in model.asteroids){
       model.asteroids[a].tic()
     }
+  },
+
+  moveRocket: function(keycode) {
+    if (keycode === 37) {
+      model.rocket.direction -= 20;
+    } else if (keycode === 39) {
+      model.rocket.direction += 20;
+    } else if (keycode === 38) {
+      model.rocket.velocity += 1
+      var velocity = model.rocket.velocity
+      model.rocket.xPos += velocity * Math.sin(model.rocket.direction * Math.PI / 180);
+      model.rocket.yPos -= velocity * Math.cos(model.rocket.direction * Math.PI / 180);
+    }
   }
 
 };
@@ -121,30 +137,44 @@ controller = {
 
   play: function() {
     model.init(12)
+    view.addArrowKeyEventListener();
 
-    view.render(model.asteroids)
+    view.render(model.asteroids, model.rocket)
     setInterval(function() {
       model.moveAsteroids()
-      view.render(model.asteroids)}, 100);
+      view.render(model.asteroids, model.rocket)}, 100);
+  },
+
+  moveRocket: function(event){
+    model.moveRocket(event.keyCode);
   }
 
 };
 
 view = {
-  render: function(asteroids) {
-    var $canvas = $('#canvas');
-    $canvas.empty();
+  render: function(asteroids, rocket) {
+    var $board = $('#board');
+    $board.empty();
     for (var asteroid in asteroids) {
-      $canvas.append('<div></div>')
+      $board.append('<div></div>')
       $('div').last().css('top', asteroids[asteroid].yPos)
                      .css('left', asteroids[asteroid].xPos)
                      .css("height", asteroids[asteroid].size)
                      .css("width", asteroids[asteroid].size)
                      .addClass('asteroid');
     }
-  }
+    $board.append('<div></div>')
+    $('div').last().css('top', rocket.yPos)
+                   .css('left', rocket.xPos)
+                   .addClass('rocket')
+                   .css('-ms-transform', "rotate("+rocket.direction +"deg)")
+                   .css('-webkit-transform', "rotate("+rocket.direction +"deg)")
+                   .css('transform', "rotate("+rocket.direction +"deg)")
+  },
 
-  //addArrowKeyEventLi
+  addArrowKeyEventListener: function() {
+    $('body').on('keydown', controller.moveRocket);
+  }
 };
 
 $(document).ready(controller.play());

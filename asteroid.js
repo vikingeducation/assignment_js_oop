@@ -3,9 +3,9 @@ function Asteroid(options) {
 
   this.x = options.x || 1;
   this.y = options.y || 1;
-  this.xVel = options.xVel || 1;
-  this.yVel = options.yVel || 1;
-  this.size = options.size || 10;
+  this.xVel = options.xVel || ((Math.random() * 3) + 1);
+  this.yVel = options.yVel || ((Math.random() * 3) + 1);
+  this.size = options.size || ((Math.random() * 10) + 10);
 }
 
 function Beam(options) {
@@ -29,12 +29,16 @@ function Ship(options) {
   this.direction = options.direction || 360;
   this.size = options.size || 10;
   this.rotate = function(direction) {
-    if (direction === 'left'){
+    if (direction === 'left') {
       this.direction -= 5;
-      if(this.direction < 1) { this.direction = 360; }
+      if (this.direction < 1) {
+        this.direction = 360;
+      }
     } else if (direction === 'right') {
       this.direction += 5;
-      if(this.direction > 360) { this.direction = 1; }
+      if (this.direction > 360) {
+        this.direction = 1;
+      }
     }
   };
   this.accelerate = function(positive) {
@@ -77,10 +81,11 @@ var MODEL = {
   asteroids: [],
   ships: [],
   beams: [],
+  score: 0,
 
   init: function(num) {
     this.buildAsteroids(num);
-    this.buildShip(5);
+    this.buildShip(2);
   },
 
   buildShip: function(num) {
@@ -116,21 +121,21 @@ var MODEL = {
   },
 
   updateShip: function(keyCode) {
-    switch(keyCode) {
-    case 37:
-      this.ships[0].rotate('left');
-      break;
-    case 39:
-      this.ships[0].rotate('right');
-      break;
-    case 38:
-      this.ships[0].accelerate(true);
-      break;
-    case 40:
-      this.ships[0].accelerate(false);
-      break;
-    default:
-      return;
+    switch (keyCode) {
+      case 37:
+        this.ships[0].rotate('left');
+        break;
+      case 39:
+        this.ships[0].rotate('right');
+        break;
+      case 38:
+        this.ships[0].accelerate(true);
+        break;
+      case 40:
+        this.ships[0].accelerate(false);
+        break;
+      default:
+        return;
     }
   },
 
@@ -153,15 +158,27 @@ var MODEL = {
   },
 
   calculateSide: function(side) {
-    switch(side[0]) {
+    switch (side[0]) {
       case 1:
-        return { x: 0, y: side[1] };
+        return {
+          x: 0,
+          y: side[1]
+        };
       case 2:
-        return { x: side[1], y: 0 };
+        return {
+          x: side[1],
+          y: 0
+        };
       case 3:
-        return { x: 600, y: side[1] };
+        return {
+          x: 600,
+          y: side[1]
+        };
       case 4:
-        return { x: side[1], y: 600 };
+        return {
+          x: side[1],
+          y: 600
+        };
       default:
         return "Nothing Here!";
     }
@@ -178,19 +195,18 @@ var MODEL = {
     for (var i = 0; i < beams.length; i++) {
       beams[i].tic();
     }
-    this.ships[0].tic();
+    if (this.ships[0]) { this.ships[0].tic(); }
   },
 
   checkForDeath: function() {
     var asteroids = this.asteroids;
     var ship = this.ships[0];
-    console.log(ship.size);
     for (var i = asteroids.length - 1; i >= 0; i--) {
-      if((asteroids[i].x + asteroids[i].size + ship.size > ship.x) &&
-         (asteroids[i].y + asteroids[i].size + ship.size > ship.y) &&
-         (asteroids[i].x - asteroids[i].size - ship.size < ship.x) &&
-         (asteroids[i].y - asteroids[i].size - ship.size < ship.y) ) {
-        asteroids.splice(i, 1);
+      if ((asteroids[i].x + asteroids[i].size + ship.size > ship.x) &&
+        (asteroids[i].y + asteroids[i].size + ship.size > ship.y) &&
+        (asteroids[i].x - asteroids[i].size - ship.size < ship.x) &&
+        (asteroids[i].y - asteroids[i].size - ship.size < ship.y)) {
+        MODEL.breakAsteroid(asteroids.splice(i, 1));
         MODEL.ships.shift();
       }
     }
@@ -199,18 +215,32 @@ var MODEL = {
   checkCollision: function() {
     var asteroids = this.asteroids;
     var beams = this.beams;
-    for (var i = asteroids.length-1; i >= 0; i--) {
-      for (var j = beams.length-1; j >= 0; j--) {
-        // x and y for center. and a size.
-        if((asteroids[i].x + asteroids[i].size > beams[j].x)
-        && (asteroids[i].y + asteroids[i].size > beams[j].y)
-        && (asteroids[i].x - asteroids[i].size < beams[j].x)
-        && (asteroids[i].y - asteroids[i].size < beams[j].y) ) {
-
-          console.log("x: " + asteroids[i].x + "y: " + asteroids[i].y + " beam x: " + beams[j].x + "beam y:" + beams[j].y);
-          asteroids.splice(i, 1);
-          beams.splice(j, 1);
+    var i = (asteroids.length - 1)
+    while (i >= 0) {
+      for (var j = beams.length - 1; j >= 0; j--) {
+        if ((asteroids[i].x + asteroids[i].size > beams[j].x) &&
+          (asteroids[i].y + asteroids[i].size > beams[j].y) &&
+          (asteroids[i].x - asteroids[i].size < beams[j].x) &&
+          (asteroids[i].y - asteroids[i].size < beams[j].y)) {
+          MODEL.breakAsteroid(asteroids.splice(i, 1)[0]);
+          MODEL.score++;
+          i = (asteroids.length - 1)
+          break;
         }
+      }
+      i--;
+    }
+  },
+
+  breakAsteroid: function(asteroid) {
+    if (asteroid.size > 5) {
+      for (var i = 0; i < 2; i++) {
+        var asteroidPiece = new Asteroid({
+          x: asteroid.x,
+          y: asteroid.y,
+          size: Math.floor(asteroid.size*(Math.random()/3) + 5)
+        })
+        MODEL.asteroids.push(asteroidPiece);
       }
     }
   }
@@ -222,7 +252,7 @@ var VIEW = {
     VIEW.keyPressListener();
   },
 
-  render: function(asteroids, ships, beams) {
+  render: function(asteroids, ships, beams, score) {
     var canvas = $('#canvas').get(0);
     canvas.width = 600;
     canvas.height = 600;
@@ -234,13 +264,15 @@ var VIEW = {
       VIEW.drawBeam(beams[i], canvas);
     }
     VIEW.drawShip(ships, canvas);
+    $('.score').remove();
+    VIEW.score(score);
   },
 
   keyPressListener: function() {
     var vals = [32, 37, 38, 39, 40];
     $(document).keydown(function(e) {
       var keyCode = e.keyCode;
-      if(vals.includes(keyCode)) {
+      if (vals.includes(keyCode)) {
         e.preventDefault();
         CONTROLLER.rotateShip(keyCode);
       }
@@ -260,7 +292,7 @@ var VIEW = {
     var width = shipImage.width;
     var height = shipImage.height;
 
-    var angleInRadians = (ship.direction / 180)* Math.PI;
+    var angleInRadians = (ship.direction / 180) * Math.PI;
 
     context.translate(centerX, centerY);
     context.rotate(angleInRadians);
@@ -296,7 +328,21 @@ var VIEW = {
     context.strokeStyle = '#FFF';
     context.stroke();
     //context.endPath();
+  },
+
+  score: function(score) {
+    $score = $('<div>');
+    $score.addClass('score');
+    $score.text(score);
+    $score.appendTo($('body'));
+  },
+
+
+  renderEndGame: function() {
+    $(document).off();
+    alert("Game Over Man!")
   }
+
 };
 
 var CONTROLLER = {
@@ -307,9 +353,9 @@ var CONTROLLER = {
 
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
-      CONTROLLER.checkGameOver();
-      VIEW.render(MODEL.asteroids, MODEL.ships, MODEL.beams);
+      VIEW.render(MODEL.asteroids, MODEL.ships, MODEL.beams, MODEL.score);
       MODEL.updateGame();
+      CONTROLLER.checkGameOver();
     }, 50);
   },
 

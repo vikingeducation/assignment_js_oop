@@ -9,11 +9,33 @@ function Asteroid(options) {
 }
 
 function Ship(options) {
-  this.x = options.x || 300
+  options = options || {};
+
+  this.x = options.x || 300;
   this.y = options.y || 300;
   this.xVel = options.xVel || 0;
   this.yVel = options.yVel || 0;
   this.direction = options.direction || 0;
+  this.rotate = function(direction) {
+    if (direction === 'left'){
+      this.direction -= 5;
+      if(this.direction < 1) { this.direction = 360; }
+    } else if (direction === 'right') {
+      this.direction += 5;
+      if(this.direction > 360) { this.direction = 1; }
+    }
+  };
+  this.accelerate = function(positive) {
+    var radians = (this.direction / 180) * Math.PI;
+    console.log(radians);
+    if (positive) {
+      this.xVel += Math.sin(radians) * 1;
+      this.yVel += Math.cos(radians) * 1;
+    } else {
+      this.xVel -= Math.sin(radians) * 1;
+      this.yVel -= Math.cos(radians) * 1;
+    }
+  };
 }
 
 Asteroid.prototype.tic = function() {
@@ -31,9 +53,13 @@ Asteroid.prototype.tic = function() {
   }
 };
 
+Ship.prototype = Object.create(Asteroid.prototype);
+Ship.prototype.constructor = Ship;
+
 var MODEL = {
 
   asteroids: [],
+  ships: [],
 
   init: function(num) {
     this.buildAsteroids(num);
@@ -42,6 +68,7 @@ var MODEL = {
 
   buildShip: function(options) {
     var ship = new Ship(options);
+    this.ships.push(ship);
   },
 
   buildAsteroids: function(num) {
@@ -53,6 +80,25 @@ var MODEL = {
       coords.yVel = velocity[1];
       var ast = new Asteroid(coords);
       this.asteroids.push(ast);
+    }
+  },
+
+  updateShip: function(keyCode) {
+    switch(keyCode) {
+    case 37:
+      this.ships[0].rotate('left');
+      break;
+    case 39:
+      this.ships[0].rotate('right');
+      break;
+    case 38:
+      this.ships[0].accelerate(true);
+      break;
+    case 40:
+      this.ships[0].accelerate(false);
+      break;
+    default:
+      return;
     }
   },
 
@@ -89,17 +135,22 @@ var MODEL = {
     }
   },
 
-  moveAsteroids: function() {
-    var asteroids = this.asteroids
+  updateGame: function() {
+    var asteroids = this.asteroids;
     for (var i = 0; i < asteroids.length; i++) {
       asteroids[i].tic();
-    };
+    }
+    this.ships[0].tic();
   }
 
 };
 
 var VIEW = {
-  render: function(asteroids) {
+  init: function() {
+    VIEW.keyPressListener();
+  },
+
+  render: function(asteroids, ships) {
     var canvas = $('#canvas').get(0);
     canvas.width = 600;
     canvas.height = 600;
@@ -107,6 +158,40 @@ var VIEW = {
     for (var i = 0; i < asteroids.length; i++) {
       VIEW.drawAsteroid(asteroids[i], canvas);
     }
+    VIEW.drawShip(ships, canvas);
+  },
+
+  keyPressListener: function() {
+    var vals = [37, 38, 39, 40];
+    $(document).keydown(function(e) {
+      var keyCode = e.keyCode;
+      if(vals.includes(keyCode)) {
+        e.preventDefault();
+        CONTROLLER.rotateShip(keyCode);
+      }
+    });
+  },
+
+
+  drawShip: function(ships, canvas) {
+    var ship = ships[0];
+    var context = canvas.getContext("2d");
+    var centerX = ship.x;
+    var centerY = ship.y;
+
+    var shipImage = new Image();
+    shipImage.src = 'asteroid_ship.ico';
+
+    var width = shipImage.width;
+    var height = shipImage.height;
+
+    var angleInRadians = (ship.direction / 180)* Math.PI;
+
+    context.translate(centerX, centerY);
+    context.rotate(angleInRadians);
+    context.drawImage(shipImage, -width / 2, -height / 2, width, height);
+    context.rotate(-angleInRadians);
+    context.translate(-centerX, -centerY);
   },
 
   drawAsteroid: function(asteroid, canvas) {
@@ -126,14 +211,18 @@ var VIEW = {
 var CONTROLLER = {
   init: function(num) {
     MODEL.init(num);
-    // VIEW.init();
+    VIEW.init();
   },
 
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
-      VIEW.render(MODEL.asteroids);
-      MODEL.moveAsteroids();
+      VIEW.render(MODEL.asteroids, MODEL.ships);
+      MODEL.updateGame();
     }, 50);
+  },
+
+  rotateShip: function(keyCode) {
+    MODEL.updateShip(keyCode);
   },
 
   stopLoop: function() {

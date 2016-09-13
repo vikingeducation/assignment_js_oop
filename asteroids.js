@@ -43,7 +43,6 @@ var Model = {
   },
 
   countCheck: function(num) {
-    console.log(this.astrCount());
     while (this.astrCount() < num) {
       this.createAsteroid();
     }
@@ -112,12 +111,12 @@ var Model = {
     var xVelocity, yVelocity;
     //if starting on the left, xVelocity should be positive
     if(entryPoint[0] === 0 || entryPoint[1] === 0){
-      xVelocity = this.randNum(100);
-      yVelocity = this.randNum(100);
+      xVelocity = this.randNum(10) + 1;
+      yVelocity = this.randNum(10) + 1;
     }
     else{
-      xVelocity = -this.randNum(100);
-      yVelocity = -this.randNum(100);
+      xVelocity = -this.randNum(10) - 1;
+      yVelocity = -this.randNum(10) - 1;
     }
 
     return [xVelocity, yVelocity];

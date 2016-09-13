@@ -10,7 +10,7 @@ APP.Model = {
     }
 
     //create spaceship
-    this.spaceship = new APP.Spaceship(100,100, 0, 1);
+    this.spaceship = new APP.Spaceship(100,100, 270, 1);
   },
 
   moveSpaceShip: function(keyPress) {

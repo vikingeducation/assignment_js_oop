@@ -3,7 +3,7 @@ var APP = APP || {};
 APP.Spaceship = function Spaceship (x,y,degrees, velocity) {
   this.coordX = x;
   this.coordY = y;
-  this.degrees = degrees || 0;
+  this.degrees = degrees || 90;
   this.velocity = velocity || 1;
 };
 
@@ -28,10 +28,10 @@ APP.Spaceship.prototype.move = function (keyPress) {
 APP.Spaceship.prototype.turn = function (keyPress) {
   // degrees starts off at 3 o clock and moves counterclickwise
   if (keyPress === 37) {
-    this.degrees += 20;
+    this.degrees += 10;
   }
   else if (keyPress === 39) {
-    this.degrees -= 20;
+    this.degrees -= 10;
   } else {
   }
   // validations

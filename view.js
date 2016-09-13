@@ -23,7 +23,10 @@ APP.View = {
   },
 
   rotateSpaceShip: function(degrees) {
+    this.context.save();
+    this.context.translate( 100 + 300 / 2, 100 + 200 / 2);
     this.context.rotate(toRadians(degrees));
+    this.context.restore();
   },
 
   drawAsteroids: function(asteroids, size) {
@@ -68,16 +71,16 @@ APP.View = {
       var rad = deg * Math.PI / 180;
 
       //Set the origin to the center of the image
-      ctx.translate(x + width / 2, y + height / 2);
+      APP.View.context.translate(x + width / 2, y + height / 2);
 
       //Rotate the canvas around the origin
-      ctx.rotate(rad);
+      APP.View.context.rotate(rad);
 
       //draw the image
-      ctx.drawImage(img,width / 2 * (-1),height / 2 * (-1),width,height);
+      APP.View.context.drawImage(img,width / 2 * (-1),height / 2 * (-1),width,height);
 
       //reset the canvas
-      ctx.rotate(rad * ( -1 ) );
-      ctx.translate((x + width / 2) * (-1), (y + height / 2) * (-1));
+      APP.View.context.rotate(rad * ( -1 ) );
+      APP.View.context.translate((x + width / 2) * (-1), (y + height / 2) * (-1));
     }
 };

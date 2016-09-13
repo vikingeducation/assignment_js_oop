@@ -31,5 +31,30 @@ APP.View = {
       APP.View.context.strokeStyle = "#ff0000";
       APP.View.context.stroke();
     });
+  },
+
+  drawSpaceShip: function(spaceship) {
+      var x = spaceship.coordX;
+      var y = spaceship.coordX;
+      var deg = spaceship.degrees;
+
+      // the triangle
+      APP.View.context.beginPath();
+      APP.View.context.moveTo(x - 10, y + 10);
+      APP.View.context.lineTo(x + 10, y + 10);
+      APP.View.context.lineTo(x, y - 10);
+      APP.View.context.closePath();
+       
+      // the outline
+      APP.View.context.lineWidth = 10;
+      APP.View.context.strokeStyle = '#666666';
+      APP.View.context.stroke();
+       
+      // the fill color
+      APP.View.context.fillStyle = "#FFCC00";
+      APP.View.context.fill();
+
+
+
   }
 };

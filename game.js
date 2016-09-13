@@ -5,6 +5,7 @@ APP.Game = {
   getAsteroids: function() {
     APP.Model.init();
     APP.View.drawAsteroids(APP.Model.asteroids, 3);
+    APP.View.drawSpaceship(APP.Model.spaceship);
   },
 
   moveSpaceShip: function() {

@@ -2,11 +2,15 @@ var APP = APP || {};
 
 APP.Model = {
   init: function() {
+    //create 30 asteroids
     this.asteroids = [];
 
     for (var i = 0; i < 30; i++) {
       this.asteroids.push(APP.buildAsteroid());
     }
+
+    //create spaceship
+    this.spaceship = new APP.Spaceship(100,100, 0, 1);
   }, 
 
   moveSpaceShip: function(keyPress) {
@@ -19,7 +23,6 @@ APP.Model = {
       //down: 40
       //space: 32
       case 37:
-        
         break;
       case 38:
         break;

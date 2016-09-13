@@ -107,11 +107,11 @@ var Model = {
     } else if (key === 39) {
       this.rotation += (2 * 3.14)/10;
     } else if (key === 38) {
-      this.ship.yVel = (this.ship.yVel + 1)*Math.cos(this.rotation);
-      this.ship.xVel = (this.ship.xVel + 1)*Math.sin(this.rotation);
+      this.ship.yVel = (this.ship.yVel + 2*Math.cos(this.rotation));
+      this.ship.xVel = (this.ship.xVel + 2*Math.sin(this.rotation));
     } else if (key === 40) {
-      this.ship.yVel = (this.ship.yVel - 1)*Math.cos(this.rotation);
-      this.ship.yVel = (this.ship.xVel - 1)*Math.sin(this.rotation);
+      this.ship.yVel = (this.ship.yVel - 2*Math.cos(this.rotation));
+      this.ship.xVel = (this.ship.xVel - 2*Math.sin(this.rotation));
     }
   },
 
@@ -120,7 +120,7 @@ var Model = {
       xCoord: this.ship.xCoord,
       yCoord: this.ship.yCoord,
       xVel: 2 * Math.sin(this.rotation),
-      yVel: 2 * Math.cos(this.rotation)
+      yVel: -2 * Math.cos(this.rotation)
     }
     this.bulletsArray.push(new Bullet(options));
   },

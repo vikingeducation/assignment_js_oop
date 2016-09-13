@@ -81,7 +81,7 @@ var Controller = {
       Model.countCheck(5);
       Model.ship.tic();
       Model.bulletCheck();
-    }, 100);
+    }, 40);
   },
 
   handleKey: function(key){

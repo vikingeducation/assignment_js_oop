@@ -91,11 +91,12 @@ var view = {
 
   render: function() {
     view.ctx.clearRect(0, 0, 500, 500);
+    view.placeShip();
     var asteroids = controller.getAsteroids();
     for(var i = 0; i < asteroids.length; i++) {
       view.placeAsteroid(asteroids[i]);
     }
-    view.placeShip();
+    
   },
 
   placeAsteroid: function(a) {
@@ -109,15 +110,14 @@ var view = {
 
   placeShip: function(ship) {
     var ship = controller.getShip();
-    var x = ship.xPos;
-    var y = ship.yPos;
+    var x = ship.xPos
+    var y = ship.yPos
     view.ctx.beginPath();
     view.ctx.moveTo(x, y);
     view.ctx.lineTo(x + 12, y + 12);
     view.ctx.lineTo(x + 28, y - 18);
     view.ctx.fillStyle = 'black';
     view.ctx.fill();
-    view.rotateShip(ship)
   },
 
   rotateShip: function(ship) {
@@ -141,10 +141,19 @@ var controller = {
 
   setEventListeners: function() {
     $(document).keydown(function(e) {
-      if(e.which === 38) {
-
+      if(e.which === 39) {
+        view.ctx.save();
+        view.ctx.rotate(-1*Math.PI/180);
+        view.ctx.drawImage();
+        view.ctx.restore();
       }
-    }
+      if(e.which === 37) {
+        view.ctx.save();
+        view.ctx.rotate(1*Math.PI/180);
+        view.ctx.drawImage();
+        view.ctx.restore();
+      }
+    })
   },
 
   getAsteroids: function() {

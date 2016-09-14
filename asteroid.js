@@ -3,9 +3,9 @@ function Asteroid(options) {
 
   this.x = options.x || 1;
   this.y = options.y || 1;
-  this.xVel = options.xVel || ((Math.random() * 3) + 1);
-  this.yVel = options.yVel || ((Math.random() * 3) + 1);
-  this.size = options.size || ((Math.random() * 10) + 10);
+  this.xVel = options.xVel || (Math.random(3) + 1);
+  this.yVel = options.yVel || (Math.random(3) + 1);
+  this.size = options.size || (Math.random(10) + 10);
 }
 
 function Beam(options) {
@@ -53,6 +53,8 @@ function Ship(options) {
   };
 }
 
+// make super object for physics
+
 Asteroid.prototype.tic = function() {
   this.x += this.xVel;
   this.y += this.yVel;
@@ -85,15 +87,16 @@ var MODEL = {
 
   init: function(num) {
     this.buildAsteroids(num);
-    this.buildShip(2);
+    this.buildShip(3);
   },
 
   handleKeyCodes: function(keyCodes) {
-    for(var i = 0 in keyCodes) {
+    for (var i = 0 in keyCodes) {
       console.log(i);
       if (i == 32 && keyCodes[i]) {
         MODEL.buildBeam();
-      } else if (keyCodes[i]) {
+      }
+      if (keyCodes[i]) {
         MODEL.updateShip(parseInt(i));
       }
     }
@@ -206,7 +209,9 @@ var MODEL = {
     for (var i = 0; i < beams.length; i++) {
       beams[i].tic();
     }
-    if (this.ships[0]) { this.ships[0].tic(); }
+    if (this.ships[0]) {
+      this.ships[0].tic();
+    }
   },
 
   checkForDeath: function() {
@@ -233,6 +238,7 @@ var MODEL = {
           (asteroids[i].y + asteroids[i].size > beams[j].y) &&
           (asteroids[i].x - asteroids[i].size < beams[j].x) &&
           (asteroids[i].y - asteroids[i].size < beams[j].y)) {
+          beams.splice(j, 1);
           MODEL.breakAsteroid(asteroids.splice(i, 1)[0]);
           MODEL.score++;
           i = (asteroids.length - 1)
@@ -244,12 +250,12 @@ var MODEL = {
   },
 
   breakAsteroid: function(asteroid) {
-    if (asteroid.size > 5) {
+    if (asteroid.size > 6) {
       for (var i = 0; i < 2; i++) {
         var asteroidPiece = new Asteroid({
           x: asteroid.x,
           y: asteroid.y,
-          size: Math.floor(asteroid.size*(Math.random()/3) + 5)
+          size: Math.floor(asteroid.size * (Math.random() / 3) + 5)
         })
         MODEL.asteroids.push(asteroidPiece);
       }
@@ -276,11 +282,17 @@ var VIEW = {
     }
     VIEW.drawShip(ships, canvas);
     $('.score').remove();
-    VIEW.score(score);
+    VIEW.score(score, ships.length);
   },
 
   keyPressListener: function() {
-    var map = {32: false, 37: false, 38: false, 39: false, 40: false};
+    var map = {
+      32: false,
+      37: false,
+      38: false,
+      39: false,
+      40: false
+    };
     $(document).keydown(function(e) {
       if (e.keyCode in map) {
         map[e.keyCode] = true;
@@ -300,10 +312,8 @@ var VIEW = {
     var context = canvas.getContext("2d");
     var centerX = ship.x;
     var centerY = ship.y;
-
     var shipImage = new Image();
     shipImage.src = 'asteroid_ship.ico';
-
     var width = shipImage.width;
     var height = shipImage.height;
 
@@ -312,8 +322,6 @@ var VIEW = {
     context.translate(centerX, centerY);
     context.rotate(angleInRadians);
     context.drawImage(shipImage, -width / 2, -height / 2, width, height);
-    context.rotate(-angleInRadians);
-    context.translate(-centerX, -centerY);
   },
 
   drawAsteroid: function(asteroid, canvas) {
@@ -342,13 +350,12 @@ var VIEW = {
     context.lineTo(startX + Math.sin(rotation) * length, startY - Math.cos(rotation) * length);
     context.strokeStyle = '#FFF';
     context.stroke();
-    //context.endPath();
   },
 
-  score: function(score) {
+  score: function(score, lives) {
     $score = $('<div>');
     $score.addClass('score');
-    $score.text(score);
+    $score.text("Score: " + score + " Lives: " + lives);
     $score.appendTo($('body'));
   },
 

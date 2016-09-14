@@ -20,4 +20,10 @@
    border-bottom: 50px solid red;
    position: absolute;
 }
-  
+
+.missile {
+  height: 20px;
+  width: 2px;
+  background-color: blue;
+  position: absolute;
+}

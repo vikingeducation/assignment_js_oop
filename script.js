@@ -8,6 +8,7 @@ model = {
   init: function(num) {
     this.asteroids = model.buildAsteroids(num);
     this.rocket = new model.Rocket();
+    this.missiles = [];
   },
 
   buildAsteroids: function(num) {
@@ -86,6 +87,13 @@ model = {
     model.spaceObject.call(this)
   },
 
+  Missile: function() {
+    this.xPos = model.rocket.xPos
+    this.yPos = model.rocket.yPos
+    this.velocity = 4
+    this.direction = model.rocket.direction
+  },
+
   spaceObject: function() {
     this.wrapObject = function() {
       if (this.xPos < 0) {
@@ -120,15 +128,32 @@ model = {
   },
 
   moveRocket: function() {
-      var velocity = model.rocket.velocity
-      model.rocket.wrapObject();
-      model.rocket.xPos += velocity * Math.sin(model.rocket.direction * Math.PI / 180);
-      model.rocket.yPos -= velocity * Math.cos(model.rocket.direction * Math.PI / 180);
+    var velocity = model.rocket.velocity
+    model.rocket.wrapObject();
+    model.rocket.xPos += velocity * Math.sin(model.rocket.direction * Math.PI / 180);
+    model.rocket.yPos -= velocity * Math.cos(model.rocket.direction * Math.PI / 180);
 
-      if(velocity > 0) {
-        model.rocket.velocity -= 0.5
+    if(velocity > 0) {
+      model.rocket.velocity -= 0.5
+    }
+  },
+
+  moveMissiles: function() {
+    var updatedMissiles = []
+    for(var m in model.missiles) {
+      var m = model.missiles[m]
+
+      var velocity = m.velocity
+      m.xPos += velocity * Math.sin(m.direction * Math.PI / 180);
+      m.yPos -= velocity * Math.cos(m.direction * Math.PI / 180);
+
+      if(m.xPos > 0 && m.xPos < CANVAS_WIDTH && m.yPos > 0 && m.yPos < CANVAS_HEIGHT) {
+      updatedMissiles.push(m)
       }
-    },
+    }
+
+    model.missiles = updatedMissiles
+  },
 
   adjustRocket: function(keycode) {
     if (keycode === 37) {
@@ -148,11 +173,19 @@ model = {
     for (var i in model.asteroids) {
       var astX = model.asteroids[i].xPos;
       var astY = model.asteroids[i].yPos;
-      if (astX > rocketXMin && astX < rocketXMax && astY > rocketYMin && astY < rocketYMax) {
+      var radius = model.asteroids[i].size / 2;
+
+      if (astX - radius > rocketXMin && astX + radius < rocketXMax && astY - radius > rocketYMin && astY + radius < rocketYMax) {
         return true;
       }
     }
     return false;
+  },
+
+  fireMissile: function(keyCode) {
+    if(keyCode === 32) {
+      model.missiles.push(new model.Missile())
+    }
   }
 
 };
@@ -164,29 +197,35 @@ controller = {
   },
 
   play: function() {
-    model.init(4)
+    model.init(1)
     view.addArrowKeyEventListener();
+    view.addSpaceBarListener();
+    view.render(model.asteroids, model.rocket, model.missiles)
 
-    view.render(model.asteroids, model.rocket)
-    this.gameLoop = setInterval(function() {
+    var gameLoop = setInterval(function() {
       model.moveAsteroids()
       model.moveRocket()
+      model.moveMissiles()
       var gameOver = model.checkForCollisions();
       if (gameOver) {
         clearInterval(gameLoop);
         alert("You lose!!")
       }
-      view.render(model.asteroids, model.rocket)}, 100);
+      view.render(model.asteroids, model.rocket, model.missiles)}, 100);
   },
 
   adjustRocket: function(event){
     model.adjustRocket(event.keyCode);
+  },
+
+  fireMissile: function(event) {
+    model.fireMissile(event.keyCode);
   }
 
 };
 
 view = {
-  render: function(asteroids, rocket) {
+  render: function(asteroids, rocket, missiles) {
     var $board = $('#board');
     $board.empty();
     for (var asteroid in asteroids) {
@@ -203,11 +242,25 @@ view = {
                    .addClass('rocket')
                    .css('-ms-transform', "rotate("+rocket.direction +"deg)")
                    .css('-webkit-transform', "rotate("+rocket.direction +"deg)")
-                   .css('transform', "rotate("+rocket.direction +"deg)")
+                   .css('transform', "rotate("+rocket.direction +"deg)");
+
+    for (var m in missiles) {
+      $board.append('<div></div>')
+      $('div').last().addClass('missile')
+                  .css('top', missiles[m].yPos)
+                  .css('left', missiles[m].xPos)
+                  .css('-ms-transform', "rotate("+missiles[m].direction +"deg)")
+                  .css('-webkit-transform', "rotate("+missiles[m].direction +"deg)")
+                  .css('transform', "rotate("+missiles[m].direction +"deg)");
+    }
   },
 
   addArrowKeyEventListener: function() {
     $('body').on('keydown', controller.adjustRocket);
+  },
+
+  addSpaceBarListener: function() {
+    $('body').on("keypress", controller.fireMissile);
   }
 };
 

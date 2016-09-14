@@ -90,18 +90,6 @@ var MODEL = {
     this.buildShip(3);
   },
 
-  handleKeyCodes: function(keyCodes) {
-    for (var i = 0 in keyCodes) {
-      console.log(i);
-      if (i == 32 && keyCodes[i]) {
-        MODEL.buildBeam();
-      }
-      if (keyCodes[i]) {
-        MODEL.updateShip(parseInt(i));
-      }
-    }
-  },
-
   buildShip: function(num) {
     for (var i = 0; i < num; i++) {
       var ship = new Ship();
@@ -135,21 +123,21 @@ var MODEL = {
   },
 
   updateShip: function(keyCode) {
-    switch (keyCode) {
-      case 37:
-        this.ships[0].rotate('left');
-        break;
-      case 39:
-        this.ships[0].rotate('right');
-        break;
-      case 38:
-        this.ships[0].accelerate(true);
-        break;
-      case 40:
-        this.ships[0].accelerate(false);
-        break;
-      default:
-        return;
+    if (keyCode[37]) {
+      this.ships[0].rotate('left');
+    }
+    if (keyCode[39]) {
+      this.ships[0].rotate('right');
+    }
+    if (keyCode[38]) {
+      this.ships[0].accelerate(true);
+    }
+    if (keyCode[40]) {
+      this.ships[0].accelerate(false);
+    }
+
+    if (keyCode[32]) {
+      this.buildBeam();
     }
   },
 
@@ -285,23 +273,23 @@ var VIEW = {
     VIEW.score(score, ships.length);
   },
 
+  keyMap: {
+    32: false,
+    37: false,
+    38: false,
+    39: false,
+    40: false
+  },
+
   keyPressListener: function() {
-    var map = {
-      32: false,
-      37: false,
-      38: false,
-      39: false,
-      40: false
-    };
     $(document).keydown(function(e) {
-      if (e.keyCode in map) {
-        map[e.keyCode] = true;
+      if (e.keyCode in VIEW.keyMap) {
+        VIEW.keyMap[e.keyCode] = true;
         e.preventDefault();
-        CONTROLLER.rotateShip(map);
       }
     }).keyup(function(e) {
-      if (e.keyCode in map) {
-        map[e.keyCode] = false;
+      if (e.keyCode in VIEW.keyMap) {
+        VIEW.keyMap[e.keyCode] = false;
       }
     });
   },
@@ -375,6 +363,7 @@ var CONTROLLER = {
 
   gameLoop: function() {
     CONTROLLER.interval = window.setInterval(function() {
+      CONTROLLER.rotateShip(VIEW.keyMap)
       VIEW.render(MODEL.asteroids, MODEL.ships, MODEL.beams, MODEL.score);
       MODEL.updateGame();
       CONTROLLER.checkGameOver();
@@ -389,7 +378,7 @@ var CONTROLLER = {
   },
 
   rotateShip: function(keyCodes) {
-    MODEL.handleKeyCodes(keyCodes);
+    MODEL.updateShip(keyCodes);
   },
 
   stopLoop: function() {

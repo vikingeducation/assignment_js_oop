@@ -40,10 +40,10 @@ APP.Spaceship.prototype.move = function (keyPress, width, height) {
 
 APP.Spaceship.prototype.turn = function (keyPress) {
   // degrees starts off at 3 o clock and moves counterclickwise
-  if (keyPress === 37) {
+  if (keyPress === 39) {
     this.degrees += 10;
   }
-  else if (keyPress === 39) {
+  else if (keyPress === 37) {
     this.degrees -= 10;
   } else {
   }

@@ -2,18 +2,18 @@ var controller = {
 
   init: function(){
 
-    model.generateData();
+    Asteroids.generateData();
     view.render();
     setInterval(controller.play, 3000);
   },
 
   getAsteroids: function(){
-    return model.asteroids;
+    return Asteroids.asteroids;
   },
 
   play: function(){
     //will take an event soon
-    model.update();
+    Asteroids.update();
     view.render();
   },
 }

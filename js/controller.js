@@ -24,7 +24,7 @@ var controller = {
   },
 
   processInput: function(event){
-    
+    console.log(event.which)
     if(event.which >= 37 || event.which <= 40){
       shipModel.moveShip(event.which);
     }

@@ -68,13 +68,33 @@ var shipModel = {
     } else if(code === 40){
       this.shipReference.y += 1;
     }
+  },
+  
+  fireLaser: function(){
+    var laserShot = new laserModel.laser(this.shipReference.x, this.shipReference.y + 4);
+
+    laserModel.shotsFired.push(laserShot);
   }
-  //store whatever data is necessary to render a rectangle
 
 
 };//end shipModel
 
 
+var laserModel = {
+
+  shotsFired: [],
+
+  laser: function(x, y){
+    this.x = x;
+    this.y = y;
+  },
+
+  moveShots: function(){
+    this.shotsFired.forEach(function(shot){
+      shot.y += 4;
+    })
+  }
+};
 
 
 asteroidModel.asteroid.prototype.tic = function(){

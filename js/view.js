@@ -37,6 +37,12 @@ var view = {
 
     ctx.rect(ship.x, ship.y, ship.width, ship.height);
     ctx.stroke();
+  },
+
+  drawLaserShots: function(){
+    var shots = controller.getShotsFired();
+    var ctx = $("#canvas")[0].getContext("2d");
+    //loop through shots and draw line
   }
 
 

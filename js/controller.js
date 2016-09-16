@@ -2,20 +2,37 @@ var controller = {
 
   init: function(){
 
-    Asteroids.generateData();
-    view.render();
-    setInterval(controller.play, 3000);
+    asteroidModel.generateData();
+    shipModel.placeShip();
+    view.init();
+    
   },
 
   getAsteroids: function(){
-    return Asteroids.asteroids;
+    return asteroidModel.asteroids;
   },
 
   play: function(){
     //will take an event soon
-    Asteroids.update();
+    asteroidModel.update();
     view.render();
   },
+
+  getShip: function(){
+    var ship = shipModel.shipReference;
+    return ship;
+  },
+
+  processInput: function(event){
+    
+    if(event.which >= 37 || event.which <= 40){
+      shipModel.moveShip(event.which);
+    }
+
+    asteroidModel.update()
+    view.render();
+
+  }
 }
 
 

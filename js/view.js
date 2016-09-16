@@ -1,8 +1,17 @@
 var view = {
 
+  init: function(){
+    view.render()
+
+    $(document).keydown(function(event){
+      controller.processInput(event);
+    })
+    setInterval(controller.play, 3000);
+  },
 
   render: function(){
     view.resetCanvas();
+    view.drawShip();
     this.drawAsteroids(controller.getAsteroids());
   },
 
@@ -20,6 +29,14 @@ var view = {
   resetCanvas: function(){
     var ctx = $("#canvas")[0].getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, 
+
+  drawShip: function(){
+    var ctx = $("#canvas")[0].getContext("2d");
+    var ship = controller.getShip();
+
+    ctx.rect(ship.x, ship.y, ship.width, ship.height);
+    ctx.stroke();
   }
 
 

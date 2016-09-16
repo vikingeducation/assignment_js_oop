@@ -1,5 +1,5 @@
 
- var Asteroids = {
+ var asteroidModel = {
     asteroids: [],
 
     generateData: function(){
@@ -31,18 +31,54 @@
     update: function(){
       this.asteroids.forEach(function(asteroid){
         asteroid.tic();
-        console.log("UPDATED" + asteroid.xVelocity)
+        
       })
     }
-  }//end asteroids
+  };//end asteroids
   
+var shipModel = {
+
+  shipReference: undefined,
+
+  placeShip: function(){
+    var ship = shipModel.buildShip();
+    shipModel.shipReference = ship;
+  },
+  
+  ship: function(x, y, height, width){
+    this.x = x;
+    this.y = y;
+    this.height = height;
+    this.width = width;
+
+  },
+
+  buildShip: function(){
+    var ship = new this.ship(400, 370, 20, 20);
+    return ship;
+  },
+
+  moveShip: function(code){
+    if(code === 38){
+      this.shipReference.y -= 1;
+    } else if(code === 37) {
+      this.shipReference.x -= 1;
+    } else if(code === 39) {
+      this.shipReference.x += 1;
+    } else if(code === 40){
+      this.shipReference.y += 1;
+    }
+  }
+  //store whatever data is necessary to render a rectangle
+
+
+};//end shipModel
 
 
 
 
-
-Asteroids.asteroid.prototype.tic = function(){
-  console.log("DID PREVOUS TICK REGISTER" + this.xVelocity)
+asteroidModel.asteroid.prototype.tic = function(){
+  
   this.x += this.xVelocity;
   this.y += this.yVelocity;
   

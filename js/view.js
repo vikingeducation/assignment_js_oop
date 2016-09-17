@@ -3,10 +3,13 @@ var view = {
   init: function(){
     view.render()
 
-    $(document).keydown(function(event){
-      controller.processInput(event);
+    $(document).keyup(function(event){
+      controller.handleLaser(event);
     })
-    setInterval(controller.play, 50);
+    $(document).keydown(function(event){
+      controller.handleMovement(event);
+    })
+    setInterval(controller.play, 100);
   },
 
   render: function(){
@@ -14,6 +17,7 @@ var view = {
     view.drawShip();
     view.drawAsteroids(controller.getAsteroids());
     view.drawLaserShots();
+    view.displayScore();
   },
 
   drawAsteroids: function(asteroids){
@@ -51,6 +55,12 @@ var view = {
       ctx.stroke();
 
     })
+  },
+
+  displayScore: function(){
+    var score = gameController.score();
+
+    $("#score").text("Score: " + score);
   }
 
 

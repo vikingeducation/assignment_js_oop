@@ -13,17 +13,18 @@ var controller = {
   },
 
   play: function(){
-    //this is called each interval
-    if(controller.input === true){
-      //do absolutely nothing 
-    } else {
-      asteroidModel.update();
-      laserModel.moveShots();
-      view.render();
-    }
-
-    controller.input = false;
     
+    asteroidModel.update();
+    laserModel.moveShots();
+    controller.detectCollisions();
+    view.render();
+    
+    
+  },
+
+  detectCollisions: function(){
+    gameModel.manageLaserCollisions();
+    gameModel.manageShipCollisions();
   },
 
   getShip: function(){
@@ -31,19 +32,19 @@ var controller = {
     return ship;
   },
 
-  processInput: function(event){
-    controller.input = true;
+  handleMovement: function(event){
+    
     if(event.which >= 37 && event.which <= 40){
       shipModel.moveShip(event.which);
-    } else if(event.which === 13){
+    }  
+
+  },
+
+  handleLaser: function(event){
+    if(event.which === 13){
       
       shipModel.fireLaser();
     }
-
-    asteroidModel.update()
-    laserModel.moveShots();
-    view.render();
-
   },
 
   getShotsFired: function(){
@@ -51,6 +52,14 @@ var controller = {
   },
 
   input: false
+}
+
+
+var gameController = {
+
+  score: function(){
+    return gameModel.score;
+  }
 }
 
 

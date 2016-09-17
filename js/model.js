@@ -71,7 +71,7 @@ var shipModel = {
   },
   
   fireLaser: function(){
-    var laserShot = new laserModel.laser(this.shipReference.x, this.shipReference.y);
+    var laserShot = new laserModel.laser(this.shipReference.x + 10, this.shipReference.y);
 
     laserModel.shotsFired.push(laserShot);
   }
@@ -90,12 +90,55 @@ var laserModel = {
   },
 
   moveShots: function(){
-    this.shotsFired.forEach(function(shot){
-      shot.y -= 4;
+    var shotsIndexToRemove = [];
+    this.shotsFired.forEach(function(shot, index){
+      //should probable store the board height and width in a variable
+      if(shot.x > 800 || shot.x < 0 || shot.y < 0 || shot.y > 400){
+        shotsIndexToRemove.push(index);
+      } else {
+        shot.y -= 4;
+      }
+    })
+
+    shotsIndexToRemove.forEach(function(index){
+      laserModel.shotsFired.splice(index, 1);
     })
   }
 };//end laser model
 
+
+
+var gameModel = {
+  
+  score: 0,
+
+  manageShipCollisions: function(){
+
+  },
+
+  manageLaserCollisions: function(){
+    //check all coords for laser shots and coords for asteroids
+    //if the coords match remove the asteroid and laser
+    laserModel.shotsFired.forEach(function(shot, laserIndex){
+      asteroidModel.asteroids.forEach(function(asteroid, asteroidIndex){
+        //will only register if asteroid center is hit
+        
+        if(asteroid.hit(shot)){
+          //remove laser shot
+          //remove asteroid
+          laserModel.shotsFired.splice(laserIndex, 1);
+          asteroidModel.asteroids.splice(asteroidIndex, 1);
+          gameModel.score += 1;
+        }
+
+      })
+        
+    })
+      
+  }
+
+
+}//end game model
 
 asteroidModel.asteroid.prototype.tic = function(){
   
@@ -119,6 +162,17 @@ asteroidModel.asteroid.prototype.tic = function(){
   
   
     
+};
+
+asteroidModel.asteroid.prototype.hit = function(laser){
+  var x = Math.pow(laser.x - this.x, 2);
+  var y = Math.pow(laser.y - this.y, 2);
+
+  if( x + y <= Math.pow(this.radius, 2) ){
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // 

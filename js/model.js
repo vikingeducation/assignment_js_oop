@@ -112,8 +112,18 @@ var gameModel = {
   
   score: 0,
 
-  manageShipCollisions: function(){
+  status: "playing",
 
+  manageShipCollisions: function(){
+    var ship = shipModel.shipReference;
+    //check if an asteroid has hit the ship
+    asteroidModel.asteroids.forEach(function(asteroid){
+      //if asteroid has hit the ship the game is over
+      if(asteroid.x > ship.x && asteroid.x <= (ship.x + ship.width) && asteroid.y > ship.y && asteroid.y <= (ship.y + ship.height)){
+        gameModel.status = "over";
+        return;
+      }
+    })
   },
 
   manageLaserCollisions: function(){

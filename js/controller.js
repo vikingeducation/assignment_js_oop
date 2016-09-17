@@ -25,6 +25,9 @@ var controller = {
   detectCollisions: function(){
     gameModel.manageLaserCollisions();
     gameModel.manageShipCollisions();
+    if(gameModel.status === "over"){
+      view.displayEndGame();
+    }
   },
 
   getShip: function(){

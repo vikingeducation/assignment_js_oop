@@ -61,6 +61,10 @@ var view = {
     var score = gameController.score();
 
     $("#score").text("Score: " + score);
+  },
+
+  displayEndGame: function(){
+    $("#end-game").text("Game Over, your ship was decimated captain");
   }
 
 

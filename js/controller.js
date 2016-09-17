@@ -13,8 +13,9 @@ var controller = {
   },
 
   play: function(){
-    //will take an event soon
+    //this is called each interval
     asteroidModel.update();
+    laserModel.moveShots();
     view.render();
   },
 
@@ -24,14 +25,16 @@ var controller = {
   },
 
   processInput: function(event){
-    console.log(event.which)
-    if(event.which >= 37 || event.which <= 40){
+    
+    if(event.which >= 37 && event.which <= 40){
       shipModel.moveShip(event.which);
     } else if(event.which === 13){
+      
       shipModel.fireLaser();
     }
 
     asteroidModel.update()
+    laserModel.moveShots();
     view.render();
 
   },

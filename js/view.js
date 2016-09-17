@@ -12,7 +12,8 @@ var view = {
   render: function(){
     view.resetCanvas();
     view.drawShip();
-    this.drawAsteroids(controller.getAsteroids());
+    view.drawAsteroids(controller.getAsteroids());
+    view.drawLaserShots();
   },
 
   drawAsteroids: function(asteroids){
@@ -43,6 +44,13 @@ var view = {
     var shots = controller.getShotsFired();
     var ctx = $("#canvas")[0].getContext("2d");
     //loop through shots and draw line
+    shots.forEach(function(shot){
+      ctx.beginPath();
+      ctx.moveTo(shot.x, shot.y);
+      ctx.lineTo(shot.x, shot.y + 4);
+      ctx.stroke();
+
+    })
   }
 
 

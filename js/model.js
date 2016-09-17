@@ -60,18 +60,18 @@ var shipModel = {
 
   moveShip: function(code){
     if(code === 38){
-      this.shipReference.y -= 1;
+      this.shipReference.y -= 4;
     } else if(code === 37) {
-      this.shipReference.x -= 1;
+      this.shipReference.x -= 4;
     } else if(code === 39) {
-      this.shipReference.x += 1;
+      this.shipReference.x += 4;
     } else if(code === 40){
-      this.shipReference.y += 1;
+      this.shipReference.y += 4;
     }
   },
   
   fireLaser: function(){
-    var laserShot = new laserModel.laser(this.shipReference.x, this.shipReference.y + 4);
+    var laserShot = new laserModel.laser(this.shipReference.x, this.shipReference.y);
 
     laserModel.shotsFired.push(laserShot);
   }
@@ -91,10 +91,10 @@ var laserModel = {
 
   moveShots: function(){
     this.shotsFired.forEach(function(shot){
-      shot.y += 4;
+      shot.y -= 4;
     })
   }
-};
+};//end laser model
 
 
 asteroidModel.asteroid.prototype.tic = function(){

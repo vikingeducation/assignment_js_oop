@@ -6,7 +6,7 @@ var view = {
     $(document).keydown(function(event){
       controller.processInput(event);
     })
-    setInterval(controller.play, 3000);
+    setInterval(controller.play, 50);
   },
 
   render: function(){

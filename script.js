@@ -18,7 +18,7 @@ Asteroid.prototype = new SpaceObject();
 
 function Ship (x, y) {
   SpaceObject.call(this, x, y);
-  this.SPEED = 0.5;
+  this.SPEED = 0.008;
   this.rotation = 0;
   this.xVelocity = 0;
   this.yVelocity = 0;
@@ -33,7 +33,7 @@ function Ship (x, y) {
     if (this.yVelocity > 5) {
       this.yVelocity = 5;
     }
-  }
+  };
 };
 
 Ship.prototype = new SpaceObject();
@@ -80,6 +80,24 @@ var model = {
 
   moveShip: function () {
     this.keepObjectInBounds(this.ship);
+
+    // left
+    if (controller.keyState[37] || controller.keyState[65]){
+      this.ship.rotation -= 1;
+    }    
+    // right
+    if (controller.keyState[39] || controller.keyState[68]){
+      this.ship.rotation += 1;
+    }
+    // up
+    if (controller.keyState[38]){
+      model.ship.throttle(1.01);
+    }    
+    // down
+    if (controller.keyState[40]){
+      model.ship.throttle(-0.9);
+    }
+
     this.ship.tic();
   },
 
@@ -157,6 +175,7 @@ var view = {
 
 var controller = {
   init: function() {
+    this.keyState = {};
     model.init();
     view.init();
     this.interval = setInterval(this.playGame, 0.5);
@@ -170,27 +189,14 @@ var controller = {
   },
 
   setEventListeners: function() {
-    $(document).keydown(function(e) {
-      switch(e.which) {
-        // up
-        case 38:
-          model.ship.throttle(1.1);
-          break;
-        // down
-        case 40:
-          model.ship.throttle(-0.9);
-          break;
-        // right
-        case 39:
-          model.ship.rotation += 8;
-          break;
-        // left
-        case 37:
-          model.ship.rotation -= 8;
-          break;
-      }
-    })
-  },
+    $(document).on('keydown', function (e) {
+      controller.keyState[e.which] = true;
+    });    
+    $(document).on('keyup', function (e) {
+      controller.keyState[e.which] = false;
+    });
+  },    
+
 
   getAsteroids: function() {
     return model.asteroids;
@@ -199,7 +205,6 @@ var controller = {
   getShip: function() {
     return model.ship;
   }
-
 }
 
 
@@ -216,3 +221,5 @@ var utils = {
 
 
 controller.init();
+
+

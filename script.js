@@ -18,8 +18,24 @@ Asteroid.prototype = new SpaceObject();
 
 function Ship (x, y) {
   SpaceObject.call(this, x, y);
+  this.SPEED = 0.5;
   this.rotation = 0;
-}
+  this.xVelocity = 0;
+  this.yVelocity = 0;
+
+  this.throttle = function(direction) {
+    var radians = utils.toRadians(this.rotation);
+    this.xVelocity += direction * (Math.cos(radians) * this.SPEED);
+    this.yVelocity += direction * (Math.sin(radians) * this.SPEED);  
+    if (this.xVelocity > 5) {
+      this.xVelocity = 5;
+    }
+    if (this.yVelocity > 5) {
+      this.yVelocity = 5;
+    }
+  }
+};
+
 Ship.prototype = new SpaceObject();
 
 function LaserBeam (x, y) {
@@ -37,7 +53,7 @@ var model = {
 
   asteroids: [],
   ship: null,
-  velocities: [1, 2, -1, -2],
+  velocities: [0.4, 0.6, -0.4, -0.6],
 
   createShip: function() {
     this.ship = new Ship(250, 250);
@@ -57,26 +73,31 @@ var model = {
 
   moveAsteroids: function() {
     for(var i = 0; i < this.asteroids.length; i++) {
-      this.keepAsteroidInBounds(this.asteroids[i]);
+      this.keepObjectInBounds(this.asteroids[i]);
       this.asteroids[i].tic();
     }
+  },
+
+  moveShip: function () {
+    this.keepObjectInBounds(this.ship);
+    this.ship.tic();
   },
 
   randomVelocity: function() {
     return this.velocities[Math.floor(Math.random() * (this.velocities.length - 1))]
   },
 
-  keepAsteroidInBounds: function(asteroid) {
-    var x = asteroid.xPos;
-    var y = asteroid.yPos;
+  keepObjectInBounds: function(object) {
+    var x = object.xPos;
+    var y = object.yPos;
     if (x > 500) {
-      asteroid.xPos = 0;
+      object.xPos = 0;
     } else if (y > 500) {
-      asteroid.yPos = 0;
+      object.yPos = 0;
     } else if (x < 0) {
-      asteroid.xPos = 500;
+      object.xPos = 500;
     } else if (y < 0) {
-      asteroid.yPos = 500;
+      object.yPos = 500;
     }
   }
 }
@@ -116,12 +137,12 @@ var view = {
 
     view.ctx.save();
     view.ctx.translate( ship.xPos, ship.yPos );
-    view.ctx.rotate(model.ship.rotation * Math.PI/180);
+    view.ctx.rotate(utils.toRadians(model.ship.rotation));
     view.ctx.translate( -ship.xPos, -ship.yPos );
     view.ctx.beginPath();
-    view.ctx.moveTo(x-12, y-12);
-    view.ctx.lineTo(x + 12, y - 12);
-    view.ctx.lineTo(x, y + 12);
+    view.ctx.moveTo(x+12, y);
+    view.ctx.lineTo(x-6, y-6);
+    view.ctx.lineTo(x-6, y+6);
     view.ctx.fillStyle = 'black';
     view.ctx.fill();
 
@@ -138,22 +159,35 @@ var controller = {
   init: function() {
     model.init();
     view.init();
-    this.interval = setInterval(this.playGame, 25);
+    this.interval = setInterval(this.playGame, 0.5);
     this.setEventListeners();
   },
 
   playGame: function(){
     model.moveAsteroids();
+    model.moveShip();
     view.render();
   },
 
   setEventListeners: function() {
     $(document).keydown(function(e) {
-      if(e.which === 39) {
-        model.ship.rotation += 15;
-      }
-      if(e.which === 37) {
-        model.ship.rotation -= 15;
+      switch(e.which) {
+        // up
+        case 38:
+          model.ship.throttle(1.1);
+          break;
+        // down
+        case 40:
+          model.ship.throttle(-0.9);
+          break;
+        // right
+        case 39:
+          model.ship.rotation += 8;
+          break;
+        // left
+        case 37:
+          model.ship.rotation -= 8;
+          break;
       }
     })
   },
@@ -168,19 +202,17 @@ var controller = {
 
 }
 
+
+var utils = {
+  toRadians: function(degrees) {
+    return degrees * (Math.PI / 180);
+  },
+
+  toDegrees: function(radians) {
+    return radians * (180 / Math.PI);
+  }
+}
+
+
+
 controller.init();
-
-
-
-// function(degrees) {
-//   return degrees * (Math.PI / 180);
-// };
-
-// ASTEROIDS.utils.Math.toDegrees = function(radians) {
-//   return radians * (180 / Math.PI);
-// };
-// ASTEROIDS.display.Ship.prototype._throttle = function(direction) {
-//   var radians = ASTEROIDS.utils.Math.toRadians(this.rotation);
-//   this.velocity.x += direction * (Math.cos(radians) * ASTEROIDS.display.Ship.SPEED);
-//   this.velocity.y += direction * (Math.sin(radians) * ASTEROIDS.display.Ship.SPEED);
-// };

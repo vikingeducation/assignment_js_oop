@@ -18,6 +18,7 @@ Asteroid.prototype = new SpaceObject();
 
 function Ship (x, y) {
   SpaceObject.call(this, x, y);
+  this.rotation = 0;
 }
 Ship.prototype = new SpaceObject();
 
@@ -36,7 +37,7 @@ var model = {
 
   asteroids: [],
   ship: null,
-  velocities: [2, 4, -2, -4],
+  velocities: [1, 2, -1, -2],
 
   createShip: function() {
     this.ship = new Ship(250, 250);
@@ -112,12 +113,19 @@ var view = {
     var ship = controller.getShip();
     var x = ship.xPos
     var y = ship.yPos
+
+    view.ctx.save();
+    view.ctx.translate( ship.xPos, ship.yPos );
+    view.ctx.rotate(model.ship.rotation * Math.PI/180);
+    view.ctx.translate( -ship.xPos, -ship.yPos );
     view.ctx.beginPath();
-    view.ctx.moveTo(x, y);
-    view.ctx.lineTo(x + 12, y + 12);
-    view.ctx.lineTo(x + 28, y - 18);
+    view.ctx.moveTo(x-12, y-12);
+    view.ctx.lineTo(x + 12, y - 12);
+    view.ctx.lineTo(x, y + 12);
     view.ctx.fillStyle = 'black';
     view.ctx.fill();
+
+    view.ctx.restore();
   },
 
   rotateShip: function(ship) {
@@ -130,7 +138,7 @@ var controller = {
   init: function() {
     model.init();
     view.init();
-    this.interval = setInterval(this.playGame, 100);
+    this.interval = setInterval(this.playGame, 25);
     this.setEventListeners();
   },
 
@@ -142,16 +150,10 @@ var controller = {
   setEventListeners: function() {
     $(document).keydown(function(e) {
       if(e.which === 39) {
-        view.ctx.save();
-        view.ctx.rotate(-1*Math.PI/180);
-        view.ctx.drawImage();
-        view.ctx.restore();
+        model.ship.rotation += 15;
       }
       if(e.which === 37) {
-        view.ctx.save();
-        view.ctx.rotate(1*Math.PI/180);
-        view.ctx.drawImage();
-        view.ctx.restore();
+        model.ship.rotation -= 15;
       }
     })
   },

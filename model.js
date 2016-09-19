@@ -7,8 +7,6 @@ MY_APP.model = {
 	asteroids: [],
 	spaceShip: undefined,
 	bullets: [],
-	asteroidsID: 0,
-	bulletID: 0,
 
 	generateSpaceShip: function () {
 		this.spaceShip = new MY_APP.model.SpaceShip(500, 250, 0, 0);
@@ -126,14 +124,15 @@ MY_APP.model = {
 		};
 	},
 
-	generateAsteroidPiece: function (x, y, radius) {
-		var course = Math.random(2 * Math.PI);
+	generateAsteroidPiece: function (x, y, radius, color) {
+		var course = Math.random() * 2 * Math.PI;
 		var xCoordinate = x + radius * Math.cos(course);
 		var yCoordinate = y + radius * Math.sin(course);
 		var vx = (Math.random() + 1) * this.randomBoolean();
 		var vy = (Math.random() + 1) * this.randomBoolean();
 		var newAsteroidPiece = new MY_APP.model.Asteroid(xCoordinate, yCoordinate, vx, vy)
 		newAsteroidPiece.radius = radius * Math.random();
+		newAsteroidPiece.paintcolor = color;
 		this.asteroids.push(newAsteroidPiece);
 	},
 
@@ -141,6 +140,25 @@ MY_APP.model = {
 		for (var i = 0; i < this.asteroids.length; i++) {
 			if (this.asteroids[i].radius <= 30) {
 				this.asteroids.splice(i, 1);
+			};
+		};
+	},
+
+	shipCollision: function () {
+		for (var i = 0; i < this.asteroids.length; i++) {
+			if (this.asteroids[i].hit(this.spaceShip)) {
+				return true;
+			};
+		};
+		return false;
+	},
+
+	clearBullets: function () {
+		for (var i = 0; i < this.bullets.length; i++) {
+			var x = this.bullets[i].xCoordinate;
+			var y = this.bullets[i].yCoordinate;
+			if (x > 1000 || x < 0 || y > 500 || y < 0) {
+				this.bullets.splice(i, 1);
 			};
 		};
 	},
@@ -187,8 +205,6 @@ MY_APP.model.Bullet = function (x, y, course) {
 	this.yCoordinate = y;
 	this.course = course;
 	this.speed = 10;
-	this.bID = MY_APP.model.bulletID;
-	MY_APP.model.bulletID += 1;
 };
 
 MY_APP.model.Bullet.prototype.move = function () {
@@ -212,12 +228,13 @@ MY_APP.model.Bullet.prototype.hit = function (asteroid) {
 // Asteroid Constructor
 
 MY_APP.model.Asteroid = function (x, y, vx, vy) {
+	var color = ["red", "green", "blue", "white", "yellow"]
+	var colorSample = color[Math.floor(Math.random() * color.length)];
 	this.xCoordinate = x;
 	this.yCoordinate = y;
 	this.xVelocity = vx;
 	this.yVelocity = vy;
-	this.aID = MY_APP.model.asteroidsID;
-	MY_APP.model.asteroidsID += 1;
+	this.paintcolor = colorSample;
 };
 
 MY_APP.model.Asteroid.prototype.tic = function () {
@@ -232,5 +249,27 @@ MY_APP.model.Asteroid.prototype.explode = function () {
 	var radius = this.radius;
 	for (var i = 0; i < pieces; i++) {
 		MY_APP.model.generateAsteroidPiece(x, y, radius);
+	};
+};
+MY_APP.model.Asteroid.prototype.explode = function () {
+	var pieces = Math.floor(Math.random() * 3 + 2);
+	var x = this.xCoordinate;
+	var y = this.yCoordinate;
+	var radius = this.radius;
+	for (var i = 0; i < pieces; i++) {
+		MY_APP.model.generateAsteroidPiece(x, y, radius, this.paintcolor);
+	};
+};
+
+MY_APP.model.Asteroid.prototype.hit = function (spaceShip) {
+	var xAsteroid = this.xCoordinate;
+	var yAsteroid = this.yCoordinate;
+	var xShip = spaceShip.xCoordinate;
+	var yShip = spaceShip.yCoordinate;
+	var distance = Math.sqrt((xAsteroid - xShip) * (xAsteroid - xShip) + (yAsteroid - yShip) * (yAsteroid - yShip));
+	if (distance < this.radius) {
+		return true;
+	} else {
+		return false;
 	};
 };

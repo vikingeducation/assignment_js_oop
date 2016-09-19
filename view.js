@@ -23,8 +23,8 @@ MY_APP.view = {
 		this.ctx().fillRect(0, 0, 1000, 500);
 	},
 
-	drawAsteroid: function (asteroid, color) {
-		this.ctx().fillStyle = color;
+	drawAsteroid: function (asteroid) {
+		this.ctx().fillStyle = asteroid.paintcolor;
 		this.ctx().beginPath();
 		var x = asteroid.xCoordinate;
 		var y = asteroid.yCoordinate;
@@ -62,6 +62,10 @@ MY_APP.view = {
 		var anticlockwise = true;
 		this.ctx().arc(x, y, radius, startAngle, endAngle, anticlockwise);
 		this.ctx().fill();
+	},
+
+	showGameOver: function () {
+		$('header h2').html("Game Over")
 	},
 
 

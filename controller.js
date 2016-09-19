@@ -7,19 +7,28 @@ MY_APP.controller = {
 		MY_APP.view.init();
 		MY_APP.model.generateAsteroids();
 		MY_APP.model.generateSpaceShip();
-		setInterval(function () {
+		var myInterval = setInterval(function () {
 			MY_APP.view.initializeBackGround();
 			MY_APP.controller.moveAllAsteroids();
 			MY_APP.controller.moveSpaceShip();
 			MY_APP.controller.moveAllBullets();
+			if (MY_APP.controller.gameOver()) {
+				MY_APP.view.showGameOver();
+				clearInterval(myInterval);
+			};
 		}, 50);
 	},
 
+	gameOver: function () {
+		return MY_APP.model.shipCollision();
+	},
+
 	moveAllBullets: function () {
+		MY_APP.model.clearBullets();
 		var bullets = MY_APP.model.bullets;
 		for (var i = 0; i < bullets.length; i++) {
 			this.moveBullet(bullets[i]);
-		}
+		};
 	},
 
 	moveSpaceShip: function () {
@@ -46,7 +55,7 @@ MY_APP.controller = {
 	// Helper methods
 	moveAsteroid: function (asteroid) {
 		asteroid.tic();
-		MY_APP.view.drawAsteroid(asteroid, "white");
+		MY_APP.view.drawAsteroid(asteroid);
 		MY_APP.model.changeAsteroidCourse(asteroid);
 	},
 

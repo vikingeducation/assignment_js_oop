@@ -18,7 +18,7 @@ Asteroid.prototype = new SpaceObject();
 
 function Ship (x, y) {
   SpaceObject.call(this, x, y);
-  this.SPEED = 0.008;
+  this.SPEED = 0.012;
   this.rotation = 0;
   this.xVelocity = 0;
   this.yVelocity = 0;
@@ -117,6 +117,32 @@ var model = {
     } else if (y < 0) {
       object.yPos = 500;
     }
+  },
+
+
+  checkShipCollision: function(asteroid) {
+    var diffX = asteroid.xPos - this.ship.xPos;
+    var diffY = asteroid.yPos - this.ship.yPos;
+    var rad = asteroid.radius
+    return (diffX*diffX + diffY*diffY <= rad*rad)
+  },
+
+  handleShipCollisions: function() {
+    for (var i = 0; i < this.asteroids.length; i++) {
+      var asteroid = this.asteroids[i];
+      if (this.checkShipCollision(asteroid)) {
+        alert("You died");
+        this.recenterShip();
+        return
+      } 
+    }
+  },
+
+  recenterShip: function() {
+    this.ship.xPos = 250;
+    this.ship.yPos = 250;
+    this.ship.xVelocity = 0;
+    this.ship.yVelocity = 0;
   }
 }
 
@@ -167,9 +193,6 @@ var view = {
     view.ctx.restore();
   },
 
-  rotateShip: function(ship) {
-
-  }
 }
 
 
@@ -178,13 +201,14 @@ var controller = {
     this.keyState = {};
     model.init();
     view.init();
-    this.interval = setInterval(this.playGame, 0.5);
+    this.interval = setInterval(this.playGame, 6);
     this.setEventListeners();
   },
 
   playGame: function(){
     model.moveAsteroids();
     model.moveShip();
+    model.handleShipCollisions();
     view.render();
   },
 

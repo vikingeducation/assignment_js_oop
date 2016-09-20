@@ -38,20 +38,22 @@ function Ship (x, y) {
 
 Ship.prototype = new SpaceObject();
 
-function LaserBeam (x, y) {
+function Laser (x, y) {
   SpaceObject.call(this, x, y);
 }
-LaserBeam.prototype = new SpaceObject();
+Laser.prototype = new SpaceObject();
 
 
 
 var model = {
+  
   init: function() {
     this.createAsteroids();
     this.createShip();
   },
 
   asteroids: [],
+  lasers: [],
   ship: null,
   velocities: [0.4, 0.6, -0.4, -0.6],
 
@@ -82,11 +84,11 @@ var model = {
     this.keepObjectInBounds(this.ship);
 
     // left
-    if (controller.keyState[37] || controller.keyState[65]){
+    if (controller.keyState[37]) {
       this.ship.rotation -= 1;
     }    
     // right
-    if (controller.keyState[39] || controller.keyState[68]){
+    if (controller.keyState[39]) {
       this.ship.rotation += 1;
     }
     // up
@@ -131,10 +133,60 @@ var model = {
     for (var i = 0; i < this.asteroids.length; i++) {
       var asteroid = this.asteroids[i];
       if (this.checkShipCollision(asteroid)) {
-        alert("You died");
+        console.log("You died");
         this.recenterShip();
-        return
+        this.asteroids = [];
+        this.createAsteroids();
       } 
+    }
+  },  
+
+  shootLaser: function(){
+    var xPos = this.ship.xPos,
+        yPos = this.ship.yPos,
+        xVelocity = 2 * Math.cos(utils.toRadians(this.ship.rotation)),
+        yVelocity = 2 * Math.sin(utils.toRadians(this.ship.rotation));
+
+    var laser = new Laser(xPos, yPos)
+    laser.xVelocity = xVelocity;
+    laser.yVelocity = yVelocity;
+
+    this.lasers.push(laser);
+  },
+
+  checkLaserCollision: function(laser, asteroid) {
+    var x = asteroid.xPos - laser.xPos;
+    var y = asteroid.yPos - laser.yPos;
+    var rSum = asteroid.radius + 2;
+    return (x*x + y*y <= rSum*rSum);
+  },
+
+  handleLaserCollision: function() {
+    for (var i = 0; i < this.lasers.length; i++) {
+      for (var j = 0; j < this.asteroids.length; j++) {
+        if (this.checkLaserCollision(this.lasers[i], this.asteroids[j])) {
+          this.explodeAsteroid(this.asteroids[j], j);
+          this.lasers.splice(i, 1);
+        }
+      }
+    }
+  },
+
+  explodeAsteroid: function(a, index) {
+    if (a.radius > 20) {
+      for (var i = 0; i < 3; i ++) {
+        var newA = new Asteroid(a.xPos, a.yPos, a.radius/3);
+        newA.xVelocity = this.randomVelocity();
+        newA.yVelocity = this.randomVelocity();
+        this.asteroids.push(newA);
+      }
+    }
+    this.asteroids.splice(index, 1);
+  },
+
+  moveLasers: function() {
+    for (var i = 0; i < this.lasers.length; i++) {
+      this.lasers[i].tic();
     }
   },
 
@@ -159,8 +211,12 @@ var view = {
     view.ctx.clearRect(0, 0, 500, 500);
     view.placeShip();
     var asteroids = controller.getAsteroids();
-    for(var i = 0; i < asteroids.length; i++) {
+    for (var i = 0; i < asteroids.length; i++) {
       view.placeAsteroid(asteroids[i]);
+    }
+    var lasers = controller.getLasers();
+    for (var j = 0; j < lasers.length; j++) {
+      view.placeLaser(lasers[j]);
     }
     
   },
@@ -169,6 +225,15 @@ var view = {
     view.ctx.beginPath();
     view.ctx.arc(a.xPos, a.yPos, a.radius, 0, 2 * Math.PI);
     view.ctx.fillStyle = 'grey';
+    view.ctx.fill();
+    view.ctx.stroke();
+    view.ctx.closePath();
+  },
+
+  placeLaser: function(a) {
+    view.ctx.beginPath();
+    view.ctx.arc(a.xPos, a.yPos, 2, 0, 2 * Math.PI);
+    view.ctx.fillStyle = 'red';
     view.ctx.fill();
     view.ctx.stroke();
     view.ctx.closePath();
@@ -197,6 +262,9 @@ var view = {
 
 
 var controller = {
+
+  count: 0,
+
   init: function() {
     this.keyState = {};
     model.init();
@@ -208,13 +276,24 @@ var controller = {
   playGame: function(){
     model.moveAsteroids();
     model.moveShip();
+    model.moveLasers();
     model.handleShipCollisions();
+    model.handleLaserCollision();
+    if (controller.count === 0 || controller.count % 40 === 0) {
+      if (controller.keyState[32]) {
+        model.shootLaser();
+      }
+    }
     view.render();
+    controller.count += 1;
   },
 
   setEventListeners: function() {
     $(document).on('keydown', function (e) {
       controller.keyState[e.which] = true;
+      if (e.which === 32) {
+        controller.count = 0;
+      }
     });    
     $(document).on('keyup', function (e) {
       controller.keyState[e.which] = false;
@@ -228,6 +307,10 @@ var controller = {
 
   getShip: function() {
     return model.ship;
+  },
+
+  getLasers: function() {
+    return model.lasers;
   }
 }
 

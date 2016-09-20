@@ -48,11 +48,12 @@ Laser.prototype = new SpaceObject();
 var model = {
   
   init: function() {
-    this.createAsteroids();
+    this.createAsteroids(10);
     this.createShip();
   },
 
   asteroids: [],
+  startingAsteroids: 10,
   lasers: [],
   ship: null,
   velocities: [0.4, 0.6, -0.4, -0.6],
@@ -61,16 +62,32 @@ var model = {
     this.ship = new Ship(250, 250);
   },
 
-  createAsteroids: function() {
-    for(var i = 0; i < 10; i++) {
-      var x = Math.floor(Math.random()* 500) ;
-      var y = Math.floor(Math.random()* 500) ;
+  createAsteroids: function(num) {
+    for(var i = 0; i < num; i++) {
+      var asteroidCoords = this.randomAsteroidStartCoords();
       var radius = Math.floor(Math.random() * 20) + 10;
-      var a = new Asteroid(x,y, radius);
+      var a = new Asteroid(asteroidCoords[0],asteroidCoords[1], radius);
       a.xVelocity = this.randomVelocity();
       a.yVelocity = this.randomVelocity();
       this.asteroids.push(a);
     }
+  },
+
+  randomAsteroidStartCoords: function() {
+    var lowX = Math.floor(Math.random() * 100); 
+    var hiX = Math.floor(Math.random() * 100 + 400);
+    var lowY = Math.floor(Math.random()* 100);
+    var hiY = Math.floor(Math.random()* 100 + 400);
+    var randX = Math.floor(Math.random() * 500);
+    var randY = Math.floor(Math.random() * 500);
+
+    var options = [
+      [lowX, randY],
+      [hiX, randY],
+      [randX, lowY],
+      [randX, hiY]
+    ]
+    return options[Math.floor(Math.random() * options.length)]
   },
 
   moveAsteroids: function() {
@@ -85,11 +102,11 @@ var model = {
 
     // left
     if (controller.keyState[37]) {
-      this.ship.rotation -= 1;
+      this.ship.rotation -= 1.5;
     }    
     // right
     if (controller.keyState[39]) {
-      this.ship.rotation += 1;
+      this.ship.rotation += 1.5;
     }
     // up
     if (controller.keyState[38]){
@@ -135,8 +152,9 @@ var model = {
       if (this.checkShipCollision(asteroid)) {
         console.log("You died");
         this.recenterShip();
+        this.startingAsteroids = 10;
         this.asteroids = [];
-        this.createAsteroids();
+        this.createAsteroids(this.startingAsteroids);
       } 
     }
   },  
@@ -144,8 +162,8 @@ var model = {
   shootLaser: function(){
     var xPos = this.ship.xPos,
         yPos = this.ship.yPos,
-        xVelocity = 2 * Math.cos(utils.toRadians(this.ship.rotation)),
-        yVelocity = 2 * Math.sin(utils.toRadians(this.ship.rotation));
+        xVelocity = 3 * Math.cos(utils.toRadians(this.ship.rotation)),
+        yVelocity = 3 * Math.sin(utils.toRadians(this.ship.rotation));
 
     var laser = new Laser(xPos, yPos)
     laser.xVelocity = xVelocity;
@@ -190,6 +208,16 @@ var model = {
     }
   },
 
+  handleLevelUp: function() {
+    if (this.asteroids.length === 0) {
+      this.recenterShip();
+      this.lasers = [];
+      this.startingAsteroids = Math.floor(this.startingAsteroids * 1.7);
+      console.log(this.startingAsteroids);
+      this.createAsteroids(this.startingAsteroids);
+    }
+  },
+
   recenterShip: function() {
     this.ship.xPos = 250;
     this.ship.yPos = 250;
@@ -197,6 +225,10 @@ var model = {
     this.ship.yVelocity = 0;
   }
 }
+
+
+
+
 
 
 var view = {
@@ -252,7 +284,7 @@ var view = {
     view.ctx.moveTo(x+12, y);
     view.ctx.lineTo(x-6, y-6);
     view.ctx.lineTo(x-6, y+6);
-    view.ctx.fillStyle = 'black';
+    view.ctx.fillStyle = 'white';
     view.ctx.fill();
 
     view.ctx.restore();
@@ -279,6 +311,7 @@ var controller = {
     model.moveLasers();
     model.handleShipCollisions();
     model.handleLaserCollision();
+    model.handleLevelUp();
     if (controller.count === 0 || controller.count % 40 === 0) {
       if (controller.keyState[32]) {
         model.shootLaser();

@@ -100,20 +100,21 @@ var model = {
   moveShip: function () {
     this.keepObjectInBounds(this.ship);
 
+    var key = controller.keyState;
     // left
-    if (controller.keyState[37]) {
+    if (key[37] || key[65]) {
       this.ship.rotation -= 1.5;
     }    
     // right
-    if (controller.keyState[39]) {
+    if (key[39] || key[68]) {
       this.ship.rotation += 1.5;
     }
     // up
-    if (controller.keyState[38]){
+    if (key[38] || key[87]){
       model.ship.throttle(1.01);
     }    
     // down
-    if (controller.keyState[40]){
+    if (key[40] || key[83]){
       model.ship.throttle(-0.9);
     }
 
@@ -155,6 +156,7 @@ var model = {
         this.startingAsteroids = 10;
         this.asteroids = [];
         this.createAsteroids(this.startingAsteroids);
+        controller.resetLevel();
       } 
     }
   },  
@@ -215,6 +217,7 @@ var model = {
       this.startingAsteroids = Math.floor(this.startingAsteroids * 1.7);
       console.log(this.startingAsteroids);
       this.createAsteroids(this.startingAsteroids);
+      controller.levelUp();
     }
   },
 
@@ -233,8 +236,10 @@ var model = {
 
 var view = {
   init: function() {
-
+    this.$levelDisplay.attr("src", "images/" + controller.level + ".png");
   },
+
+  $levelDisplay: $("#level-num"),
 
   canvas: document.getElementById("canvas"),
   ctx: canvas.getContext("2d"),
@@ -252,6 +257,10 @@ var view = {
     }
     
   },
+
+  updateLevel: function() {
+    this.$levelDisplay.attr("src", "images/" + controller.level + ".png");
+  },  
 
   placeAsteroid: function(a) {
     view.ctx.beginPath();
@@ -296,6 +305,7 @@ var view = {
 var controller = {
 
   count: 0,
+  level: 1,
 
   init: function() {
     this.keyState = {};
@@ -321,11 +331,27 @@ var controller = {
     controller.count += 1;
   },
 
+  levelUp: function() {
+    this.level += 1;
+    view.updateLevel();
+  },
+
+  resetLevel: function() {
+    this.level = 1;
+    view.updateLevel();
+  },
+
   setEventListeners: function() {
     $(document).on('keydown', function (e) {
+      console.log(e.which);
       controller.keyState[e.which] = true;
       if (e.which === 32) {
         controller.count = 0;
+      }
+      if (e.which === 37 || e.which === 38 || 
+          e.which === 39 || e.which === 40 ||
+          e.which === 32) {
+        e.preventDefault();
       }
     });    
     $(document).on('keyup', function (e) {

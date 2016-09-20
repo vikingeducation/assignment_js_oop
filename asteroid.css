@@ -14,5 +14,15 @@ body {
 
 #keys1, #keys2 {
   transform: scale(0.4);
+  display: inline-block;
+  text-align: left;
 }
 
+#level, #level-num {
+  transform: scale(0.8);
+}
+
+#hinea_studios {
+  transform: scale(0.7);
+  margin-top: 20px;
+}

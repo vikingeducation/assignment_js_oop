@@ -1,5 +1,9 @@
 * {
   text-align: center;
+  background-color: black;
+}
+
+body {
   margin-top: 20px;
 }
 
@@ -7,3 +11,8 @@
   border: 1px solid black;
   background-color: #1A1A1A;
 }
+
+#keys1, #keys2 {
+  transform: scale(0.4);
+}
+

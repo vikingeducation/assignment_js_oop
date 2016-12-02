@@ -1,0 +1,10 @@
+sprite: has position, velocity
+  ship: inherits from sprite, has health
+  asteroid: inherits from sprite, has size, damage
+  bullet: inherits from sprite, has damage
+
+when asteroid is hit by bullet: create 2 asteroids with size 1 smaller, give them position and velocity, if size was 1 then destroy asteroid, destroy bullet
+
+when ship is hit by asteroid: take damage, brief invincibility?
+
+initialize view: create ship, 3 asteroids with size 3

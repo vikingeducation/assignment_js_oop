@@ -18,9 +18,9 @@ model.boardEdges = {
   left: 0
 };
 
-model.fps = 60;
-model.asteroidMaxSize = 50;
-model.maxSpeed = model.boardEdges.bottom / model.fps / 5;
+model.FPS = 60;
+model.ASTEROID_MAX_SIZE = 50;
+model.MAX_SPEED = model.boardEdges.bottom / model.FPS / 5;
 
 model.Asteroid = function() {
   this.coords = {
@@ -28,10 +28,10 @@ model.Asteroid = function() {
     y: model.randomCoord(model.boardEdges.bottom)
   };
   this.vel = {
-    x: model.randomVelocity(model.maxSpeed),
-    y: model.randomVelocity(model.maxSpeed)
+    x: model.randomVelocity(model.MAX_SPEED),
+    y: model.randomVelocity(model.MAX_SPEED)
   };
-  this.radius = model.randomCoord(model.asteroidMaxSize);
+  this.radius = model.randomCoord(model.ASTEROID_MAX_SIZE);
   model.asteroids.push(this);
 };
 

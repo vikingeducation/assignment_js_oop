@@ -5,8 +5,8 @@ var APP = APP || {};
 APP.game = {
 
   play: function() {
-    APP.asteroid.init();
-    APP.asteroid.createMany(2000);
+    APP.shape.init();
+    APP.asteroid.createMany(5);
     this.interval = setInterval(this.loop, 100);
   },
 

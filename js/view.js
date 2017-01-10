@@ -3,16 +3,17 @@
 var ASTEROIDS = ASTEROIDS || {};
 var view = ASTEROIDS.view = {};
 
-view.init = function(modelAsteroids) {
+view.init = function(modelAsteroids, modelShip) {
   view.two = new Two({
-    width: ASTEROIDS.model.boardEdges.right,
-    height: ASTEROIDS.model.boardEdges.bottom
+    width: ASTEROIDS.boardEdges.right,
+    height: ASTEROIDS.boardEdges.bottom
   });
   var canvas = document.getElementById('canvas');
   view.two.appendTo(canvas);
   for (var i = 0; i < modelAsteroids.length; i++) {
     view.createAsteroid(modelAsteroids[i]);
   }
+  view.createShip(modelShip);
 };
 
 view.asteroids = [];
@@ -30,6 +31,19 @@ view.moveAsteroid = function(viewAsteroid) {
   viewAsteroid.translation.x = modelCoords.x;
   viewAsteroid.translation.y = modelCoords.y;
 };
+
+view.createShip = function(modelShip) {
+  var viewShip = view.two.makeCircle(modelShip.coords.x, modelShip.coords.y, modelShip.radius);
+  var muzzle = view.two.makeRectangle(modelShip.coords.x,
+    modelShip.coords.y - modelShip.radius,
+    10, 3)
+  viewShip.fill = 'magenta';
+  muzzle.fill = '#4285F4';
+
+  var shipGroup = view.two.makeGroup();
+  shipGroup.add(viewShip);
+  shipGroup.add(muzzle);
+}
 
 
 // var circle = view.two.makeCircle(72, 100, 50);

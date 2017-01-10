@@ -11,7 +11,7 @@ model.randomVelocity = function(max) {
   return Math.random() * plusOrMinus * max;
 };
 
-model.boardSize = {
+model.boardEdges = {
   top: 0,
   right: 600,
   bottom: 500,
@@ -20,12 +20,12 @@ model.boardSize = {
 
 model.fps = 60;
 model.asteroidMaxSize = 50;
-model.maxSpeed = model.boardSize.bottom / model.fps / 5;
+model.maxSpeed = model.boardEdges.bottom / model.fps / 5;
 
 model.Asteroid = function() {
   this.coords = {
-    x: model.randomCoord(model.boardSize.right),
-    y: model.randomCoord(model.boardSize.bottom)
+    x: model.randomCoord(model.boardEdges.right),
+    y: model.randomCoord(model.boardEdges.bottom)
   };
   this.vel = {
     x: model.randomVelocity(model.maxSpeed),
@@ -35,9 +35,21 @@ model.Asteroid = function() {
   model.asteroids.push(this);
 };
 
+model.edgeWrap = function(coord, edge) {
+  coord %= edge;
+  if (coord < 0) {
+    coord += edge;
+  }
+  return coord;
+};
+
 model.Asteroid.prototype.tic = function() {
   this.coords.x += this.vel.x;
   this.coords.y += this.vel.y;
+
+  this.coords.x = model.edgeWrap(this.coords.x, model.boardEdges.right);
+  this.coords.y = model.edgeWrap(this.coords.y, model.boardEdges.bottom);
+
 };
 
 model.asteroids = [];
@@ -48,10 +60,10 @@ model.tic = function() {
   }
 };
 
-model.init = function() {
-  new model.Asteroid();
-  new model.Asteroid();
-  new model.Asteroid();
+model.init = function(count) {
+  for (var i = 0; i < count; i++) {
+    new model.Asteroid();
+  }
 };
 
 model.benchmark = function(times) {

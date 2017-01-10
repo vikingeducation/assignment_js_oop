@@ -7,11 +7,8 @@ controller.init = function() {
   var model = ASTEROIDS.model;
   var view = ASTEROIDS.view;
 
-  model.init();
-  view.init();
-  view.createAsteroid(model.asteroids[0]);
-  view.createAsteroid(model.asteroids[1]);
-  view.createAsteroid(model.asteroids[2]);
+  model.init(10);
+  view.init(model.asteroids);
 
   view.two.bind('update', function(frameCount) {
     model.tic();

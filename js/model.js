@@ -27,11 +27,12 @@ model.Asteroid = function() {
     x: model.randomCoord(model.maxSpeed),
     y: model.randomCoord(model.maxSpeed)
   };
-  this.tic = function() {
-    this.coords.x += this.vel.x;
-    this.coords.y += this.vel.y;
-  };
   model.asteroids.push(this);
+};
+
+model.Asteroid.prototype.tic = function() {
+  this.coords.x += this.vel.x;
+  this.coords.y += this.vel.y;
 };
 
 model.asteroids = [];
@@ -42,6 +43,19 @@ model.tic = function() {
   }
 };
 
-model.benchmark = function() {
+model.benchmark = function(times) {
+  var startTime = new Date();
+  for (var i = 0; i < times; i++) {
+    new model.Asteroid();
+  }
+  var afterAsteroidTime = new Date();
+  for (var j = 0; j < times; j++) {
+    model.tic();
+  }
+  var endTime = new Date();
 
+  var asteroidMsg = `The time to make asteroids: ${afterAsteroidTime - startTime}`;
+  var animateMsg = `The time to animate asteroids: ${endTime - startTime}`;
+  console.log(asteroidMsg);
+  console.log(animateMsg)
 };

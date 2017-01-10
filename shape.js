@@ -9,11 +9,6 @@ APP.shape = function Shape(options) {
   this.fill = options.fill;
 };
 
-APP.shape.init = function() {
-  this.prototype.canvas = APP.canvas;
-  this.prototype.ctx = APP.ctx;
-};
-
 APP.shape.prototype.move = function() {
   this._tic(); // change for SHAPE
   this._adjustBounds();

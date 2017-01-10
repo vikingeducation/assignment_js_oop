@@ -11,6 +11,11 @@ APP.asteroid = function Asteroid(options) {
 APP.asteroid.prototype = Object.create(APP.shape.prototype);
 APP.asteroid.prototype.constructor = APP.asteroid;
 
+APP.asteroid.init = function() {
+  this.prototype.canvas = APP.asteroidCanvas;
+  this.prototype.ctx = APP.asteroidCanvas.getContext("2d");
+};
+
 APP.asteroid.prototype._tic = function() {
   this.coords.x += this.vel.x;
   this.coords.y += this.vel.y;

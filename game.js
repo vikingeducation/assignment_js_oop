@@ -5,7 +5,9 @@ var APP = APP || {};
 APP.game = {
 
   play: function() {
-    APP.shape.init();
+    APP.asteroid.init();
+    APP.gameWindow.init();
+    // APP.ship.init();
     APP.asteroid.createMany(5);
     this.interval = setInterval(this.loop, 100);
   },
@@ -15,7 +17,7 @@ APP.game = {
   },
 
   loop: function() {
-    APP.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    APP.gameWindow.clearContexts();
     APP.gameWindow.moveAsteroids();
   },
 

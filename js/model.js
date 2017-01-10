@@ -35,10 +35,12 @@ model.Asteroid = function() {
   model.asteroids.push(this);
 };
 
-model.edgeWrap = function(coord, edge) {
-  coord %= edge;
-  if (coord < 0) {
-    coord += edge;
+model.edgeWrap = function(coord, edge, radius) {
+  if (coord > edge + radius) {
+    coord = 0 - radius;
+  }
+  if (coord < 0 - radius) {
+    coord = edge + radius;
   }
   return coord;
 };
@@ -47,8 +49,8 @@ model.Asteroid.prototype.tic = function() {
   this.coords.x += this.vel.x;
   this.coords.y += this.vel.y;
 
-  this.coords.x = model.edgeWrap(this.coords.x, model.boardEdges.right);
-  this.coords.y = model.edgeWrap(this.coords.y, model.boardEdges.bottom);
+  this.coords.x = model.edgeWrap(this.coords.x, model.boardEdges.right, this.radius);
+  this.coords.y = model.edgeWrap(this.coords.y, model.boardEdges.bottom, this.radius);
 
 };
 

@@ -7,7 +7,8 @@ APP.game = {
   play: function() {
     APP.asteroid.init();
     APP.gameWindow.init();
-    // APP.ship.init();
+    APP.ship.init();
+    APP.ship.create();
     APP.asteroid.createMany(5);
     this.interval = setInterval(this.loop, 100);
   },
@@ -18,7 +19,7 @@ APP.game = {
 
   loop: function() {
     APP.gameWindow.clearContexts();
-    APP.gameWindow.moveAsteroids();
+    APP.gameWindow.updateContexts();
   },
 
   benchmark: function() {

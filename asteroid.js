@@ -4,8 +4,8 @@ var APP = APP || {};
 
 APP.asteroid = function Asteroid(options) {
   this.radius = options.radius;
-  APP.gameWindow.asteroids.push(this);
   APP.shape.call(this, options);
+  APP.gameWindow.asteroids.push(this);
 };
 
 APP.asteroid.prototype = Object.create(APP.shape.prototype);

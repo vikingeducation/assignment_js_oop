@@ -10,5 +10,17 @@ APP.gameWindow = {
     this.asteroids.forEach(function(asteroid) {
       asteroid.tic();
     });
-  }
-}
+  },
+
+  drawAsteroids: function() {
+    this.asteroids.forEach(function(asteroid) {
+      asteroid.draw();
+    });
+  },
+
+  clearAsteroids: function() {
+    this.asteroids.forEach(function(asteroid) {
+      asteroid.clear();
+    });
+  },
+};

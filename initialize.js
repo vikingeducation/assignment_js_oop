@@ -3,6 +3,8 @@
 var APP = APP || {};
 
 $(function(){
-  // APP.game.play();
-  APP.game.benchmark();
+  // APP.game.benchmark();
+  APP.canvas = document.getElementById('canvas');
+  APP.ctx = APP.canvas.getContext('2d');
+  APP.game.play();
 });

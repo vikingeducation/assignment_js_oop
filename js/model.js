@@ -32,7 +32,7 @@ model.Ship = function() {
 
   this.radius = model.SHIP_SIZE;
   this.ROTATION_SPEED = 15 / model.FPS;
-  this.ACCELERATION = 50;
+  this.ACCELERATION = 1;
   this.heading = 0;
   this.rotate = function(leftOrRight) {
     if (leftOrRight === "left") {
@@ -42,8 +42,8 @@ model.Ship = function() {
     }
   };
   this.accelerate = function() {
-    var xHeading = Math.cos(this.heading);
-    var yHeading = Math.sin(this.heading);
+    var xHeading = Math.sin(this.heading);
+    var yHeading = -Math.cos(this.heading);
 
     this.vel.x += xHeading * this.ACCELERATION;
     this.vel.y += yHeading * this.ACCELERATION;
@@ -55,7 +55,7 @@ model.Ship = function() {
 
     this.coords.x = model.edgeWrap(this.coords.x, ASTEROIDS.boardEdges.right, this.radius);
     this.coords.y = model.edgeWrap(this.coords.y, ASTEROIDS.boardEdges.bottom, this.radius);
-  }
+  };
 };
 
 model.Asteroid = function() {

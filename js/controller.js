@@ -16,6 +16,7 @@ controller.init = function() {
       view.moveAsteroid(view.asteroids[i]);
     }
     view.rotateShip(model.ship.heading);
+    view.moveShip(model.ship);
   });
 
   view.two.play();

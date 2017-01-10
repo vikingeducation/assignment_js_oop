@@ -42,7 +42,6 @@ view.createAsteroid = function(modelAsteroid) {
 };
 
 view.moveAsteroid = function(viewAsteroid) {
-  // var velocity = viewAsteroid.model.vel;
   var modelCoords = viewAsteroid.model.coords;
   viewAsteroid.translation.x = modelCoords.x;
   viewAsteroid.translation.y = modelCoords.y;
@@ -79,6 +78,11 @@ view.createShip = function(modelShip) {
 
 view.rotateShip = function(rotation) {
   view.ship.rotation = rotation;
+};
+
+view.moveShip = function(modelShip) {
+  view.ship.translation.x = modelShip.coords.x;
+  view.ship.translation.y = modelShip.coords.y;
 };
 
 

@@ -8,8 +8,8 @@ view.init = function(modelAsteroids) {
     width: ASTEROIDS.model.boardEdges.right,
     height: ASTEROIDS.model.boardEdges.bottom
   });
-  var twoWrapper = document.getElementById('two-wrapper');
-  view.two.appendTo(twoWrapper);
+  var canvas = document.getElementById('canvas');
+  view.two.appendTo(canvas);
   for (var i = 0; i < modelAsteroids.length; i++) {
     view.createAsteroid(modelAsteroids[i]);
   }

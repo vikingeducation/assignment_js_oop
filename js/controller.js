@@ -7,7 +7,7 @@ controller.init = function() {
   var model = ASTEROIDS.model;
   var view = ASTEROIDS.view;
 
-  model.init(10);
+  model.init(5);
   view.init(model.asteroids, model.ship, controller.handlers);
 
   view.two.bind('update', function(frameCount) {

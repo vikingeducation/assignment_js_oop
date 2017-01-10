@@ -27,7 +27,7 @@ view.setupHandlers = function(handlers) {
       handlers.rotateShip("right");
     }
     if (e.which === 38) {
-      handlers.accelerateShip()
+      handlers.accelerateShip();
     }
   });
 };

@@ -17,6 +17,10 @@ controller.init = function() {
     }
     view.rotateShip(model.ship.heading);
     view.moveShip(model.ship);
+    if (model.gameOver) {
+      console.log('should not be moving');
+      view.two.pause();
+    }
   });
 
   view.two.play();

@@ -89,6 +89,7 @@ model.tic = function() {
     model.asteroids[i].tic();
   }
   model.ship.tic();
+  model.detectCollision();
 };
 
 model.edgeWrap = function(coord, edge, radius) {
@@ -101,9 +102,30 @@ model.edgeWrap = function(coord, edge, radius) {
   return coord;
 };
 
+model.detectCollision = function() {
+  var shipX = this.ship.coords.x;
+  var shipY = this.ship.coords.y;
+  console.log('in detect col')
+  for (var i = 0; i < this.asteroids.length; i++) {
+    var dx = this.asteroids[i].coords.x - shipX;
+    var dy = this.asteroids[i].coords.y - shipY;
+    console.log('in for')
+    console.log(`ship coords ${shipX} ${shipY}`)
+    console.log(`ship radius ${this.ship.radius}`)
+    console.log(`asteroids coords ${this.asteroids[i].coords.x} ${this.asteroids[i].coords.x}`)
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < this.ship.radius + this.asteroids[i].radius) {
+      console.log('ship hit')
+      this.gameOver = true;
+    }
+  }
+}
+
 // Init
 
 model.init = function(count) {
+  this.gameOver = false;
   this.asteroids = [];
   for (var i = 0; i < count; i++) {
     new model.Asteroid();

@@ -24,6 +24,10 @@ controller.init = function() {
 controller.handlers = {
   rotateShip: function(direction) {
     model.ship.rotate(direction);
+  },
+
+  accelerateShip: function() {
+    model.ship.accelerate();
   }
 };
 

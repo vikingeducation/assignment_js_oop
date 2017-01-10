@@ -23,8 +23,11 @@ view.setupHandlers = function(handlers) {
     if (e.which === 37) { // left
       handlers.rotateShip("left");
     }
-    if (e.which === 38) { // right
+    if (e.which === 39) { // right
       handlers.rotateShip("right");
+    }
+    if (e.which === 38) {
+      handlers.accelerateShip()
     }
   });
 };
@@ -67,6 +70,9 @@ view.createShip = function(modelShip) {
   shipGroup.add(muzzle);
   shipGroup.add(leftFin);
   shipGroup.add(rightFin);
+  shipGroup.center();
+  shipGroup.translation.x = modelShip.coords.x;
+  shipGroup.translation.y = modelShip.coords.y;
 
   return shipGroup;
 };

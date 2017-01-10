@@ -31,7 +31,8 @@ model.Ship = function() {
   },
 
   this.radius = model.SHIP_SIZE;
-  this.ROTATION_SPEED = 1 / model.FPS;
+  this.ROTATION_SPEED = 15 / model.FPS;
+  this.ACCELERATION = 50;
   this.heading = 0;
   this.rotate = function(leftOrRight) {
     if (leftOrRight === "left") {
@@ -40,6 +41,21 @@ model.Ship = function() {
       this.heading += this.ROTATION_SPEED;
     }
   };
+  this.accelerate = function() {
+    var xHeading = Math.cos(this.heading);
+    var yHeading = Math.sin(this.heading);
+
+    this.vel.x += xHeading * this.ACCELERATION;
+    this.vel.y += yHeading * this.ACCELERATION;
+  };
+
+  this.tic = function() {
+    this.coords.x += this.vel.x;
+    this.coords.y += this.vel.y;
+
+    this.coords.x = model.edgeWrap(this.coords.x, ASTEROIDS.boardEdges.right, this.radius);
+    this.coords.y = model.edgeWrap(this.coords.y, ASTEROIDS.boardEdges.bottom, this.radius);
+  }
 };
 
 model.Asteroid = function() {
@@ -63,7 +79,6 @@ model.Asteroid.prototype.tic = function() {
 
   this.coords.x = model.edgeWrap(this.coords.x, ASTEROIDS.boardEdges.right, this.radius);
   this.coords.y = model.edgeWrap(this.coords.y, ASTEROIDS.boardEdges.bottom, this.radius);
-
 };
 
 
@@ -73,6 +88,7 @@ model.tic = function() {
   for (var i = 0; i < model.asteroids.length; i++) {
     model.asteroids[i].tic();
   }
+  model.ship.tic();
 };
 
 model.edgeWrap = function(coord, edge, radius) {

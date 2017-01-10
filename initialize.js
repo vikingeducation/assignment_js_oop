@@ -3,5 +3,6 @@
 var APP = APP || {};
 
 $(function(){
-  APP.game.play();
+  // APP.game.play();
+  APP.game.benchmark();
 });

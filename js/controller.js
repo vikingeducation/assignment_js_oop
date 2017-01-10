@@ -8,16 +8,23 @@ controller.init = function() {
   var view = ASTEROIDS.view;
 
   model.init(10);
-  view.init(model.asteroids, model.ship);
+  view.init(model.asteroids, model.ship, controller.handlers);
 
   view.two.bind('update', function(frameCount) {
     model.tic();
     for (var i = 0; i < view.asteroids.length; i++) {
       view.moveAsteroid(view.asteroids[i]);
     }
+    view.rotateShip(model.ship.heading);
   });
 
   view.two.play();
+};
+
+controller.handlers = {
+  rotateShip: function(direction) {
+    model.ship.rotate(direction);
+  }
 };
 
 controller.init();

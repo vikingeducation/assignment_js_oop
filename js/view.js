@@ -3,7 +3,7 @@
 var ASTEROIDS = ASTEROIDS || {};
 var view = ASTEROIDS.view = {};
 
-view.init = function(modelAsteroids, modelShip) {
+view.init = function(modelAsteroids, modelShip, handlers) {
   view.two = new Two({
     width: ASTEROIDS.boardEdges.right,
     height: ASTEROIDS.boardEdges.bottom
@@ -13,7 +13,20 @@ view.init = function(modelAsteroids, modelShip) {
   for (var i = 0; i < modelAsteroids.length; i++) {
     view.createAsteroid(modelAsteroids[i]);
   }
-  view.createShip(modelShip);
+  view.ship = view.createShip(modelShip);
+  view.setupHandlers(handlers);
+};
+
+view.setupHandlers = function(handlers) {
+  $(document).on('keydown', function(e) {
+    console.log(e.which);
+    if (e.which === 37) { // left
+      handlers.rotateShip("left");
+    }
+    if (e.which === 38) { // right
+      handlers.rotateShip("right");
+    }
+  });
 };
 
 view.asteroids = [];
@@ -54,6 +67,12 @@ view.createShip = function(modelShip) {
   shipGroup.add(muzzle);
   shipGroup.add(leftFin);
   shipGroup.add(rightFin);
+
+  return shipGroup;
+};
+
+view.rotateShip = function(rotation) {
+  view.ship.rotation = rotation;
 };
 
 

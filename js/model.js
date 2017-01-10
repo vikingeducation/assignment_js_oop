@@ -31,6 +31,15 @@ model.Ship = function() {
   },
 
   this.radius = model.SHIP_SIZE;
+  this.ROTATION_SPEED = 1 / model.FPS;
+  this.heading = 0;
+  this.rotate = function(leftOrRight) {
+    if (leftOrRight === "left") {
+      this.heading -= this.ROTATION_SPEED;
+    } else {
+      this.heading += this.ROTATION_SPEED;
+    }
+  };
 };
 
 model.Asteroid = function() {

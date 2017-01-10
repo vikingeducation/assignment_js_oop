@@ -15,7 +15,7 @@ model.boardSize = {
 };
 
 model.fps = 30;
-
+model.asteroidMaxSize = 50;
 model.maxSpeed = model.boardSize.bottom / model.fps;
 
 model.Asteroid = function() {
@@ -27,6 +27,7 @@ model.Asteroid = function() {
     x: model.randomCoord(model.maxSpeed),
     y: model.randomCoord(model.maxSpeed)
   };
+  this.radius = model.randomCoord(model.asteroidMaxSize);
   model.asteroids.push(this);
 };
 
@@ -43,6 +44,12 @@ model.tic = function() {
   }
 };
 
+model.init = function() {
+  new model.Asteroid();
+  new model.Asteroid();
+  new model.Asteroid();
+};
+
 model.benchmark = function(times) {
   var startTime = new Date();
   for (var i = 0; i < times; i++) {
@@ -57,5 +64,5 @@ model.benchmark = function(times) {
   var asteroidMsg = `The time to make asteroids: ${afterAsteroidTime - startTime}`;
   var animateMsg = `The time to animate asteroids: ${endTime - startTime}`;
   console.log(asteroidMsg);
-  console.log(animateMsg)
+  console.log(animateMsg);
 };

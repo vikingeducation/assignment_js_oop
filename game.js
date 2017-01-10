@@ -3,9 +3,10 @@
 var APP = APP || {};
 
 APP.game = {
+
   play: function() {
     APP.asteroid.init();
-    APP.asteroid.createMany(10);
+    APP.asteroid.createMany(2000);
     this.interval = setInterval(this.loop, 100);
   },
 
@@ -14,9 +15,8 @@ APP.game = {
   },
 
   loop: function() {
-    APP.gameWindow.clearAsteroids();
-    APP.gameWindow.ticAsteroids();
-    APP.gameWindow.drawAsteroids();
+    APP.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    APP.gameWindow.moveAsteroids();
   },
 
   benchmark: function() {

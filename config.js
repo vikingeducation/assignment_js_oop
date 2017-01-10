@@ -3,13 +3,10 @@
 var APP = APP || {};
 
 APP.CONFIG = {
-  asteroid: {
-    radius: 10
-  },
 
   canvas: {
-    width: 500,
-    height: 500
+    width: 1000,
+    height: 1000
   }
 
 };

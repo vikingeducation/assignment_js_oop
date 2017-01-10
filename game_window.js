@@ -6,21 +6,9 @@ APP.gameWindow = {
 
   asteroids: [],
 
-  ticAsteroids: function() {
+  moveAsteroids: function() {
     this.asteroids.forEach(function(asteroid) {
-      asteroid.tic();
+      asteroid.move();
     });
-  },
-
-  drawAsteroids: function() {
-    this.asteroids.forEach(function(asteroid) {
-      asteroid.draw();
-    });
-  },
-
-  clearAsteroids: function() {
-    this.asteroids.forEach(function(asteroid) {
-      asteroid.clear();
-    });
-  },
+  }
 };

@@ -6,6 +6,10 @@ var model = ASTEROIDS.model = {};
 model.randomCoord = function(max) {
   return Math.random() * max;
 };
+model.randomVelocity = function(max) {
+  var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+  return Math.random() * plusOrMinus * max;
+};
 
 model.boardSize = {
   top: 0,
@@ -14,9 +18,9 @@ model.boardSize = {
   left: 0
 };
 
-model.fps = 30;
+model.fps = 60;
 model.asteroidMaxSize = 50;
-model.maxSpeed = model.boardSize.bottom / model.fps;
+model.maxSpeed = model.boardSize.bottom / model.fps / 5;
 
 model.Asteroid = function() {
   this.coords = {
@@ -24,8 +28,8 @@ model.Asteroid = function() {
     y: model.randomCoord(model.boardSize.bottom)
   };
   this.vel = {
-    x: model.randomCoord(model.maxSpeed),
-    y: model.randomCoord(model.maxSpeed)
+    x: model.randomVelocity(model.maxSpeed),
+    y: model.randomVelocity(model.maxSpeed)
   };
   this.radius = model.randomCoord(model.asteroidMaxSize);
   model.asteroids.push(this);

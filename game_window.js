@@ -4,6 +4,7 @@ var APP = APP || {};
 
 APP.gameWindow = {
 
+  // bring to the model
   asteroids: [],
 
   canvases: [],

@@ -19,7 +19,11 @@ controller.init = function() {
     view.rotateShip(model.ship.heading);
     view.moveShip(model.ship);
     if (model.gameOver) {
-      console.log('should not be moving');
+      $('#flash').text("Game over");
+      view.two.pause();
+    }
+    if (model.asteroids.length === 0) {
+      $('#flash').text("Victory!");
       view.two.pause();
     }
     view.expandShip(model.ship.radius);

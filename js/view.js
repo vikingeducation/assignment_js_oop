@@ -19,7 +19,6 @@ view.init = function(modelAsteroids, modelShip, handlers) {
 
 view.setupHandlers = function(handlers) {
   $(document).on('keydown', function(e) {
-    console.log(e.which);
     if (e.which === 37) { // left
       handlers.rotateShip("left");
     }

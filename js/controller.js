@@ -24,7 +24,6 @@ controller.init = function() {
     }
     if (model.asteroids.length === 0) {
       $('#flash').text("Victory!");
-      view.two.pause();
     }
     view.expandShip(model.ship.radius);
   });

@@ -15,7 +15,7 @@ model.FPS = 60;
 model.ASTEROID_MAX_SIZE = 50;
 model.ASTEROID_MIN_SIZE = model.ASTEROID_MAX_SIZE / 4;
 model.MAX_SPEED = ASTEROIDS.boardEdges.bottom / model.FPS / 5;
-model.SHIP_SIZE = 15;
+model.SHIP_SIZE = 20;
 
 // Constructors
 
@@ -68,6 +68,12 @@ model.Asteroid = function() {
     y: model.randomVelocity(model.MAX_SPEED)
   };
   this.radius = model.randomCoord(model.ASTEROID_MAX_SIZE, model.ASTEROID_MIN_SIZE);
+  this.destroyed = false;
+  this.destroy = function() {
+    this.destroyed = true;
+    var index = model.asteroids.indexOf(this);
+    model.asteroids.splice(index, 1);
+  };
 
   model.asteroids.push(this);
 };
@@ -105,22 +111,21 @@ model.edgeWrap = function(coord, edge, radius) {
 model.detectCollision = function() {
   var shipX = this.ship.coords.x;
   var shipY = this.ship.coords.y;
-  console.log('in detect col')
   for (var i = 0; i < this.asteroids.length; i++) {
     var dx = this.asteroids[i].coords.x - shipX;
     var dy = this.asteroids[i].coords.y - shipY;
-    console.log('in for')
-    console.log(`ship coords ${shipX} ${shipY}`)
-    console.log(`ship radius ${this.ship.radius}`)
-    console.log(`asteroids coords ${this.asteroids[i].coords.x} ${this.asteroids[i].coords.x}`)
     var distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance < this.ship.radius + this.asteroids[i].radius) {
-      console.log('ship hit')
-      this.gameOver = true;
+      if (this.ship.radius > this.asteroids[i].radius) {
+        this.ship.radius += 15;
+        this.asteroids[i].destroy();
+      } else {
+        this.gameOver = true;
+      }
     }
   }
-}
+};
 
 // Init
 

@@ -14,6 +14,7 @@ controller.init = function() {
     model.tic();
     for (var i = 0; i < view.asteroids.length; i++) {
       view.moveAsteroid(view.asteroids[i]);
+      view.removeAsteroid(view.asteroids[i]);
     }
     view.rotateShip(model.ship.heading);
     view.moveShip(model.ship);
@@ -21,6 +22,7 @@ controller.init = function() {
       console.log('should not be moving');
       view.two.pause();
     }
+    view.expandShip(model.ship.radius);
   });
 
   view.two.play();
@@ -33,7 +35,7 @@ controller.handlers = {
 
   accelerateShip: function() {
     model.ship.accelerate();
-  }
+  },
 };
 
 controller.init();

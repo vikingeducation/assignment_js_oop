@@ -85,6 +85,16 @@ view.moveShip = function(modelShip) {
   view.ship.translation.y = modelShip.coords.y;
 };
 
+view.expandShip = function(radius) {
+  view.ship.scale = radius / 20;
+};
+
+view.removeAsteroid = function(viewAsteroid) {
+  if (viewAsteroid.model.destroyed === true) {
+    view.two.remove(viewAsteroid);
+  }
+};
+
 
 // var circle = view.two.makeCircle(72, 100, 50);
 // var rect = view.two.makeRectangle(213, 100, 100, 100);

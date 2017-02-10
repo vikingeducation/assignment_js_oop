@@ -1,0 +1,5 @@
+// Option 1: The Hacky Way
+myObj.__proto__ = myParentObj
+
+// Option 2: The Less Hacky Way
+Object.setPrototypeOf( myObj, myParentObj )

@@ -1,7 +1,7 @@
 var Asteroid = function(x, y, velocityX, velocityY){
   this.coordX = x;
   this.coordY = y;
-  
+
   this.velocityX = velocityX;
   this.velocityY = velocityY;
 };
@@ -20,22 +20,12 @@ var interval = setInterval(function(){
   testAst.tic()
   stop++
   if (stop === 5) {
-    clearInterval(interval)  
+    clearInterval(interval)
   }
 }, 1000)
 
 
 //'psuedo-classical', or prototypal: uses less space
 //but takes longer to run as it has a lookup chain
-
-
-var getRand = function(){
-  return Math.floor(Math.random() * 10);
-};
-
-
-for (var i = 0; i < 100; i++){
-  
-}
 
 //

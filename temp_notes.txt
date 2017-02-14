@@ -1,5 +1,28 @@
+https://www.youtube.com/watch?v=PMfcsYzj-9M#t=730 
+
+the 2 ways to create an object with protypal assign:
+  Creating objects using the more common constructor pattern
+  Creating objects using the newer Object.create syntax
+
 // Option 1: The Hacky Way
 myObj.__proto__ = myParentObj
 
 // Option 2: The Less Hacky Way
 Object.setPrototypeOf( myObj, myParentObj )
+
+~~
+
+// Examine the prototype in a more "official" way
+Object.getPrototypeOf(childObj);
+//=> Object {howdy: "neighbor"}
+
+// Set a new prototype the more "official" way
+Object.setPrototypeOf(childObj, someOtherObj);
+
+~~
+
+
+// The prototype of an anonymous object:
+var foo = { a: "b" }
+foo.__proto__
+//=> Object {}

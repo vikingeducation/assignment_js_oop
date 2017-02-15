@@ -1,7 +1,11 @@
 "use strict;"
 
 var ASTEROIDS = ASTEROIDS || {};
+ASTEROIDS.VIEW = {};
+var view = ASTEROIDS.VIEW;
 
-ASTEROIDS.VIEW = {
+view.init = function(){
 
-};
+    };
+
+view.render

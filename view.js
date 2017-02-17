@@ -8,4 +8,11 @@ view.init = function(){
 
     };
 
-view.render
+view.render = function(){
+
+};
+
+
+view.renderAsteroids = function(){
+
+};

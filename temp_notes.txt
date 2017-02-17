@@ -1,3 +1,7 @@
+http://simonsarris.com/making-html5-canvas-useful/
+
+
+
 https://www.youtube.com/watch?v=PMfcsYzj-9M#t=730
 
 the 2 ways to create an object with protypal assign:

@@ -5,7 +5,25 @@ ASTEROIDS.MODEL = {};
 var model = ASTEROIDS.MODEL;
 
 model.init = function(){
+  model.createAsteroids(3);
+};
 
+model.canvasWidth = 500;
+model.canvasHeight = 500;
+
+model.randomCoord = function(){
+  var maxPixelValue = model.canvasWidth;
+  return Math.floor(Math.random() * maxPixelValue);
+};
+
+model.randomVelocity = function(){
+  var maxVelocityValue = 20;
+  return Math.floor(Math.random() * maxVelocityValue);
+};
+
+model.randomSize = function(){
+  var maxVelocityValue = 20;
+  return Math.floor(Math.random() * maxVelocityValue);
 };
 
 model.Asteroid = function(size, x, y, velocityX, velocityY){
@@ -23,12 +41,19 @@ model.Asteroid.prototype.tic = function(){
   this.coordY += this.velocityY;
 };
 
-model.allAstroids = [];
+model.allAsteroids = [];
 
-model.createAstroids = function(amount){
-  var size, x, y, xVelocity, yVelocity;
+model.createAsteroids = function(amount){
+  var size, x, y, velocityX, velocityY;
 
   for (var i = 0; i <= amount; i++) {
-    new Astroid();
+    size = 20;
+    x = model.randomCoord();
+    y = model.randomCoord();
+    velocityX = model.randomVelocity();
+    velocityY = model.randomVelocity();
+
+    var currentAsteroid = new ASTEROIDS.MODEL.Asteroid(size, x, y, velocityX, velocityY);
+    model.allAsteroids.push(currentAsteroid);
   }
 };

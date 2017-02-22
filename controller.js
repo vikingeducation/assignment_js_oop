@@ -2,11 +2,15 @@
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.CONTROLLER = {};
+
+//shortcut to access controller subspace
 var controller = ASTEROIDS.CONTROLLER;
 
 controller.init = function(){
   ASTEROIDS.MODEL.init();
   ASTEROIDS.VIEW.init();
+
+  controller.render();
 
   // controller.play();
 };
@@ -20,8 +24,8 @@ controller.play = function(miliseconds){
 }
 
 controller.render = function(){
-  view.render();
-  model.render();
+  ASTEROIDS.VIEW.render(ASTEROIDS.MODEL.allAsteroids);
+  // ASTEROIDS.MODEL.render();
 };
 
 

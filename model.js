@@ -2,14 +2,18 @@
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.MODEL = {};
+
+//shortcut to access model subspace
 var model = ASTEROIDS.MODEL;
+
 
 model.init = function(){
   model.createAsteroids(3);
 };
 
-model.canvasWidth = 500;
-model.canvasHeight = 500;
+model.allAsteroids = [];
+model.canvasWidth = 600;
+model.canvasHeight = 600;
 
 model.randomCoord = function(){
   var maxPixelValue = model.canvasWidth;
@@ -41,7 +45,6 @@ model.Asteroid.prototype.tic = function(){
   this.coordY += this.velocityY;
 };
 
-model.allAsteroids = [];
 
 model.createAsteroids = function(amount){
   var size, x, y, velocityX, velocityY;

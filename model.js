@@ -3,12 +3,12 @@
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.MODEL = {};
 
-//shortcut to access model subspace
+//shortcut to access MODEL name-subspace
 var model = ASTEROIDS.MODEL;
 
 
-model.init = function(){
-  model.createAsteroids(3);
+model.init = function(astroidQuanitity){
+  model.createAsteroids(astroidQuanitity);
 };
 
 model.allAsteroids = [];
@@ -16,23 +16,29 @@ model.canvasWidth = 600;
 model.canvasHeight = 600;
 
 model.randomCoord = function(){
-  var maxPixelValue = model.canvasWidth;
-  return Math.floor(Math.random() * maxPixelValue);
+  var minPixelValue = 0,
+    maxPixelValue = model.canvasWidth;
+    
+  return Math.floor(Math.random() * (maxPixelValue - minPixelValue + 1) + minPixelValue);  
 };
 
 model.randomVelocity = function(){
-  var maxVelocityValue = 20;
-  return Math.floor(Math.random() * maxVelocityValue);
+  var minimumValue = 4,
+    maximumValue = 20;
+    
+  return Math.floor(Math.random() * (maximumValue - minimumValue + 1) + minimumValue);
 };
 
 model.randomSize = function(){
-  var maxVelocityValue = 20;
-  return Math.floor(Math.random() * maxVelocityValue);
+  var minimumSize = 20,
+      maximumSize = 50;
+
+  return Math.floor(Math.random() * (maximumSize - minimumSize + 1) + minimumSize);
 };
 
 model.Asteroid = function(size, x, y, velocityX, velocityY){
-  //sizes: 20, 30, 40
   this.size = size;
+  
   this.coordX = x;
   this.coordY = y;
 
@@ -59,4 +65,10 @@ model.createAsteroids = function(amount){
     var currentAsteroid = new ASTEROIDS.MODEL.Asteroid(size, x, y, velocityX, velocityY);
     model.allAsteroids.push(currentAsteroid);
   }
+};
+
+model.updateAsteroids = function(){
+  model.allAsteroids.forEach(function(asteroid){
+    asteroid.tic();
+  })
 };

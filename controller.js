@@ -1,18 +1,22 @@
+// check out requestAnimationFrame over setInterval and setTimeout
+// PAGE 184 HTML HACKS BOOK
+
+
 "use strict;"
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.CONTROLLER = {};
 
-//shortcut to access controller subspace
+//shortcut to access CONTROLLER name-subspace
 var controller = ASTEROIDS.CONTROLLER;
 
 controller.init = function(){
-  ASTEROIDS.MODEL.init();
+  ASTEROIDS.MODEL.init(22);
   ASTEROIDS.VIEW.init();
 
   controller.render();
 
-  // controller.play();
+  // controller.play(200);
 };
 
 controller.interval = null;
@@ -25,7 +29,7 @@ controller.play = function(miliseconds){
 
 controller.render = function(){
   ASTEROIDS.VIEW.render(ASTEROIDS.MODEL.allAsteroids);
-  // ASTEROIDS.MODEL.render();
+  ASTEROIDS.MODEL.updateAsteroids();
 };
 
 

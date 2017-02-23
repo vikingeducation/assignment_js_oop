@@ -3,7 +3,7 @@
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.VIEW = {};
 
-//shortcut to access view subspace
+//shortcut to access VIEW name-subspace
 var view = ASTEROIDS.VIEW;
 
 view.init = function(){

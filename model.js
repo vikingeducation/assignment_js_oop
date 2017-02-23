@@ -12,6 +12,9 @@ model.init = function(astroidQuanitity){
 };
 
 model.allAsteroids = [];
+model.lives = 3;
+model.score = 0;
+
 model.canvasWidth = 600;
 model.canvasHeight = 600;
 

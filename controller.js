@@ -1,17 +1,44 @@
 var MYAPP = MYAPP || {};
 
-MYAPP.Controller = {
+MYAPP.controller = {
   // asteroid field
   init: function() {
-    MYAPP.View.init();
-    var asteroids = MYAPP.Model.buildAsteroids(50);
-    this.loop = setInterval( function(){ MYAPP.Controller.unleashAsteroids(asteroids); }, 50 );
-    //this.unleashAsteroids();
+
+    // prepare ctx object + callbacks
+    MYAPP.view.init({ // operateSpaceship: this.operateSpaceship 
+    });
+
+    MYAPP.controller.asteroids = MYAPP.model.buildAsteroids(5);
+    MYAPP.controller.ship = new MYAPP.Ship();
+
+    this.loop = setInterval( function(){ 
+      MYAPP.controller.positionShip();
+      MYAPP.view.displayAsteroids(asteroids);
+      MYAPP.view.displayShip(MYAPP.controller.ship);
+      MYAPP.view.displayBullets(MYAPP.controller.ship)
+      MYAPP.controller.collisionTests();
+
+
+
+      }, 20 );
   },
 
-  unleashAsteroids: function(asteroids) {
-    MYAPP.View.displayAsteroids(asteroids);
+  positionShip: function(event) {
+    var keyCodes = MYAPP.view.keys;
+    MYAPP.controller.ship.adjustAngle(keyCodes);
+  },
+
+  collisionTests: function() {
+    var ship = MYAPP.controller.ship;
+    var asteroids = MYAPP.controller.asteroids;
+    MYAPP.model.shipCollision(ship, asteroids);
+    explosions = MYAPP.model.bulletCollision(ship, asteroids);
   }
 };
 
-$( document ).ready( function(){ MYAPP.Controller.init(); } );
+
+
+// clearInterval( MYAPP.controller.loop );
+
+
+$( document ).ready( function(){ MYAPP.controller.init(); } );

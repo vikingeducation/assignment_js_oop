@@ -1,4 +1,4 @@
-"use strict;"
+// "use strict;"
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.VIEW = {};
@@ -6,21 +6,22 @@ ASTEROIDS.VIEW = {};
 //shortcut to access VIEW name-subspace
 var view = ASTEROIDS.VIEW;
 
+
 view.init = function(){
 
     };
 
-view.render = function(allAsteroids){
+view.render = function(asteroids){
   view.clearCanvas();
-  view.renderAsteroids(allAsteroids);
+  view.renderAsteroids(asteroids);
 };
 
 
-view.renderAsteroids = function(allAsteroids){
+view.renderAsteroids = function(asteroids){
   var canvas = document.getElementById("c"),
       context = canvas.getContext("2d");
 
-  allAsteroids.forEach(function(asteroid){
+  asteroids.forEach(function(asteroid){
     context.beginPath();
     context.arc(asteroid.coordX, asteroid.coordY, asteroid.size, 0, Math.PI * 2);
     context.stroke();

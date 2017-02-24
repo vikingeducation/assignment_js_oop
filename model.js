@@ -1,4 +1,4 @@
-"use strict;"
+// "use strict;"
 
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.MODEL = {};
@@ -6,11 +6,7 @@ ASTEROIDS.MODEL = {};
 //shortcut to access MODEL name-subspace
 var model = ASTEROIDS.MODEL;
 
-
-model.init = function(astroidQuanitity){
-  model.createAsteroids(astroidQuanitity);
-};
-
+model.miliseconds = 200;
 model.allAsteroids = [];
 model.lives = 3;
 model.score = 0;
@@ -18,17 +14,22 @@ model.score = 0;
 model.canvasWidth = 600;
 model.canvasHeight = 600;
 
+model.init = function(astroidQuanitity){
+  model.createAsteroids(astroidQuanitity);
+};
+
+
 model.randomCoord = function(){
   var minPixelValue = 0,
     maxPixelValue = model.canvasWidth;
-    
-  return Math.floor(Math.random() * (maxPixelValue - minPixelValue + 1) + minPixelValue);  
+
+  return Math.floor(Math.random() * (maxPixelValue - minPixelValue + 1) + minPixelValue);
 };
 
 model.randomVelocity = function(){
   var minimumValue = 4,
     maximumValue = 20;
-    
+
   return Math.floor(Math.random() * (maximumValue - minimumValue + 1) + minimumValue);
 };
 
@@ -41,7 +42,7 @@ model.randomSize = function(){
 
 model.Asteroid = function(size, x, y, velocityX, velocityY){
   this.size = size;
-  
+
   this.coordX = x;
   this.coordY = y;
 
@@ -59,7 +60,7 @@ model.createAsteroids = function(amount){
   var size, x, y, velocityX, velocityY;
 
   for (var i = 0; i <= amount; i++) {
-    size = 20;
+    size = model.randomSize();
     x = model.randomCoord();
     y = model.randomCoord();
     velocityX = model.randomVelocity();
@@ -74,4 +75,8 @@ model.updateAsteroids = function(){
   model.allAsteroids.forEach(function(asteroid){
     asteroid.tic();
   })
+};
+
+model.SpaceShip = {
+
 };

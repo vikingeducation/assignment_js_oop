@@ -10,13 +10,17 @@ ASTEROIDS.CONTROLLER = {};
 //shortcut to access CONTROLLER name-subspace
 var controller = ASTEROIDS.CONTROLLER;
 
+
 controller.init = function(){
-  ASTEROIDS.MODEL.init(22);
-  ASTEROIDS.VIEW.init();
+  // ASTEROIDS.MODEL.init(22);
+  // ASTEROIDS.VIEW.init();
+  model.init(3);
+  view.init();
+  //
 
+
+  // controller.play(model.miliseconds);
   controller.render();
-
-  // controller.play(200);
 };
 
 controller.interval = null;
@@ -28,11 +32,16 @@ controller.play = function(miliseconds){
 }
 
 controller.render = function(){
-  ASTEROIDS.VIEW.render(ASTEROIDS.MODEL.allAsteroids);
-  ASTEROIDS.MODEL.updateAsteroids();
+  // ASTEROIDS.VIEW.render(ASTEROIDS.MODEL.allAsteroids);
+  // ASTEROIDS.MODEL.updateAsteroids();
+  view.render(ASTEROIDS.MODEL.allAsteroids);
+  model.updateAsteroids();
+  //
+
 };
 
 
 $(document).ready(function(){
-  ASTEROIDS.CONTROLLER.init();
+  // ASTEROIDS.CONTROLLER.init();
+  controller.init();
 });

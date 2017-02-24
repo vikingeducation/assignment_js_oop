@@ -7,37 +7,43 @@ ASTEROIDS.MODEL = {};
 var model = ASTEROIDS.MODEL;
 
 model.miliseconds = 200;
+model.canvasWidth = 600;
+model.canvasHeight = 600;
+
+model.minVelocity = 4;
+model.maxVelocity = 20;
+model.minSize = 20;
+model.maxSize = 50;
+
 model.allAsteroids = [];
 model.lives = 3;
 model.score = 0;
 
-model.canvasWidth = 600;
-model.canvasHeight = 600;
 
 model.init = function(astroidQuanitity){
   model.createAsteroids(astroidQuanitity);
 };
 
+model.getRandom = function(min, max){
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
 model.randomCoord = function(){
   var minPixelValue = 0,
     maxPixelValue = model.canvasWidth;
-
-  return Math.floor(Math.random() * (maxPixelValue - minPixelValue + 1) + minPixelValue);
+  return model.getRandom(minPixelValue, maxPixelValue)
 };
 
 model.randomVelocity = function(){
-  var minimumValue = 4,
-    maximumValue = 20;
-
-  return Math.floor(Math.random() * (maximumValue - minimumValue + 1) + minimumValue);
+  var minVelocity = model.minVelocity,
+    maxVelocity = model.maxVelocity;
+  return model.getRandom(minVelocity, maxVelocity)
 };
 
 model.randomSize = function(){
-  var minimumSize = 20,
-      maximumSize = 50;
-
-  return Math.floor(Math.random() * (maximumSize - minimumSize + 1) + minimumSize);
+  var minSize = model.minSize,
+      maxSize = model.maxSize;
+  return model.getRandom(minSize, maxSize)
 };
 
 model.Asteroid = function(size, x, y, velocityX, velocityY){

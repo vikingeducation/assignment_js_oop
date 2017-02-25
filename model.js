@@ -1,7 +1,7 @@
 var model = {};
 
 model.init = function() {
-  model.asteroids = model.buildAsteroids(10);
+  model.asteroids = model.buildAsteroids(20);
   model.ship = new Ship();
 };
 
@@ -31,11 +31,9 @@ model.checkBulletCollisions = function() {
   for(var i = 0; i < model.ship.arsenal.length; i++) {
     for (var j = 0; j < model.asteroids.length; j++) {
       if( model.asteroids[j].checkCollision(model.ship.arsenal[i]) ){
-        console.log('strike!')
-        model.asteroids[j].explode();// = true;
+        model.asteroids[j].explode();
         model.ship.arsenal.splice(i, 1);
         model.asteroids.splice(j, 1);
-
       }
     }
   }
@@ -151,16 +149,6 @@ Ship.prototype.newPos = function() {
 
 };
 
-// implement at the end of view.displayship
-Ship.prototype.decelerate = function() {
-  [dx, dy].forEach( function(velocity) {
-    if (velocity < 0) {
-      velocity = 0;
-    } else if ( velocity > 0 ) {
-      velocity -= .1
-    }
-  } );
-};
 
 Ship.prototype.fireBullet = function() {
   // create new bullet and add to arsenal

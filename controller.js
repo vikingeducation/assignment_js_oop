@@ -7,23 +7,20 @@ var controller = {
     // set up canvas + listeners
     view.init();
 
-
     this.loop = setInterval( function(){ 
       if ( controller.gameOver() ) {   
         clearInterval( controller.loop );
        }
-      
-       controller.newPositions();
+       controller.updateModel();
        view.render(model.ship, model.asteroids);
      }, 50 );
    },
 
-  newPositions: function(ship) {
+  updateModel: function(ship) {
     var keyCodes = view.keys;
     model.ship.adjustAngle(keyCodes);
     model.checkBulletCollisions();
     model.incrementAsteroids();
-    console.log(model.asteroids.length);
   },
 
   gameOver: function() {

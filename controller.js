@@ -1,6 +1,8 @@
 // check out requestAnimationFrame over setInterval and setTimeout
 // PAGE 184 HTML HACKS BOOK
 
+//negative velocties
+
 
 "use strict;"
 
@@ -19,8 +21,8 @@ controller.init = function(){
   //
 
 
-  // controller.play(model.miliseconds);
-  controller.render();
+  controller.play(model.miliseconds);
+  // controller.render();
 };
 
 controller.interval = null;

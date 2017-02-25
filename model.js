@@ -29,9 +29,9 @@ model.getRandom = function(min, max){
 };
 
 model.randomCoord = function(){
-  var minPixelValue = 0,
-    maxPixelValue = model.canvasWidth;
-  return model.getRandom(minPixelValue, maxPixelValue)
+  var minPixel = 0,
+    maxPixel = model.canvasWidth;
+  return model.getRandom(minPixel, maxPixel)
 };
 
 model.randomVelocity = function(){
@@ -65,7 +65,7 @@ model.Asteroid.prototype.tic = function(){
 model.createAsteroids = function(amount){
   var size, x, y, velocityX, velocityY;
 
-  for (var i = 0; i <= amount; i++) {
+  for (var i = 0; i < amount; i++) {
     size = model.randomSize();
     x = model.randomCoord();
     y = model.randomCoord();

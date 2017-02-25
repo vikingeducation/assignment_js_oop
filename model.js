@@ -1,111 +1,158 @@
-var MYAPP = MYAPP || {};
+var model = {};
 
-MYAPP.model = {};
+model.init = function() {
+  model.asteroids = model.buildAsteroids(10);
+  model.ship = new Ship();
+};
 
-MYAPP.model.buildAsteroids = function(number) {
+model.buildAsteroids = function(number) {
   asteroids = [];
   for(var i = 0; i < number; i++) {
-    asteroids.push( new MYAPP.Asteroid() );
+    asteroids.push( new Asteroid() );
   }
   return asteroids;
 };
 
-MYAPP.model.shipCollision = function(ship, asteroids) {
-  // if true call game over
-
+model.incrementAsteroids = function() {
+  model.asteroids.forEach( function(a) {
+    a.increment();
+  });
 };
 
-MYAPP.model.bulletCollision = function(ship, asteroids) {
-  var dx, dy, distance;
-  var exploded = [];
+model.shipCollision = function() {
+  for(var i = 0; i < model.asteroids.length; i++) {
+    if (model.asteroids[i].checkCollision(model.ship, 5)) {
+      return true;
+    }
+  }
+};
 
-  asteroids.forEach( function(asteroid) {
-    ship.arsenal.forEach( function(bullet) {
-      dx = bullet.x - asteroid.x;
-      dy = bullet.y - asteroid.y;
-      distance = Math.sqrt( dx*dx + dy*dy );
+model.checkBulletCollisions = function() {
+  for(var i = 0; i < model.ship.arsenal.length; i++) {
+    for (var j = 0; j < model.asteroids.length; j++) {
+      if( model.asteroids[j].checkCollision(model.ship.arsenal[i]) ){
+        console.log('strike!')
+        model.asteroids[j].explode();// = true;
+        model.ship.arsenal.splice(i, 1);
+        model.asteroids.splice(j, 1);
 
-      if ( distance < (2 + asteroid.radius) ) {
-        console.log('HIT A GODDAMN ASTEROID');
-        exploded.push(asteroid);
-      }        
-    });
-  });
-
-  return exploded;
+      }
+    }
+  }
 };
 
 
 /// ASTEROIDS
 
-MYAPP.Asteroid = function Asteroid (x, y, radius) {
-  this.x = x || Math.floor(Math.random() * 400);
-  this.y = y || Math.floor(Math.random() * 400);
-  this.radius = radius || Math.floor(Math.random() * 30) + 10;
-  // still too clustered
-  this.counter = 0;
-  this.sign = 5 + Math.random() * 10;
-  this.speed = .01;
+Asteroid = function Asteroid (x, y, radius) {
+  this.x = x || Math.floor(Math.random() * 500);
+  this.y = y || Math.floor(Math.random() * 500);
+  this.radius = radius || Math.floor(Math.random() * 30) + 5;
+  this.dx = Math.floor(Math.random() * 5) - 2;
+  this.dy = Math.floor(Math.random() * 5) - 2;
 };
 
-MYAPP.Asteroid.prototype.increment = function() {
-  this.counter += .05 * (this.sign + this.speed);
+Asteroid.prototype.increment = function() {
+  this.x += this.dx;
+  this.y += this.dy;
+  this.checkBounce();
 };
 
-MYAPP.Asteroid.explode = function() {
-  if ( this.radius < 5 ) {
-    this = null;
-  } else {
-    // split into two new asteroids
-
+Asteroid.prototype.checkBounce = function() {
+  if (this.x > 500 || this.x < 0) {
+    this.dx = -this.dx;
   }
-}
+
+  if (this.y > 500 || this.y < 0) {
+    this.dy = -this.dy;
+  } 
+};
+
+Asteroid.prototype.checkCollision = function(object, radius) {
+  var dx, dy, distance, secondRadius;
+  dx = this.x - object.x;
+  dy = this.y - object.y;
+  distance = Math.sqrt(dx*dx + dy*dy);
+
+  secondRadius = radius || object.radius;
+
+  if (distance < this.radius + secondRadius) {
+    return true;
+  };
+};
+
+Asteroid.prototype.explode = function() {
+  if (this.radius > 20) {
+    var x = this.x;
+    var y = this.y;
+    var radius = this.radius / 2;
+    for (var i = 2; i > 0; i-- ) {
+      model.asteroids.push( new Asteroid(x, y, radius) );
+    }
+  }
+};
 
 
 /// SPACESHIP 
 
-MYAPP.Ship = function Ship () {
+Ship = function Ship () {
   this.x = 250;
   this.y = 250;
-  this.dx = 0;
-  this.dy = 0;
-  this.angle = 0;
-  this.moveAngle = 0;
+  this.speed = 0;
+  // this.dx = 0;
+  // this.dy = 0;
+  this.radians = 0;
+  this.degrees = 0;
   this.width = 5;
   this.height = 30;
   this.arsenal = [];
 };
 
-MYAPP.Ship.prototype.adjustAngle = function(keyCodes) {
-    this.moveAngle = 0;
-    this.speed = 0;
-    if (keyCodes[37]) {
-        this.moveAngle = -1;      
-    }
-    if (keyCodes[38]) {
-        this.dx = 1;     
-        this.dy = -1;
-    }
-    if (keyCodes[39]) {
-        this.moveAngle = 1;
-    }
-    if (keyCodes[40]) {
-        this.dx = -1;
-        this.dy = 1;
-    }
-    if (keyCodes[32]) {
-        this.fireBullet();
-    }
+Ship.prototype.adjustAngle = function(keyCodes) {
+  this.degrees = 0;
+  // delete to re introduce drage to ship movement
+  // this.dx = 0;
+  // this.dy = 0;
+  // left
+  if (keyCodes[37]) {
+      this.degrees = -10;      
+  }
+  // up
+  if (keyCodes[38]) {
+      // this.dx = 0;     
+      // this.dy = 1;
+      this.speed = 5;
+  }
+  // right
+  if (keyCodes[39]) {
+      this.degrees = 10;
+  }
+  // down
+  if (keyCodes[40]) {
+    this.speed = -5;
+      // this.dx = 1;
+      // this.dy = -1;
+  }
+  if (keyCodes[32]) {
+      this.fireBullet();
+  }
+  this.newPos();
 };
 
-MYAPP.Ship.prototype.newPos = function() {
-  this.angle += this.moveAngle * Math.PI / 180;
-  this.x += this.dx * Math.sin(this.angle);
-  this.y += this.dy * Math.cos(this.angle);
+Ship.prototype.newPos = function() {
+  this.radians += this.degrees * Math.PI / 180;
+
+  this.x += this.speed * Math.sin(this.radians);
+  this.y -= this.speed * Math.cos(this.radians);
+
+  this.arsenal.forEach(function(bullet) {
+    bullet.newPos();
+  });
+
 };
 
 // implement at the end of view.displayship
-MYAPP.Ship.prototype.decelerate = function() {
+Ship.prototype.decelerate = function() {
   [dx, dy].forEach( function(velocity) {
     if (velocity < 0) {
       velocity = 0;
@@ -115,22 +162,23 @@ MYAPP.Ship.prototype.decelerate = function() {
   } );
 };
 
-MYAPP.Ship.prototype.fireBullet = function() {
+Ship.prototype.fireBullet = function() {
   // create new bullet and add to arsenal
-  this.arsenal.push( new MYAPP.Bullet(this) );
+  this.arsenal.push( new Bullet(this) );
 };
 
 
 /// BULLETS
 
-MYAPP.Bullet = function Bullet (ship) {
+Bullet = function Bullet (ship) {
   this.x = ship.x;
   this.y = ship.y;
+  this.radius = 2;
   this.speed = 5;
-  this.angle = ship.angle;
+  this.radians = ship.radians;
 };
 
-MYAPP.Bullet.prototype.newPos = function() {
-  this.x += this.speed * Math.sin(this.angle);
-  this.y -= this.speed * Math.cos(this.angle);
+Bullet.prototype.newPos = function() {
+  this.x += this.speed * Math.sin(this.radians);
+  this.y -= this.speed * Math.cos(this.radians);
 };

@@ -1,44 +1,40 @@
-var MYAPP = MYAPP || {};
-
-MYAPP.controller = {
+var controller = {
   // asteroid field
   init: function() {
 
-    // prepare ctx object + callbacks
-    MYAPP.view.init({ // operateSpaceship: this.operateSpaceship 
-    });
+    // create asteroids + ship
+    model.init();
+    // set up canvas + listeners
+    view.init();
 
-    MYAPP.controller.asteroids = MYAPP.model.buildAsteroids(5);
-    MYAPP.controller.ship = new MYAPP.Ship();
 
     this.loop = setInterval( function(){ 
-      MYAPP.controller.positionShip();
-      MYAPP.view.displayAsteroids(asteroids);
-      MYAPP.view.displayShip(MYAPP.controller.ship);
-      MYAPP.view.displayBullets(MYAPP.controller.ship)
-      MYAPP.controller.collisionTests();
+      if ( controller.gameOver() ) {   
+        clearInterval( controller.loop );
+       }
+      
+       controller.newPositions();
+       view.render(model.ship, model.asteroids);
+     }, 50 );
+   },
 
-
-
-      }, 20 );
+  newPositions: function(ship) {
+    var keyCodes = view.keys;
+    model.ship.adjustAngle(keyCodes);
+    model.checkBulletCollisions();
+    model.incrementAsteroids();
+    console.log(model.asteroids.length);
   },
 
-  positionShip: function(event) {
-    var keyCodes = MYAPP.view.keys;
-    MYAPP.controller.ship.adjustAngle(keyCodes);
-  },
-
-  collisionTests: function() {
-    var ship = MYAPP.controller.ship;
-    var asteroids = MYAPP.controller.asteroids;
-    MYAPP.model.shipCollision(ship, asteroids);
-    explosions = MYAPP.model.bulletCollision(ship, asteroids);
+  gameOver: function() {
+    // ship collides w/ asteroid or all asteroids destroyed
+    if ( model.shipCollision()|| model.asteroids.length < 1 ) {
+      return true;
+    }
   }
+
+
 };
 
 
-
-// clearInterval( MYAPP.controller.loop );
-
-
-$( document ).ready( function(){ MYAPP.controller.init(); } );
+$( document ).ready( function(){ controller.init(); } );

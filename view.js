@@ -9,11 +9,12 @@ var view = ASTEROIDS.VIEW;
 
 view.init = function(){
 
-    };
+};
 
 view.render = function(asteroids){
   view.clearCanvas();
   view.renderAsteroids(asteroids);
+  view.renderSpaceShip(asteroids);
 };
 
 
@@ -23,11 +24,22 @@ view.renderAsteroids = function(asteroids){
 
   asteroids.forEach(function(asteroid){
     context.beginPath();
-    context.arc(asteroid.coordX, asteroid.coordY, asteroid.size, 0, Math.PI * 2);
+    context.arc(asteroid.coordX,
+                asteroid.coordY,
+                asteroid.size,
+                0,
+                Math.PI * 2);
     context.stroke();
     context.closePath();
     // context.fill();
   });
+};
+
+view.renderSpaceShip = function(spaceship){
+  var canvas = document.getElementById("c"),
+  context = canvas.getContext("2d");
+
+  
 };
 
 view.clearCanvas = function(){

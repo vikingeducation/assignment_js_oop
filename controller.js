@@ -1,6 +1,8 @@
 // check out requestAnimationFrame over setInterval and setTimeout
 // PAGE 184 HTML HACKS BOOK
 
+//translate: https://www.w3schools.com/tags/canvas_translate.asp
+
 //negative velocties
 
 

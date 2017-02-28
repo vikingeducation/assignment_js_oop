@@ -39,7 +39,9 @@ view.renderSpaceShip = function(spaceship){
   var canvas = document.getElementById("c"),
   context = canvas.getContext("2d");
 
-  
+  context.save();
+
+  context.restore();
 };
 
 view.clearCanvas = function(){

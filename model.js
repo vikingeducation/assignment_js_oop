@@ -6,12 +6,12 @@ ASTEROIDS.MODEL = {};
 //shortcut to access MODEL name-subspace
 var model = ASTEROIDS.MODEL;
 
-model.miliseconds = 200;
+model.miliseconds = 60;
 model.canvasWidth = 600;
 model.canvasHeight = 600;
 
 model.minVelocity = 4;
-model.maxVelocity = 20;
+model.maxVelocity = 10;
 model.minSize = 20;
 model.maxSize = 50;
 
@@ -25,6 +25,10 @@ model.score = 0;
 model.init = function(astroidQuanitity){
   model.createAsteroids(astroidQuanitity);
   model.ship = new model.SpaceShip();
+};
+
+model.degreesToRadians = function(degrees){
+  return degrees * (Math.PI / 180);
 };
 
 model.getRandom = function(min, max){
@@ -109,7 +113,68 @@ model.updateAsteroids = function(){
   })
 };
 
+model.updateShip = function(){
+  model.ship.moveShip();
+};
+
 model.SpaceShip = function(x, y){
+  this.size = 30;
+  this.degrees = 0;
+  this.angle = 0;
+  this.color = "black";
+
+  this.position = {
+    x: model.canvasWidth / 2,
+    y: model.canvasHeight / 2
+  };
+
   this.coordX = x;
   this.coordY = y;
+};
+
+// model.SpaceShip.prototype.updateAngle = function(){
+//   this.angle++;
+// };
+
+model.SpaceShip.prototype.increaseClockWise = function(){
+  this.degrees += 4;
+  this.angle = model.degreesToRadians(this.degrees)
+};
+
+model.SpaceShip.prototype.decreaseClockWise = function(){
+  this.degrees -= 4;
+  this.angle = model.degreesToRadians(this.degrees)
+};
+
+model.SpaceShip.prototype.propelForward = function(){
+  // this.angle--;
+};
+
+
+model.SpaceShip.prototype.fireTorpedoes = function(){
+  // this.angle--;
+};
+
+model.SpaceShip.prototype.moveShip = function(keyCode){
+  switch(keyCode){
+   //left key arrow
+   case 37:
+     model.ship.decreaseClockWise();
+     break;
+
+   //right key arrow
+   case 39:
+     model.ship.increaseClockWise();
+     break;
+
+   //up key arrow
+   case 38:
+     model.ship.propelForward();
+     break;
+
+   //spacebar - Fire Torpedoes!
+   case 32:
+     model.ship.fireTorpedoes();
+     break;
+  }
 };

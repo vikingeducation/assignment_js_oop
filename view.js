@@ -7,14 +7,18 @@ ASTEROIDS.VIEW = {};
 var view = ASTEROIDS.VIEW;
 
 
-view.init = function(){
-
+view.init = function(updateShip){
+  $(document).keydown(function(event){
+      var keycode = event.which;
+      model.ship.moveShip(keycode);
+      event.preventDefault();
+  });
 };
 
-view.render = function(asteroids){
+view.render = function(asteroids, spaceship){
   view.clearCanvas();
   view.renderAsteroids(asteroids);
-  view.renderSpaceShip(asteroids);
+  view.renderSpaceShip(spaceship);
 };
 
 
@@ -37,10 +41,22 @@ view.renderAsteroids = function(asteroids){
 
 view.renderSpaceShip = function(spaceship){
   var canvas = document.getElementById("c"),
-  context = canvas.getContext("2d");
+  context = canvas.getContext("2d"),
+  shipSize = spaceship.size;
 
   context.save();
 
+  context.translate(spaceship.position.x, spaceship.position.y);
+  context.rotate(spaceship.angle);
+
+  context.beginPath();
+  context.moveTo(0, -shipSize);
+  context.lineTo(-shipSize, 0);
+  context.lineTo(shipSize, 0);
+  context.closePath();
+
+  context.fillStyle = spaceship.color;
+  context.fill();
   context.restore();
 };
 

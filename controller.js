@@ -8,7 +8,7 @@
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.CONTROLLER = {};
 
-//shortcut to access CONTROLLER name-subspace
+// shortcut to access CONTROLLER name-subspace
 var controller = ASTEROIDS.CONTROLLER;
 
 controller.init = function(){
@@ -31,6 +31,8 @@ controller.render = function(){
   view.render(model.allAsteroids, model.ship);
   model.updateAsteroids();
   model.updateShip();
+
+  console.log(model.ship.degrees);
 };
 
 

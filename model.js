@@ -3,24 +3,27 @@
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.MODEL = {};
 
-//shortcut to access MODEL name-subspace
+// shortcut to access MODEL name-subspace
 var model = ASTEROIDS.MODEL;
 
+// game
 model.miliseconds = 60;
+model.lives = 3;
+model.score = 0;
+
+//canvas
 model.canvasWidth = 600;
 model.canvasHeight = 600;
 
+// asteroid
 model.minVelocity = 4;
 model.maxVelocity = 10;
 model.minSize = 20;
 model.maxSize = 50;
-
 model.allAsteroids = [];
+
+//ship
 model.ship = null;
-
-model.lives = 3;
-model.score = 0;
-
 
 model.init = function(astroidQuanitity){
   model.createAsteroids(astroidQuanitity);
@@ -118,18 +121,19 @@ model.updateShip = function(){
 };
 
 model.SpaceShip = function(x, y){
+  this.color = "black";
   this.size = 30;
   this.degrees = 0;
-  this.angle = 0;
-  this.color = "black";
-
+  this.angle = model.degreesToRadians(this.degrees);
   this.position = {
     x: model.canvasWidth / 2,
     y: model.canvasHeight / 2
   };
-
-  this.coordX = x;
-  this.coordY = y;
+  this.speed = 5;
+  this.acceleration = 250;
+  this.drag = 100;
+  this.maxVelocity = 300;
+  this.angularVelocity = 200;
 };
 
 // model.SpaceShip.prototype.updateAngle = function(){
@@ -137,22 +141,33 @@ model.SpaceShip = function(x, y){
 // };
 
 model.SpaceShip.prototype.increaseClockWise = function(){
+  console.log("Turn towards Stern");
+  if (this.degrees >= 360) {
+    this.degrees = 0;
+  }
   this.degrees += 4;
   this.angle = model.degreesToRadians(this.degrees)
 };
 
 model.SpaceShip.prototype.decreaseClockWise = function(){
+  console.log("Turn towards Port");
+  if (this.degrees <= 0) {
+    this.degrees = 360;
+  }
   this.degrees -= 4;
   this.angle = model.degreesToRadians(this.degrees)
 };
 
 model.SpaceShip.prototype.propelForward = function(){
-  // this.angle--;
+  console.log("Engage");
+  this.position.x += this.speed * Math.cos((this.degrees + 270)  * Math.PI / 180);
+  this.position.y += this.speed * Math.sin((this.degrees + 270) * Math.PI / 180);
 };
 
 
 model.SpaceShip.prototype.fireTorpedoes = function(){
-  // this.angle--;
+  console.log("Mr. Worf, fire Torpedoes");
+  //
 };
 
 model.SpaceShip.prototype.moveShip = function(keyCode){

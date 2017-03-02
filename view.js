@@ -3,14 +3,17 @@
 var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.VIEW = {};
 
-//shortcut to access VIEW name-subspace
+// shortcut to access VIEW name-subspace
 var view = ASTEROIDS.VIEW;
 
 
 view.init = function(updateShip){
   $(document).keydown(function(event){
-      var keycode = event.which;
-      model.ship.moveShip(keycode);
+      var keycode = event.which,
+          validCodes = [32, 37, 38, 39];
+      if (validCodes.indexOf(keycode) !== -1) {
+        model.ship.moveShip(keycode);
+      }
       event.preventDefault();
   });
 };
@@ -50,6 +53,12 @@ view.renderSpaceShip = function(spaceship){
   context.rotate(spaceship.angle);
 
   context.beginPath();
+
+  // context.moveTo(0, -shipSize);
+  // context.lineTo(-shipSize, 0);
+  // context.lineTo(shipSize, 0);
+  // context.closePath();
+
   context.moveTo(0, -shipSize);
   context.lineTo(-shipSize, 0);
   context.lineTo(shipSize, 0);

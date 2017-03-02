@@ -31,8 +31,9 @@ controller.render = function(){
   view.render(model.allAsteroids, model.ship);
   model.updateAsteroids();
   model.updateShip();
+  model.updateTorpedoes();
 
-  console.log(model.ship.degrees);
+  // console.log(model.ship.degrees);
 };
 
 

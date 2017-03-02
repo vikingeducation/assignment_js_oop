@@ -53,7 +53,6 @@ model.randomVelocity = function(){
     if (flagged) {
       velocity = model.reverseCharge(velocity);
     }
-
     return velocity;
 };
 
@@ -75,10 +74,8 @@ model.reverseCharge = function(n){
 
 model.Asteroid = function(size, x, y, velocityX, velocityY){
   this.size = size;
-
   this.coordX = x;
   this.coordY = y;
-
   this.velocityX = velocityX;
   this.velocityY = velocityY;
 };
@@ -88,7 +85,6 @@ model.Asteroid.prototype.tic = function(){
   this.coordY += this.velocityY;
 };
 
-
 model.createAsteroids = function(amount){
   var size, x, y, velocityX, velocityY;
 
@@ -96,8 +92,11 @@ model.createAsteroids = function(amount){
     size = model.randomSize();
     x = model.randomCoord();
     y = model.randomCoord();
-    velocityX = model.randomVelocity();
-    velocityY = model.randomVelocity();
+
+    // velocityX = model.randomVelocity();
+    // velocityY = model.randomVelocity();
+    velocityX = 0
+    velocityY = 0
 
     var currentAsteroid = new model.Asteroid(size,
                                              x,
@@ -133,9 +132,47 @@ model.SpaceShip = function(x, y){
     right: false,
     foward: false
   };
-  // this.forward = this.thusters.left && this.thusters.right;
+  this.torpedoes = [];
 };
 
+model.Torpedoe = function(){
+  this.angle = model.ship.angle;
+  this.degrees = model.ship.degrees;
+  this.speed = 20;
+  this.position = {
+    x: model.ship.position.x,
+    y: model.ship.position.y
+  };
+  this.velocity = {
+    x: Math.cos(this.angle),
+    y: Math.sin(this.angle)
+  };
+
+  this.color = "red";
+  this.size = 5;
+  this.lifeSpan = 300;
+};
+
+model.Torpedoe.prototype.tic = function(){
+  // console.log(this)
+  // this.position.x += this.speed * Math.cos((this.degrees + 270)  * Math.PI / 180);
+  // this.position.y += this.speed * Math.sin((this.degrees + 270) * Math.PI / 180);
+  this.position.x += this.velocity.x + this.speed;
+  this.position.y += this.velocity.y + this.speed;
+  // this.lifeSpan--;
+};
+
+model.updateTorpedoes = function(){
+  model.ship.torpedoes.forEach(function(torpedoe){
+    torpedoe.tic();
+  })
+};
+
+model.SpaceShip.prototype.fireTorpedoe = function(){
+  console.log("Mr. Worf, fire Torpedoe");
+  var torpedoe = new model.Torpedoe();
+  model.ship.torpedoes.push(torpedoe);
+};
 
 model.SpaceShip.prototype.increaseClockWise = function(){
   console.log("Turn towards Stern");
@@ -162,27 +199,16 @@ model.SpaceShip.prototype.propelForward = function(){
 };
 
 
-model.SpaceShip.prototype.fireTorpedoes = function(){
-  console.log("Mr. Worf, fire Torpedoes");
-  //
-};
-
 model.SpaceShip.prototype.moveShip = function(keyCode){
-
   if (this.movement.left) {
     model.ship.decreaseClockWise();
   }
-
   if (this.movement.right) {
     model.ship.increaseClockWise();
   }
-
   if (this.movement.forward) {
-    console.log('forward')
     model.ship.propelForward();
   }
-
-
   // switch(keyCode){
   //  //left key arrow
   //  case 37:
@@ -207,6 +233,4 @@ model.SpaceShip.prototype.moveShip = function(keyCode){
   //    model.ship.fireTorpedoes();
   //    break;
   // }
-
-
 };

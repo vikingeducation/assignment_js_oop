@@ -8,6 +8,7 @@ var view = ASTEROIDS.VIEW;
 
 
 view.init = function(updateShip){
+
   $(document).keydown(function(event){
       var keycode = event.which;
 
@@ -25,7 +26,7 @@ view.init = function(updateShip){
        //up key arrow
        case 38:
         model.ship.movement.forward = true;
-       break;
+        break;
       }
       event.preventDefault();
   });
@@ -48,6 +49,11 @@ view.init = function(updateShip){
        case 38:
           model.ship.movement.forward = false;
           break;
+
+       //spacebar fire torpedoe
+       case 32:
+          model.ship.fireTorpedoe();
+          break;
       }
       event.preventDefault();
   });
@@ -57,6 +63,7 @@ view.render = function(asteroids, spaceship){
   view.clearCanvas();
   view.renderAsteroids(asteroids);
   view.renderSpaceShip(spaceship);
+  view.renderTorpedoes(spaceship.torpedoes);
 };
 
 
@@ -77,6 +84,22 @@ view.renderAsteroids = function(asteroids){
   });
 };
 
+view.renderTorpedoes = function(torpedoes){
+  var canvas = document.getElementById("c"),
+      context = canvas.getContext("2d");
+
+  torpedoes.forEach(function(torpedoe){
+    context.beginPath();
+    context.arc(torpedoe.position.x,
+                torpedoe.position.y,
+                torpedoe.size,
+                0,
+                Math.PI * 2);
+    context.fillStyle = torpedoe.color;
+    context.fill();
+  });
+}
+
 view.renderSpaceShip = function(spaceship){
   var canvas = document.getElementById("c"),
   context = canvas.getContext("2d"),
@@ -89,11 +112,6 @@ view.renderSpaceShip = function(spaceship){
 
   context.beginPath();
 
-  // context.moveTo(0, -shipSize);
-  // context.lineTo(-shipSize, 0);
-  // context.lineTo(shipSize, 0);
-  // context.closePath();
-
   context.moveTo(0, -shipSize);
   context.lineTo(-shipSize, 0);
   context.lineTo(shipSize, 0);
@@ -103,6 +121,7 @@ view.renderSpaceShip = function(spaceship){
   context.fill();
   context.restore();
 };
+
 
 view.clearCanvas = function(){
   var canvas = document.getElementById("c");

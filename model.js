@@ -7,7 +7,7 @@ ASTEROIDS.MODEL = {};
 var model = ASTEROIDS.MODEL;
 
 // game
-model.miliseconds = 60;
+model.miliseconds = 45;
 model.lives = 3;
 model.score = 0;
 
@@ -99,8 +99,6 @@ model.createAsteroids = function(amount){
     velocityX = model.randomVelocity();
     velocityY = model.randomVelocity();
 
-
-
     var currentAsteroid = new model.Asteroid(size,
                                              x,
                                              y,
@@ -122,30 +120,29 @@ model.updateShip = function(){
 
 model.SpaceShip = function(x, y){
   this.color = "black";
-  this.size = 30;
+  this.size = 20;
+  this.speed = 15;
   this.degrees = 0;
   this.angle = model.degreesToRadians(this.degrees);
   this.position = {
     x: model.canvasWidth / 2,
     y: model.canvasHeight / 2
   };
-  this.speed = 5;
-  this.acceleration = 250;
-  this.drag = 100;
-  this.maxVelocity = 300;
-  this.angularVelocity = 200;
+  this.movement = {
+    left: false,
+    right: false,
+    foward: false
+  };
+  // this.forward = this.thusters.left && this.thusters.right;
 };
 
-// model.SpaceShip.prototype.updateAngle = function(){
-//   this.angle++;
-// };
 
 model.SpaceShip.prototype.increaseClockWise = function(){
   console.log("Turn towards Stern");
   if (this.degrees >= 360) {
     this.degrees = 0;
   }
-  this.degrees += 4;
+  this.degrees += 12;
   this.angle = model.degreesToRadians(this.degrees)
 };
 
@@ -154,7 +151,7 @@ model.SpaceShip.prototype.decreaseClockWise = function(){
   if (this.degrees <= 0) {
     this.degrees = 360;
   }
-  this.degrees -= 4;
+  this.degrees -= 12;
   this.angle = model.degreesToRadians(this.degrees)
 };
 
@@ -171,25 +168,45 @@ model.SpaceShip.prototype.fireTorpedoes = function(){
 };
 
 model.SpaceShip.prototype.moveShip = function(keyCode){
-  switch(keyCode){
-   //left key arrow
-   case 37:
-     model.ship.decreaseClockWise();
-     break;
 
-   //right key arrow
-   case 39:
-     model.ship.increaseClockWise();
-     break;
-
-   //up key arrow
-   case 38:
-     model.ship.propelForward();
-     break;
-
-   //spacebar - Fire Torpedoes!
-   case 32:
-     model.ship.fireTorpedoes();
-     break;
+  if (this.movement.left) {
+    model.ship.decreaseClockWise();
   }
+
+  if (this.movement.right) {
+    model.ship.increaseClockWise();
+  }
+
+  if (this.movement.forward) {
+    console.log('forward')
+    model.ship.propelForward();
+  }
+
+
+  // switch(keyCode){
+  //  //left key arrow
+  //  case 37:
+  //   this.movement.left = true;
+  //   // model.ship.decreaseClockWise();
+  //   break;
+  //
+  //  //right key arrow
+  //  case 39:
+  //   this.movement.right = true;
+  //   // model.ship.increaseClockWise();
+  //   break;
+  //
+  //  //up key arrow
+  //  case 38:
+  //     this.forward = true;
+  //    model.ship.propelForward();
+  //    break;
+  //
+  //  //spacebar - Fire Torpedoes!
+  //  case 32:
+  //    model.ship.fireTorpedoes();
+  //    break;
+  // }
+
+
 };

@@ -9,10 +9,45 @@ var view = ASTEROIDS.VIEW;
 
 view.init = function(updateShip){
   $(document).keydown(function(event){
-      var keycode = event.which,
-          validCodes = [32, 37, 38, 39];
-      if (validCodes.indexOf(keycode) !== -1) {
-        model.ship.moveShip(keycode);
+      var keycode = event.which;
+
+      switch(keycode){
+       //left key arrow
+       case 37:
+        model.ship.movement.left = true;
+        break;
+
+       //right key arrow
+       case 39:
+        model.ship.movement.right = true;
+        break;
+
+       //up key arrow
+       case 38:
+        model.ship.movement.forward = true;
+       break;
+      }
+      event.preventDefault();
+  });
+
+  $(document).keyup(function(event){
+      var keycode = event.which;
+
+      switch(keycode){
+       //left key arrow
+       case 37:
+        model.ship.movement.left = false;
+        break;
+
+       //right key arrow
+       case 39:
+        model.ship.movement.right = false;
+        break;
+
+       //up key arrow
+       case 38:
+          model.ship.movement.forward = false;
+          break;
       }
       event.preventDefault();
   });

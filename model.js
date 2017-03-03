@@ -107,16 +107,6 @@ model.createAsteroids = function(amount){
   }
 };
 
-model.updateAsteroids = function(){
-  model.allAsteroids.forEach(function(asteroid){
-    asteroid.tic();
-  })
-};
-
-model.updateShip = function(){
-  model.ship.moveShip();
-};
-
 model.SpaceShip = function(x, y){
   this.color = "black";
   this.size = 20;
@@ -156,6 +146,11 @@ model.Torpedoe = function(){
 model.Torpedoe.prototype.tic = function(){
   this.position.x += this.velocity.x * this.speed ;
   this.position.y += this.velocity.y * this.speed;
+  console.log() ; console.log(this.position.x, this.position.y) ; console.log();
+  this.lifeSpan--;
+};
+
+model.Torpedoe.prototype.degregate = function(){
   this.lifeSpan--;
 
   if (this.lifeSpan < 1) {
@@ -163,11 +158,44 @@ model.Torpedoe.prototype.tic = function(){
   }
 };
 
+model.Asteroid.prototype.checkCollisions = function(){
+  var asteroid = this,
+      torpedoes = model.ship.torpedoes,
+      xDifference, yDifference;
+
+  torpedoes.forEach(function(torpedoe){
+    xDifference = Math.abs(torpedoe.position.x - asteroid.coordX);
+    yDifference = Math.abs(torpedoe.position.y - asteroid.coordY);
+
+    if ((xDifference < asteroid.size) && (yDifference < asteroid.size)) {
+      console.log("HIT")
+    }
+  });
+};
+
 
 model.updateTorpedoes = function(){
   model.ship.torpedoes.forEach(function(torpedoe){
     torpedoe.tic();
+    torpedoe.degregate();
   })
+};
+
+model.updateAsteroids = function(){
+  model.allAsteroids.forEach(function(asteroid){
+    asteroid.tic();
+    asteroid.checkCollisions();
+  });
+};
+
+model.updateShip = function(){
+  model.ship.moveShip();
+};
+
+model.updateGame = function(){
+  model.updateAsteroids();
+  model.updateShip();
+  model.updateTorpedoes();
 };
 
 model.SpaceShip.prototype.fireTorpedoe = function(){
@@ -199,7 +227,6 @@ model.SpaceShip.prototype.propelForward = function(){
   this.position.x += this.speed * Math.cos((this.degrees + 270)  * Math.PI / 180);
   this.position.y += this.speed * Math.sin((this.degrees + 270) * Math.PI / 180);
 };
-
 
 model.SpaceShip.prototype.moveShip = function(keyCode){
   if (this.movement.left) {

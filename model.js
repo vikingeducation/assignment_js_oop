@@ -19,7 +19,7 @@ model.canvasHeight = 600;
 model.minVelocity = 1;
 model.maxVelocity = 5;
 model.minSize = 15;
-model.maxSize = 50;
+model.maxSize = 15;
 model.allAsteroids = [];
 
 //ship
@@ -99,13 +99,16 @@ model.Asteroid.prototype.triSplit = function(){
 
 model.createAsteroids = function(amount, customX, customY, customSize){
   for (var i = 0; i < amount; i++) {
-    var size = customSize || model.randomSize(),
+
+    //to delete
+    var size = 5;
+    // var size = customSize || model.randomSize(),
         x = customX || model.randomCoord(),
         y = customY || model.randomCoord(),
-        velocityX = model.randomVelocity(),
-        velocityY = model.randomVelocity();
-    // velocityX = 0
-    // velocityY = 0
+        // velocityX = model.randomVelocity(),
+        // velocityY = model.randomVelocity();
+    velocityX = 0
+    velocityY = 0
 
     var currentAsteroid = new model.Asteroid(size,
                                              x,
@@ -155,46 +158,66 @@ model.Torpedoe = function(){
 model.Torpedoe.prototype.tic = function(){
   this.position.x += this.velocity.x * this.speed ;
   this.position.y += this.velocity.y * this.speed;
-  console.log() ; console.log(this.position.x, this.position.y) ; console.log();
-  this.lifeSpan--;
-};
-
-model.Torpedoe.prototype.degregate = function(){
+  // console.log() ; console.log(this.position.x, this.position.y) ; console.log();
   this.lifeSpan--;
 
-  if (this.lifeSpan < 1) {
-    model.ship.torpedoes.shift();
-  }
 };
 
-model.Asteroid.prototype.checkCollisions = function(){
+model.Torpedoe.prototype.removeOldTorpedoes = function(){
+
+};
+
+model.Asteroid.prototype.checkCollisions = function(asteroidIndex){
   var asteroid = this,
       torpedoes = model.ship.torpedoes,
       xDifference, yDifference;
 
-  torpedoes.forEach(function(torpedoe){
+  torpedoes.forEach(function(torpedoe, torpedoeIndex){
     xDifference = Math.abs(torpedoe.position.x - asteroid.coordX);
     yDifference = Math.abs(torpedoe.position.y - asteroid.coordY);
 
-    if ((xDifference < asteroid.size) && (yDifference < asteroid.size)) {
+    if ((xDifference < (asteroid.size + torpedoe.size)) &&
+        (yDifference < (asteroid.size + torpedoe.size))) {
       console.log("HIT");
-      asteroid.triSplit();
+      //remove torpedoe
+      model.toRemove.push(torpedoeIndex);
+
+      if (asteroid.size >= model.minSize) {
+        console.log(asteroid.size)
+        asteroid.triSplit();
+        console.log("split");
+      } else {
+        //for when too small to trisplit
+        console.log('too small')
+        // delete model.allAsteroids[asteroidIndex];
+        model.allAsteroids.splice(asteroidIndex, 1)
+      }
     }
+
+
+
+
   });
 };
 
+//torpedo indexes to delete
+model.toRemove = []
 
 model.updateTorpedoes = function(){
-  model.ship.torpedoes.forEach(function(torpedoe){
+  model.ship.torpedoes.forEach(function(torpedoe, torpedoeIndex){
     torpedoe.tic();
-    torpedoe.degregate();
+    // if (torpedoe.lifeSpan === 0) {
+    //   // model.toRemove.push(torpedoeIndex);
+    //   model.toRemove.push(torpedoeIndex);
+    // }
   })
+
 };
 
 model.updateAsteroids = function(){
-  model.allAsteroids.forEach(function(asteroid){
+  model.allAsteroids.forEach(function(asteroid, asteroidIndex){
     asteroid.tic();
-    asteroid.checkCollisions();
+    asteroid.checkCollisions(asteroidIndex);
   });
 };
 

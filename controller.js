@@ -10,7 +10,7 @@ ASTEROIDS.CONTROLLER = {};
 var controller = ASTEROIDS.CONTROLLER;
 
 controller.init = function(){
-  model.init(1);
+  model.init(3);
   view.init();
 
   controller.play(model.miliseconds);

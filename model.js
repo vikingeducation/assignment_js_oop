@@ -16,9 +16,9 @@ model.canvasWidth = 600;
 model.canvasHeight = 600;
 
 // asteroid
-model.minVelocity = 4;
-model.maxVelocity = 10;
-model.minSize = 20;
+model.minVelocity = 1;
+model.maxVelocity = 5;
+model.minSize = 15;
 model.maxSize = 50;
 model.allAsteroids = [];
 
@@ -31,7 +31,8 @@ model.init = function(astroidQuanitity){
 };
 
 model.degreesToRadians = function(degrees){
-  return degrees * (Math.PI / 180);
+  var radians = degrees * (Math.PI / 180);
+  return radians;
 };
 
 model.getRandom = function(min, max){
@@ -85,18 +86,26 @@ model.Asteroid.prototype.tic = function(){
   this.coordY += this.velocityY;
 };
 
-model.createAsteroids = function(amount){
-  var size, x, y, velocityX, velocityY;
+//create 2 smaller asteroids & adjust/update the original
+model.Asteroid.prototype.triSplit = function(){
+  var newSize = this.size / 3,
+      x = this.coordX,
+      y = this.coordY;
+  model.createAsteroids(2, x, y, newSize);
+  this.size = newSize;
+  // this.velocityX = model.randomVelocity();
+  // this.velocityY = model.randomVelocity();
+};
 
+model.createAsteroids = function(amount, customX, customY, customSize){
   for (var i = 0; i < amount; i++) {
-    size = model.randomSize();
-    x = model.randomCoord();
-    y = model.randomCoord();
-
-    // velocityX = model.randomVelocity();
-    // velocityY = model.randomVelocity();
-    velocityX = 0
-    velocityY = 0
+    var size = customSize || model.randomSize(),
+        x = customX || model.randomCoord(),
+        y = customY || model.randomCoord(),
+        velocityX = model.randomVelocity(),
+        velocityY = model.randomVelocity();
+    // velocityX = 0
+    // velocityY = 0
 
     var currentAsteroid = new model.Asteroid(size,
                                              x,
@@ -168,7 +177,8 @@ model.Asteroid.prototype.checkCollisions = function(){
     yDifference = Math.abs(torpedoe.position.y - asteroid.coordY);
 
     if ((xDifference < asteroid.size) && (yDifference < asteroid.size)) {
-      console.log("HIT")
+      console.log("HIT");
+      asteroid.triSplit();
     }
   });
 };

@@ -26,10 +26,16 @@ controller.play = function(miliseconds){
 };
 
 controller.render = function(){
+  if (model.gameOver) {
+    controller.stopGame();
+  }
   view.render(model.allAsteroids, model.ship);
   model.updateGame();
 };
 
+controller.stopGame = function(){
+  clearInterval(controller.interval);
+};
 
 $(document).ready(function(){
   controller.init();

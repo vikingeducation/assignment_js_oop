@@ -27,5 +27,4 @@ var interval = setInterval(function(){
 
 //'psuedo-classical', or prototypal: uses less space
 //but takes longer to run as it has a lookup chain
-
 //

@@ -7,6 +7,7 @@ ASTEROIDS.MODEL = {};
 var model = ASTEROIDS.MODEL;
 
 // game
+model.gameOver = false;
 model.miliseconds = 45;
 model.lives = 1;
 model.score = 0;
@@ -184,7 +185,21 @@ model.Torpedoe.prototype.tic = function(){
   }
 };
 
-model.Asteroid.prototype.checkCollisions = function(asteroidIndex){
+model.Asteroid.prototype.checkShipCollision = function(){
+  var xDifference, yDifference, offset = model.ship.size / 2;
+
+  xDifference = Math.abs(model.ship.position.x - this.coordX) + offset;
+  yDifference = Math.abs(model.ship.position.y - this.coordY) + offset;
+
+  if ((xDifference < (this.size + model.ship.size)) &&
+      (yDifference < (this.size + model.ship.size))) {
+        model.gameOver = true;
+        console.log('SHIP HIT ASTEROID!');
+      }
+};
+
+
+model.Asteroid.prototype.checkTorpedoCollisions = function(asteroidIndex){
   var asteroid = this,
       torpedoes = model.ship.torpedoes,
       xDifference, yDifference;
@@ -215,7 +230,8 @@ model.updateTorpedoes = function(){
 model.updateAsteroids = function(){
   model.allAsteroids.forEach(function(asteroid, asteroidIndex){
     asteroid.tic();
-    asteroid.checkCollisions(asteroidIndex);
+    asteroid.checkTorpedoCollisions(asteroidIndex);
+    asteroid.checkShipCollision();
   });
 };
 
@@ -227,7 +243,6 @@ model.updateGame = function(){
   model.updateAsteroids();
   model.updateShip();
   model.updateTorpedoes();
-  // model.
 };
 
 model.SpaceShip.prototype.fireTorpedoe = function(){
@@ -246,7 +261,7 @@ model.SpaceShip.prototype.increaseClockWise = function(){
 };
 
 model.SpaceShip.prototype.decreaseClockWise = function(){
-  console.log("Turn towards Port");
+  // console.log("Turn towards Port");
   if (this.degrees <= 0) {
     this.degrees = 360;
   }
@@ -255,7 +270,7 @@ model.SpaceShip.prototype.decreaseClockWise = function(){
 };
 
 model.SpaceShip.prototype.propelForward = function(){
-  console.log("Engage");
+  // console.log("Engage");
   this.position.x += this.speed * Math.cos((this.degrees + 270)  * Math.PI / 180);
   this.position.y += this.speed * Math.sin((this.degrees + 270) * Math.PI / 180);
 };

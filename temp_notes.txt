@@ -1,6 +1,6 @@
 http://simonsarris.com/making-html5-canvas-useful/
 
-
+http://diveintohtml5.info/canvas.html
 
 https://www.youtube.com/watch?v=PMfcsYzj-9M#t=730
 
@@ -31,39 +31,9 @@ var foo = { a: "b" }
 foo.__proto__
 //=> Object {}
 
-
-// http://diveintohtml5.info/canvas.html
+~~
 
 var c_canvas = document.getElementById("c");
 var context = c_canvas.getContext("2d");
 
 // context.arc(x, y, radius, 0, Math.PI * 2);
-//sizes: 20, 30, 40
-
-context.arc(200, 100, 40, 0, Math.PI * 2);
-
-
-
-context.fill();
-context.stroke();
-
-
-// To draw straight lines in pencil, you use the following two methods:
-// moveTo(x, y) moves the pencil to the specified starting point.
-// lineTo(x, y) draws a line to the specified ending point.
-
-//
-
-//  to make it permanent.
-// context.strokeStyle = "#eee";
-// context.stroke();
-
-//
-
-
-//to draw a new path, use beginPath();
-// context.beginPath();
-// context.moveTo(0, 40);
-// context.lineTo(240, 40);
-
-//

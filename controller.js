@@ -10,7 +10,7 @@ ASTEROIDS.CONTROLLER = {};
 var controller = ASTEROIDS.CONTROLLER;
 
 controller.init = function(){
-  model.init(3);
+  model.init(5);
   view.init();
 
   controller.play(model.miliseconds);
@@ -28,8 +28,6 @@ controller.play = function(miliseconds){
 controller.render = function(){
   view.render(model.allAsteroids, model.ship);
   model.updateGame();
-
-  // console.log(model.ship.degrees);
 };
 
 

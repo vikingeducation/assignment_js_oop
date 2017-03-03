@@ -8,7 +8,7 @@ var model = ASTEROIDS.MODEL;
 
 // game
 model.miliseconds = 45;
-model.lives = 3;
+model.lives = 1;
 model.score = 0;
 
 //canvas
@@ -19,7 +19,7 @@ model.canvasHeight = 600;
 model.minVelocity = 1;
 model.maxVelocity = 5;
 model.minSize = 15;
-model.maxSize = 15;
+model.maxSize = 50;
 model.allAsteroids = [];
 
 //ship
@@ -82,6 +82,16 @@ model.Asteroid = function(size, x, y, velocityX, velocityY){
 };
 
 model.Asteroid.prototype.tic = function(){
+  var xVelocity = this.velocityX,
+      yVelocity = this.velocityY;
+
+  //reverse back for when out-of-bounds
+  if ((Math.abs(this.coordX) > model.canvasWidth + 20) ||
+  (Math.abs(this.coordY) > model.canvasWidth + 20)) {
+    this.velocityX = model.reverseCharge(xVelocity);
+    this.velocityY = model.reverseCharge(yVelocity);
+  }
+
   this.coordX += this.velocityX;
   this.coordY += this.velocityY;
 };
@@ -93,22 +103,22 @@ model.Asteroid.prototype.triSplit = function(){
       y = this.coordY;
   model.createAsteroids(2, x, y, newSize);
   this.size = newSize;
-  // this.velocityX = model.randomVelocity();
-  // this.velocityY = model.randomVelocity();
+  this.velocityX = model.randomVelocity();
+  this.velocityY = model.randomVelocity();
 };
 
 model.createAsteroids = function(amount, customX, customY, customSize){
   for (var i = 0; i < amount; i++) {
-
-    //to delete
-    var size = 5;
-    // var size = customSize || model.randomSize(),
+    //testing to deletes
+    // var size = 5;
+    // velocityX = 0
+    // velocityY = 0
+    var size = customSize || model.randomSize(),
         x = customX || model.randomCoord(),
         y = customY || model.randomCoord(),
-        // velocityX = model.randomVelocity(),
-        // velocityY = model.randomVelocity();
-    velocityX = 0
-    velocityY = 0
+        velocityX = model.randomVelocity(),
+        velocityY = model.randomVelocity();
+
 
     var currentAsteroid = new model.Asteroid(size,
                                              x,
@@ -156,15 +166,22 @@ model.Torpedoe = function(){
 };
 
 model.Torpedoe.prototype.tic = function(){
-  this.position.x += this.velocity.x * this.speed ;
-  this.position.y += this.velocity.y * this.speed;
-  // console.log() ; console.log(this.position.x, this.position.y) ; console.log();
+  var xVelocity = this.velocity.x,
+      yVelocity = this.velocity.y;
+
+  //reverse back for when out-of-bounds
+  if ((Math.abs(this.position.x) > model.canvasWidth + 20) ||
+  (Math.abs(this.position.y) > model.canvasWidth + 20)) {
+    this.velocity.x = model.reverseCharge(xVelocity);
+    this.velocity.y = model.reverseCharge(yVelocity);
+  }
+
+  this.position.x += xVelocity * this.speed;
+  this.position.y += yVelocity * this.speed;
   this.lifeSpan--;
-
-};
-
-model.Torpedoe.prototype.removeOldTorpedoes = function(){
-
+  if (this.lifeSpan < 0) {
+    model.ship.torpedoes.shift();
+  }
 };
 
 model.Asteroid.prototype.checkCollisions = function(asteroidIndex){
@@ -179,39 +196,20 @@ model.Asteroid.prototype.checkCollisions = function(asteroidIndex){
     if ((xDifference < (asteroid.size + torpedoe.size)) &&
         (yDifference < (asteroid.size + torpedoe.size))) {
       console.log("HIT");
-      //remove torpedoe
-      model.toRemove.push(torpedoeIndex);
-
       if (asteroid.size >= model.minSize) {
-        console.log(asteroid.size)
         asteroid.triSplit();
-        console.log("split");
       } else {
         //for when too small to trisplit
-        console.log('too small')
-        // delete model.allAsteroids[asteroidIndex];
         model.allAsteroids.splice(asteroidIndex, 1)
       }
     }
-
-
-
-
   });
 };
-
-//torpedo indexes to delete
-model.toRemove = []
 
 model.updateTorpedoes = function(){
   model.ship.torpedoes.forEach(function(torpedoe, torpedoeIndex){
     torpedoe.tic();
-    // if (torpedoe.lifeSpan === 0) {
-    //   // model.toRemove.push(torpedoeIndex);
-    //   model.toRemove.push(torpedoeIndex);
-    // }
-  })
-
+  });
 };
 
 model.updateAsteroids = function(){
@@ -229,10 +227,11 @@ model.updateGame = function(){
   model.updateAsteroids();
   model.updateShip();
   model.updateTorpedoes();
+  // model.
 };
 
 model.SpaceShip.prototype.fireTorpedoe = function(){
-  console.log("Mr. Worf, fire Torpedoe");
+  console.log("Mr. Worf, fire Torpedoe cluster!");
   var torpedoe = new model.Torpedoe();
   model.ship.torpedoes.push(torpedoe);
 };

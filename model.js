@@ -136,8 +136,8 @@ model.SpaceShip = function(x, y){
 };
 
 model.Torpedoe = function(){
-  this.angle = model.ship.angle;
-  this.degrees = model.ship.degrees;
+  this.degrees = model.ship.degrees + 270;
+  this.angle = model.degreesToRadians(this.degrees);
   this.speed = 20;
   this.position = {
     x: model.ship.position.x,
@@ -150,17 +150,19 @@ model.Torpedoe = function(){
 
   this.color = "red";
   this.size = 5;
-  this.lifeSpan = 300;
+  this.lifeSpan = 50;
 };
 
 model.Torpedoe.prototype.tic = function(){
-  // console.log(this)
-  // this.position.x += this.speed * Math.cos((this.degrees + 270)  * Math.PI / 180);
-  // this.position.y += this.speed * Math.sin((this.degrees + 270) * Math.PI / 180);
-  this.position.x += this.velocity.x + this.speed;
-  this.position.y += this.velocity.y + this.speed;
-  // this.lifeSpan--;
+  this.position.x += this.velocity.x * this.speed ;
+  this.position.y += this.velocity.y * this.speed;
+  this.lifeSpan--;
+
+  if (this.lifeSpan < 1) {
+    model.ship.torpedoes.shift();
+  }
 };
+
 
 model.updateTorpedoes = function(){
   model.ship.torpedoes.forEach(function(torpedoe){

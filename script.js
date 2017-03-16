@@ -14,7 +14,6 @@ function Asteroid (x, y, radius) {
   this.radius = radius;
 }
 Asteroid.prototype = new SpaceObject();
-// will new Asteroid(4, 4) work??
 
 function Ship (x, y) {
   SpaceObject.call(this, x, y);

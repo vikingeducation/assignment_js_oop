@@ -285,28 +285,4 @@ model.SpaceShip.prototype.moveShip = function(keyCode){
   if (this.movement.forward) {
     model.ship.propelForward();
   }
-  // switch(keyCode){
-  //  //left key arrow
-  //  case 37:
-  //   this.movement.left = true;
-  //   // model.ship.decreaseClockWise();
-  //   break;
-  //
-  //  //right key arrow
-  //  case 39:
-  //   this.movement.right = true;
-  //   // model.ship.increaseClockWise();
-  //   break;
-  //
-  //  //up key arrow
-  //  case 38:
-  //     this.forward = true;
-  //    model.ship.propelForward();
-  //    break;
-  //
-  //  //spacebar - Fire Torpedoes!
-  //  case 32:
-  //    model.ship.fireTorpedoes();
-  //    break;
-  // }
 };

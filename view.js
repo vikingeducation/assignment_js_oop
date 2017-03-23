@@ -28,7 +28,6 @@ view.init = function(updateShip){
         model.ship.movement.forward = true;
         break;
       }
-      event.preventDefault();
   });
 
   $(document).keyup(function(event){

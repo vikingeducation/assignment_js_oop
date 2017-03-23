@@ -1,6 +1,3 @@
-// check out requestAnimationFrame over setInterval and setTimeout
-// PAGE 184 HTML HACKS BOOK
-
 "use strict;"
 
 var ASTEROIDS = ASTEROIDS || {};
@@ -12,29 +9,29 @@ var controller = ASTEROIDS.CONTROLLER;
 controller.init = function(){
   model.init(5);
   view.init();
-
-  controller.play(model.miliseconds);
-  // controller.render();
+  controller.play();
 };
 
-controller.interval = null;
+controller.interval = undefined;
 
 controller.play = function(miliseconds){
-  controller.interval = setInterval(function(){
-    controller.render();
-  }, miliseconds)
+  if (model.gameOver) {
+    controller.stopGame();
+  } else {
+    view.render(model.allAsteroids, model.ship);
+    model.updateGame();
+    controller.interval = requestAnimationFrame(controller.play);
+  }
 };
 
 controller.render = function(){
-  if (model.gameOver) {
-    controller.stopGame();
-  }
-  view.render(model.allAsteroids, model.ship);
-  model.updateGame();
 };
 
 controller.stopGame = function(){
-  clearInterval(controller.interval);
+  console.log("stop game ran")
+  cancelAnimationFrame(controller.interval);
+    controller.interval = undefined;
+    return;
 };
 
 $(document).ready(function(){

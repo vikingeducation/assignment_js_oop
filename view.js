@@ -4,10 +4,10 @@ var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.VIEW = {};
 
 // shortcut to access VIEW name-subspace
-var view = ASTEROIDS.VIEW;
+var View = ASTEROIDS.VIEW;
 
 
-view.init = function(updateShip){
+View.init = function(updateShip){
 
   $(document).keydown(function(event){
       var keycode = event.which;
@@ -15,17 +15,17 @@ view.init = function(updateShip){
       switch(keycode){
        //left key arrow
        case 37:
-        model.ship.movement.left = true;
+        Model.ship.movement.left = true;
         break;
 
        //right key arrow
        case 39:
-        model.ship.movement.right = true;
+        Model.ship.movement.right = true;
         break;
 
        //up key arrow
        case 38:
-        model.ship.movement.forward = true;
+        Model.ship.movement.forward = true;
         break;
       }
   });
@@ -36,37 +36,37 @@ view.init = function(updateShip){
       switch(keycode){
        //left key arrow
        case 37:
-        model.ship.movement.left = false;
+        Model.ship.movement.left = false;
         break;
 
        //right key arrow
        case 39:
-        model.ship.movement.right = false;
+        Model.ship.movement.right = false;
         break;
 
        //up key arrow
        case 38:
-          model.ship.movement.forward = false;
+          Model.ship.movement.forward = false;
           break;
 
        //spacebar fire torpedoe
        case 32:
-          model.ship.fireTorpedoe();
+          Model.ship.fireTorpedoe();
           break;
       }
       event.preventDefault();
   });
 };
 
-view.render = function(asteroids, spaceship){
-  view.clearCanvas();
-  view.renderAsteroids(asteroids);
-  view.renderSpaceShip(spaceship);
-  view.renderTorpedoes(spaceship.torpedoes);
+View.render = function(asteroids, spaceship){
+  View.clearCanvas();
+  View.renderAsteroids(asteroids);
+  View.renderSpaceShip(spaceship);
+  View.renderTorpedoes(spaceship.torpedoes);
 };
 
 
-view.renderAsteroids = function(asteroids){
+View.renderAsteroids = function(asteroids){
   var canvas = document.getElementById("c"),
       context = canvas.getContext("2d");
 
@@ -83,7 +83,7 @@ view.renderAsteroids = function(asteroids){
   });
 };
 
-view.renderTorpedoes = function(torpedoes){
+View.renderTorpedoes = function(torpedoes){
   var canvas = document.getElementById("c"),
       context = canvas.getContext("2d");
 
@@ -99,7 +99,7 @@ view.renderTorpedoes = function(torpedoes){
   });
 }
 
-view.renderSpaceShip = function(spaceship){
+View.renderSpaceShip = function(spaceship){
   var canvas = document.getElementById("c"),
   context = canvas.getContext("2d"),
   shipSize = spaceship.size;
@@ -122,7 +122,7 @@ view.renderSpaceShip = function(spaceship){
 };
 
 
-view.clearCanvas = function(){
+View.clearCanvas = function(){
   var canvas = document.getElementById("c");
   canvas.width = canvas.width;
 };

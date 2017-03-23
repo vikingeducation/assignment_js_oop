@@ -4,36 +4,31 @@ var ASTEROIDS = ASTEROIDS || {};
 ASTEROIDS.CONTROLLER = {};
 
 // shortcut to access CONTROLLER name-subspace
-var controller = ASTEROIDS.CONTROLLER;
+var Controller = ASTEROIDS.CONTROLLER;
 
-controller.init = function(){
-  model.init(5);
-  view.init();
-  controller.play();
+Controller.init = function(){
+  Model.init(5);
+  View.init();
+  Controller.play();
 };
 
-controller.interval = undefined;
+Controller.interval = undefined;
 
-controller.play = function(miliseconds){
-  if (model.gameOver) {
-    controller.stopGame();
+Controller.play = function(){
+  if (Model.gameOver) {
+    Controller.stopGame();
   } else {
-    view.render(model.allAsteroids, model.ship);
-    model.updateGame();
-    controller.interval = requestAnimationFrame(controller.play);
+    View.render(Model.allAsteroids, Model.ship);
+    Model.updateGame();
+    Controller.interval = requestAnimationFrame(Controller.play);
   }
 };
 
-controller.render = function(){
-};
-
-controller.stopGame = function(){
-  console.log("stop game ran")
-  cancelAnimationFrame(controller.interval);
-    controller.interval = undefined;
-    return;
+Controller.stopGame = function(){
+  cancelAnimationFrame(Controller.interval);
+    Controller.interval = undefined;
 };
 
 $(document).ready(function(){
-  controller.init();
+  Controller.init();
 });

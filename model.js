@@ -18,7 +18,7 @@ Model.canvasHeight = 600;
 
 // asteroid
 Model.minVelocity = 1;
-Model.maxVelocity = 5;
+Model.maxVelocity = 2;
 Model.minSize = 15;
 Model.maxSize = 50;
 Model.allAsteroids = [];
@@ -133,7 +133,7 @@ Model.createAsteroids = function(amount, customX, customY, customSize){
 Model.SpaceShip = function(x, y){
   this.color = "black";
   this.size = 20;
-  this.speed = 15;
+  this.speed = 5;
   this.degrees = 0;
   this.angle = Model.degreesToRadians(this.degrees);
   this.position = {
@@ -151,7 +151,7 @@ Model.SpaceShip = function(x, y){
 Model.Torpedoe = function(){
   this.degrees = Model.ship.degrees + 270;
   this.angle = Model.degreesToRadians(this.degrees);
-  this.speed = 20;
+  this.speed = 10;
   this.position = {
     x: Model.ship.position.x,
     y: Model.ship.position.y

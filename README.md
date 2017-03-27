@@ -1,3 +1,3 @@
-# assignment_js_oop
-Objectify! Construct! Prototype!  Win.
-[A JavaScript project using objects, constructors and prototypes from the Viking Code School](http://www.vikingcodeschool.com)
+# asteroids
+
+ES5 JavaScript implementation of [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)). Play [here](https://mnd-dsgn.github.io/asteroids/index). 
